@@ -1,6 +1,6 @@
 # Team working guide
 
-**Updated:** 30 September 2026. **Status:** Proposed allocation by role; Jira account mapping and capacity are still needed.
+**Updated:** 30 September 2026. **Status:** The coordinator named four role owners. Jira account mapping, task creation and capacity still need recording. This guide requires member-led, step-by-step learning when using AI.
 
 ## Start here
 
@@ -8,16 +8,50 @@ Read the [overview](project-overview.md), [requirements](requirements.md), [syst
 
 The coordinator sets priorities with the client, checks integration and resolves cross-area decisions. They are not the sole programmer, tester or reviewer. All four members must understand the overall retailer journey and be able to run a demonstration.
 
+## Learning-first development with AI
+
+The purpose of the project is for each member to learn to design, implement, test and explain software. A task is not successfully completed just because an AI agent produced code or an automated check passed. The assigned member owns the reasoning and must be able to maintain the result.
+
+For every task, the member follows this sequence:
+
+1. **Understand:** Read the task and its linked requirements. In their own words, describe the user problem, expected behaviour, acceptance criteria, dependencies and any uncertainty. Ask AI to explain unfamiliar concepts or existing code; do not ask it to solve the whole task.
+2. **Trace:** Locate the relevant files and trace how data moves through the affected parts of the application. Identify shared contracts and ask the other owner before changing them.
+3. **Plan a small step:** State what the next small change will do, why it is needed, and how to check it. Resolve or record open decisions before dependent implementation.
+4. **Implement with guidance:** Work in short steps. AI may explain, ask questions, suggest alternatives, review code, or help draft a small change after the member has proposed an approach. The member reads and understands every changed line, adapts it, and remains the author of the technical decision. Do not use an autonomous “complete the entire issue” instruction.
+5. **Predict and verify:** Before running a check, say what result is expected. Run it, inspect the actual output, and explain any failure before changing code. Never report an unrun test as passing.
+6. **Explain and demonstrate:** Before requesting review, explain the requirement, code/data flow, key decision, test evidence and remaining limits to a teammate. Be able to make a small change or debug a straightforward variation while explaining it.
+7. **Record and review:** In Jira/PR, summarize the member's approach and decisions, actual checks/results, limitations, and material AI assistance. A teammate reviews both the software evidence and whether the owner can explain the work. Only then is the task ready to merge/mark Done.
+
+If a member cannot explain a part, pause acceptance and learn that part together. Pairing and asking for help are expected; hiding uncertainty or pasting unreviewed generated code is not.
+
+### AI tutor and pair-programmer prompt
+
+Use this prompt in an agentic IDE for an assigned task:
+
+```text
+Act as my tutor and pair programmer for Jira task <KEY>, not as an autonomous task implementer.
+First ask me to explain the task in my own words, then help me check the user problem,
+acceptance criteria, dependencies and uncertain decisions. Read the relevant repository
+instructions and code with me; explain the existing flow and ask me to locate the relevant
+files. Help me plan one small step. Do not implement the whole task or make broad changes.
+At each step, explain the purpose and likely effect before suggesting code. Ask me to
+predict the result; then help me run and interpret the check. If you suggest or draft a
+small code change, explain it and have me review, adapt and explain it before moving on.
+Do not claim checks passed unless they were run and show their actual output. Finish by
+helping me prepare to explain the design, data flow, decisions, tests and limitations to
+a teammate. Do not merge, assign work, or change Jira/GitHub status.
+```
+
 ## Four continuing responsibility areas
 
-| Role | Primary ownership across the product | Initial issue lead | Backup/reviewer |
+| Role and owner | Primary ownership across the product | Initial issue lead | Backup/reviewer |
 | --- | --- | --- | --- |
-| A — Product experience | Client workflow, Figma/design system, forms, comparison/history/alert/admin screens, usability | #1 requirements coordination and #3 UI, with all members contributing requirements | B for contracts, D for journey tests |
-| B — Application and data | Auth/tenancy, domain rules, HTTP contracts, catalogue, database/migrations, limits/tiers | #4 architecture and foundation, jointly with D | D for security/operations; C for observation semantics |
-| C — Collection and data quality | Source access research, connectors, normalisation, matching, collection accuracy and parser regression | #2 source feasibility | B for model/transactions; D for failure/resource checks |
-| D — Integration and operations | Durable job infrastructure, scheduler, CI, environment setup, observability, delivery adapters, deployment/recovery and integration checks | #4 reproducible setup/queue and #2 failure testing | B for API/data; C for scheduler/source limits |
+| A — Dilsan, product experience | Client workflow, Figma/design system, forms, comparison/history/alert/admin screens, usability | First journey screens and UI states | Hirukshanan for contracts, Ilmam for journey tests |
+| B — Hirukshanan, application and data | Auth/tenancy, domain rules, HTTP contracts, catalogue, database/migrations, limits/tiers | Contract, auth and product/listing API | Ilmam for security/operations; Shewon for observation semantics |
+| C — Shewon, collection and data quality | Source access research, connectors, normalisation, matching, collection accuracy and parser regression; coordinate cross-area changes | Source feasibility and adapter | Hirukshanan for model/transactions; Ilmam for failure/resource checks |
+| D — Ilmam, integration and operations | Durable job infrastructure, scheduler, CI, environment setup, observability, delivery adapters, deployment/recovery and integration checks | Reproducible setup/queue and integration | Hirukshanan for API/data; Shewon for scheduler/source limits |
 
-No member is “only QA” or “only project management”. Everyone implements, tests, reviews and documents. D delivers substantial runtime code as well as integration support. The user may take A or another role after the team discusses strengths; being able to do everything does not mean accepting every task.
+No member is “only QA” or “only project management”. Everyone implements, tests, reviews and documents. Ilmam delivers substantial runtime code as well as integration support. Shewon coordinates integration decisions and improvements without becoming the sole implementer or reviewer of every area.
 
 Stable ownership means knowing where to ask, not exclusive control of files. A frontend lead continues with comparisons, history, alerts and administration in later sprints. When workload is uneven, pair on another area and update the sprint assignments. Reassess ownership at each retrospective. Every critical area needs a backup who has reviewed and run it.
 
@@ -44,8 +78,8 @@ One repository, one product backlog and one Jira Scrum project (`RIV`) with spri
 2. Each Jira task records PB/FR/NFR IDs, deliverable, scope exclusions, contract/doc links, dependencies, acceptance criteria, test evidence expected, owner, reviewer, estimate and sprint.
 3. GitHub issues #1–#4 are legacy preparation records. Link them from the corresponding Jira tasks; use Jira for new tasks and updates.
 4. Use `To Do → In Progress → Done` in Jira. A PR awaiting review remains In Progress; note a blocked dependency on the task. Add a Review status only if the team chooses it.
-5. Work on a short-lived branch whose name includes its Jira key, such as `codex/RIV-12-listing-form`; include that key in commit and PR titles. Open a draft PR early when a contract affects another member.
-6. Run the agreed checks, attach evidence to the Jira task or PR, obtain another member's review, merge and demonstrate integration before marking Done. Require client review when a task explicitly depends on a client decision.
+5. Work on a short-lived branch whose name includes its actual Jira key, such as `feature/RIV-12-listing-form`; `codex/` is not required. Include the key in commit and PR titles. Open a draft PR early when a contract affects another member.
+6. The owner records actual checks and results, then demonstrates and explains the change to a teammate. The reviewer asks the owner to trace the affected flow and justify key decisions. Attach evidence to Jira/PR, fix review feedback, merge and demonstrate integration before marking Done. Require client review when a task explicitly depends on a client decision.
 7. Give a short daily update: completed evidence, next deliverable, blocker. Integrate at least twice each development week; review together before evaluation. Split work further if integration is repeatedly delayed.
 
 Use Jira Scrum for module tracking. Never post tokens in chats/tasks or give an agent broader permissions than its task needs.
@@ -64,27 +98,9 @@ Keep existing preparation issues as references. Create implementation work in Ji
 
 Fixture-backed integration can proceed while access is unresolved; S1-C live-source and S1-E live acceptance remain blocked. Do not rename fixture data as a successful Amazon connector to satisfy the board.
 
-## Agentic IDE handoff prompt
+## Task completion and module learning evidence
 
-```text
-Work in this Riven repository on issue <number/title> only.
-Read AGENTS.md, docs/README.md, docs/requirements.md,
-docs/architecture/system-baseline.md, docs/architecture/decisions.md,
-docs/sprints/sprint-01.md and the issue's specific references.
-Summarise the deliverable, dependencies and relevant FR/NFR/PB IDs.
-Distinguish confirmed requirements, recommended designs and open decisions.
-Check the current code and branch; the earlier prototype is not an approved baseline.
-Use the agreed contracts. Raise material missing decisions before dependent work;
-do independent work without inventing client answers.
-Implement only the assigned scope after the team accepts the relevant baseline.
-Include meaningful tests, actual verification output, documentation changes and
-an ADR when changing an architectural decision. Never expose secrets, bypass
-source restrictions, or represent fixture results as live-source evidence.
-Prepare a PR summary explaining what changed, why, test results and limitations.
-Only update Jira and GitHub state within the assigned task.
-```
-
-The member remains responsible for understanding and reviewing generated code. Another agent's confidence is not acceptance evidence.
+The member remains responsible for understanding and reviewing every change. Another agent's confidence, generated explanation or green test alone is not acceptance evidence. The task owner must present the work and answer a teammate's questions about the flow, alternatives, test behaviour and failure cases. Capture brief evidence in the PR/Jira ticket: what the member decided and implemented, what AI assisted with, what the member changed after reviewing that assistance, and what they personally ran and observed. Follow any stricter module rules for AI disclosure or assessment.
 
 ## Change control and final report evidence
 
@@ -93,4 +109,4 @@ The member remains responsible for understanding and reviewing generated code. A
 - Product scope, source-count, paid service or client-visible semantics change: coordinator records the client's decision and effect on backlog/schedule.
 - Do not document every line of code. Preserve important reasons, alternatives, source references, actual experiments, PRs, failures and fixes as they happen; these become report evidence.
 
-Before assigning names, ask each member to explain the full workflow and choose an area they can sustain. Estimate availability, pair on the first integration and rebalance after the first week. No fixed six-sprint plan can remove the need for this feedback.
+Before starting assigned work, each member explains the full workflow and states available time. Pair on the first integration and rebalance after the first week. The team can use AI throughout, but the member's own step-by-step reasoning, implementation practice and explanation remain central in every sprint.

@@ -13,5 +13,8 @@ This repository is the retailer competitor-monitoring project. Read `docs/README
 - Preserve other members' work. Use focused branches/PRs, versioned schemas/migrations, actual test evidence and a second member's review. Do not auto-merge or change GitHub assignments/status without task authorisation.
 - Keep tokens, credentials, cookies, private conversations and personal delivery details out of code, logs and public issues. Local PDFs under `references/` are not for automatic publishing.
 - Record observed results separately from assumptions. Never invent successful tests, client approval, source permissions or performance measurements.
+- This is a learning project. A team member must understand, make and explain their own implementation decisions. AI tools may teach, clarify, suggest and review one small step at a time; they must not autonomously complete an entire assigned task for submission. Do not accept code the owner cannot explain, trace, run and change.
+- Before implementation, the owner explains the task, relevant code/data flow and a small plan. During implementation, pause at meaningful steps to explain the change and let the owner reason, implement or explicitly review it. The owner runs the checks, investigates failures and demonstrates the finished change to another member. Record the member's reasoning, actual evidence and AI assistance in the PR/task where useful for module assessment.
+- Use an ordinary team branch prefix such as `feature/` or `fix/` with the actual Jira key. `codex/` is not a required project convention.
 
-See `docs/team-working-guide.md` for ownership, GitHub workflow and the agent handoff prompt.
+See `docs/team-working-guide.md` for ownership, GitHub workflow and the learning-first AI tutor prompt.

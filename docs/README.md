@@ -4,13 +4,13 @@
 
 **Current position:** Sprint 1 setup and task assignment. Jira Scrum project `RIV` is the team board; GitHub holds source and these blueprints.
 
-Riven is a multi-tenant competitor tracking and analysis system for online retailers. The proposal is submitted, according to the team. The whole-product technical baseline is now drafted. Amazon is the first required source, TypeScript is confirmed, and only personal computers are currently available. Source feasibility, remaining client decisions, team acceptance of the recommended stack and named assignments are not yet recorded.
+Riven is a multi-tenant competitor tracking and analysis system for online retailers. The proposal is submitted, according to the team. The whole-product technical baseline is now drafted. Amazon is the first required source, TypeScript is confirmed, and only personal computers are currently available. Source feasibility, remaining client decisions and team acceptance of the recommended stack are not yet recorded. The four role owners are named; Jira account mapping and available time remain open.
 
 ## Immediate direction
 
 1. Review the whole-product baseline and decision records together. The recommended stack is React/Vite + Fastify + PostgreSQL/Drizzle + pg-boss, with a separate worker and a replaceable source connector. These are proposed choices, not a completed implementation.
 2. Resolve Amazon access before committing to its collection method. UK/wired USB mice is the recommended initial marketplace/category; exact samples, delivery context and offer meaning need verification. Existing open-source scrapers do not prove access or reliability.
-3. Agree the four responsibility areas, names, capacity and interface contracts. Each member implements/tests/documents their work and has a backup reviewer.
+3. Confirm each named owner's capacity, Jira account and the interface contracts. Each member implements/tests/documents their work and has a backup reviewer.
 4. Refine the Sprint 1 issues into a full working journey. The four existing preparation issues are not the whole sprint. Build permanent foundations now and later features in their planned increments.
 5. Keep local development and continuous hosted operation distinct. A sleeping personal computer does not provide a 24/7 monitoring service. Resolve the final deployment arrangement before release.
 
@@ -26,7 +26,7 @@ No live-source collection has been verified. The separate design prototype is a 
 | [Collection strategy](architecture/collection-strategy.md) | Amazon feasibility gate, source-method alternatives and evidence required | First source fixed; access/method unproven |
 | [Quality targets](architecture/quality-targets.md) | Measurable NFRs, capacity assumptions and failure/recovery tests | Targets proposed; no measurements claimed |
 | [Decision records](architecture/decisions.md) | Why these technologies/methods, alternatives and revisit triggers | ADR-001–008 proposed, with confirmed constraints distinguished |
-| [Team working guide](team-working-guide.md) | Four ownership areas, six-sprint handoffs, issues/PRs and agent prompt | Names, capacity and final assignments pending |
+| [Team working guide](team-working-guide.md) | Four ownership areas, learning-first AI tutor workflow, Jira/GitHub and review process | Roles named; Jira task/account setup and capacity pending |
 | [Product backlog](product-backlog.md) | Prioritised work and completion checks | Initial backlog; estimates and ownership pending |
 | [Roadmap](roadmap.md) | Six-sprint forecast and module milestones | Proposed feature allocation |
 | [Sprint 1 plan](sprints/sprint-01.md) | First working journey, selected backlog scope, tasks and acceptance checks | Proposed; finalise at Sprint Planning |

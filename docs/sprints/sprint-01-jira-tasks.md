@@ -4,9 +4,11 @@
 
 **Sprint goal:** A retailer signs in, adds a supported competitor listing, requests collection and sees a real observed price, currency, availability, source and time in their own workspace. Amazon is the first required source; its available access route is still unproven. A fixture lets independent engineering proceed but cannot satisfy real-source acceptance.
 
-Jira is the single task board. GitHub holds these blueprints, branches, code and pull requests. Use the Jira key in each branch, commit and PR title. Legacy [GitHub issues #1–#4](https://github.com/st4rk-7/Riven/issues) are references for the first four preparation tasks, not a second backlog. These are role allocations; fill in Jira assignees after confirming each member's account and capacity. Estimated effort is a discussion point at Sprint Planning, not a promise.
+**Learning requirement for every task:** the named owner leads the work step by step, understands and can explain every submitted change, predicts and interprets their own check results, and demonstrates the result to a teammate. AI is a tutor/pair-programmer for small explainable steps, not an autonomous issue completer. See [Learning-first development with AI](../team-working-guide.md#learning-first-development-with-ai). Add brief reasoning, actual test evidence and material AI assistance to the Jira task or PR, following module disclosure rules.
 
-| ID | Suggested owner / reviewer | Work item and parent | Depends on | Acceptance evidence |
+Jira is the single task board. GitHub holds these blueprints, branches, code and pull requests. Use the Jira key in each branch, commit and PR title. Legacy [GitHub issues #1–#4](https://github.com/st4rk-7/Riven/issues) are references for the first four preparation tasks, not a second backlog. Shewon chose Dilsan for A (product experience), Hirukshanan for B (application and data), himself for C (collection and cross-area improvements), and Ilmam for D (integration and operations). Match these names to Jira accounts before assigning; confirm each member's available time. Estimated effort is a discussion point at Sprint Planning, not a promise.
+
+| ID | Owner / reviewer | Work item and parent | Depends on | Acceptance evidence |
 | --- | --- | --- | --- | --- |
 | T01 | A / B | First retailer flow and UI states · PB-01, PB-05, PB-07; legacy #3 | Client's first journey, T02 contracts for final wiring | Reviewed desktop/mobile flow for sign-in, product/listing form, queued, success, failed, stale and uncertain match. The separate local Riven design prototype is design input only, with demo data and reference footage. |
 | T02 | B / A,C,D | Versioned API/observation contract and first data model · PB-03; legacy #4 | Confirmed first fields and source semantics | Checked-in schemas and example success/error payloads. Tenant, product, monitor, attempt and observation IDs; decimal price plus currency; unknown stock; separate last attempt and last success. All four members review interface before parallel integration. |
@@ -21,11 +23,11 @@ Jira is the single task board. GitHub holds these blueprints, branches, code and
 
 ## Start today
 
-1. Hold a 20-minute kickoff: each member states available hours and selects A, B, C or D; record the exact first source/offer questions for the client. The coordinator creates the Jira sprint and assigns T01–T04 immediately. Do not wait for all future requirements to be settled.
+1. At Sprint Planning, each named owner states available hours and confirms their role; record the exact first source/offer questions for the client. Once the Jira tasks exist and account mapping is confirmed, assign T01–T04. These task IDs in this file are planning labels until Jira issues are actually created. Do not claim Jira assignment before it is visible in Jira.
 2. A maps the flow and audits the separate Riven design prototype; B writes T02 contract examples; C begins T03 access/sample evidence; D makes T04 clean setup work. Each posts a short end-of-day result or blocker on their Jira task.
 3. Review T02 together before T05–T09 interfaces diverge. Decide the smallest working path. If T03 finds no suitable Amazon access, keep real collection blocked and ask the client for an access or scope decision while the other roles continue fixture-based work.
 4. Integrate through short PRs. A task is Done only after its evidence, tests, another member's review and integrated behaviour are visible. Update FR/NFR/PB and decision records when the agreed scope or method changes.
 
 ## Branch and review convention
 
-Use `codex/RIV-123-short-purpose` or another team-approved prefix with the **actual** Jira key. Include `RIV-123` in the commit and PR title. Jira shows development links when the GitHub for Atlassian app is connected to the repository. A Jira task description links the relevant documents and its legacy GitHub issue when applicable. The task is the owner's unit of work; all four members should still be able to explain and run the complete retailer journey.
+Use a team branch prefix such as `feature/RIV-123-short-purpose` with the **actual** Jira key; `codex/` is not required. Include the key in the commit and PR title. Jira shows development links when the GitHub for Atlassian app is connected to the repository. A Jira task description links relevant documents and its legacy GitHub issue when applicable. The task is the owner's unit of work; all four members should still be able to explain and run the complete retailer journey.

@@ -54,7 +54,7 @@ Full recurring scheduling, the second production connector, edit/remove workflow
 | S1-05 | **Connect listing entry to results.** Implement form, first-source collection, observation storage and results screen, including visible failure handling. Integrate continuously. | Partial PB-05–07; uses S1-01–04 |
 | S1-06 | **Validate and demonstrate.** Test success/failure cases, fix defects, update setup instructions and prepare the live journey. Record review feedback and retrospective actions. | Partial PB-12; uses the integrated journey |
 
-Named owners and estimates must be recorded in the Riven Jira Scrum project after the four Jira accounts and team capacity are confirmed. The [team guide](../team-working-guide.md) proposes four continuing responsibility areas and specific implementation tickets. Existing GitHub issues #1–#4 cover preparation only; closing them cannot complete S1-04–06 or the sprint goal.
+The four role owners are named in the [team guide](../team-working-guide.md). Jira assignees and estimates must be recorded in the Riven Scrum project after the Jira accounts and team capacity are confirmed. Existing GitHub issues #1–#4 cover preparation only; closing them cannot complete S1-04–06 or the sprint goal.
 
 ## Acceptance checks
 
