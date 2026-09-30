@@ -1,0 +1,32 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=22mm]{geometry}
+\usepackage{lmodern,parskip,xcolor,fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\definecolor{riven}{HTML}{263E58}
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{riven}{RIVEN / SPRINT 1}}
+\fancyhead[R]{\small Working guide v0.1}
+\fancyfoot[L]{\small 30 September 2026 / proposed ownership}
+\fancyfoot[R]{\small\thepage}
+\setlength{\emergencystretch}{2em}
+\hypersetup{pdfauthor={Riven project documentation},pdftitle={Riven Sprint 1 member guide}}
+\newcommand{\guideheader}[2]{\begin{document}{\LARGE\bfseries\textcolor{riven}{#1}}\par{\large #2}\par\smallskip\textbf{Status:} Proposed work package, not a Jira assignment, client approval, or evidence of completion. Match accounts and agree the task before starting.\par}
+\newcommand{\sharedintro}{\section*{Shared goal and how to use this guide}
+The intended Sprint 1 goal is: sign in, add a supported competitor listing, request collection, and see a trustworthy observation in your own workspace. Development is planned for 28 September--11 October 2026; evaluation starts 12 October (12--18 October window). Verify course updates. No individual completion date or available hours are assumed.
+
+First connect a page to one backend response labelled \textbf{synthetic}. This is a short learning/integration checkpoint, not the full sprint or live Amazon acceptance. Accounts, persistence, jobs and permitted source collection follow only when their dependencies are ready.
+
+Read \texttt{docs/manual.md} sections 2--5, then the sections named below. Follow one step at a time; the later steps are a route toward the goal, not an instruction to implement the entire guide unattended. Jira owns actual status and assignments; this PDF is a dated handout.}
+\newcommand{\sharedfinish}{\section*{Review, evidence, and AI use}
+Before each change, explain its purpose and predict how you will check it. Implement a small change; run the check yourself; explain the result. Ask for help after a focused attempt if blocked. Never guess successful results or hide uncertainty.
+
+Use AI as a tutor: ``Read my task and the relevant manual section. Ask me to explain it. Help me plan and implement one small step, then interpret my actual check result. Do not complete the whole assignment or change shared contracts without discussion.''
+
+For review, record: task key, what changed, why, command or walkthrough performed, actual result, limitations, material AI help, and reviewer. Use a real Jira key in your branch/PR, not the name of this guide. Done means relevant checks pass, a teammate reviews your explanation and change, and the result is integrated and demonstrated. Research tasks finish with reviewed evidence and a verdict, not invented implementation.
+
+\textbf{Stop and coordinate} if an interface changes, a source requires unsupported access, a paid service is needed, or selected scope is no longer credible. Do not switch frameworks, broaden scope, or claim mock data is live. Use current repository source if this PDF is outdated.
+\end{document}}

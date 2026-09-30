@@ -1,0 +1,30 @@
+\input{common.tex}
+\guideheader{Hirukshanan}{Application, API and data}
+\sharedintro
+\section*{Your deliverable and boundaries}
+Build the server behaviour that the UI can rely on, then account-safe storage and product/listing operations. First reviewer: Ilmam; Shewon reviews observation semantics and Dilsan reviews payload usability. Relevant scope: PB-03--05/12, FR-01--04/06/11, NFR-01/05/07/08. Read manual sections 6--8 and 10.
+
+Do not implement an entire backend before the frontend connects. Do not copy old custom auth or SQLite code as an approved architecture. Database/auth choices remain proposed until the appropriate trial and team decision.
+\section*{First working slice: one HTTP response}
+\begin{enumerate}
+\item Explain a request and response in your own words. Agree the manual section 7 sample with Dilsan and Shewon, including nullable price and the synthetic label.
+\item With Ilmam's setup, create the proposed demo endpoint returning this sample. It must contain no private retailer records and perform no remote collection.
+\item Add a small automated check of the response status and agreed fields/types. Run it and explain both what it proves and what it does not prove.
+\item Connect with Dilsan's screen early. Resolve field-name or error-handling differences together; update the shared example once rather than maintaining competing definitions.
+\end{enumerate}
+\textbf{Checkpoint evidence:} A direct request and the browser receive the agreed synthetic response; your test checks that contract; another member can run it. No claim of database, authentication, or live source support.
+\newpage
+\section*{Next slices toward the full sprint goal}
+\begin{enumerate}
+\item \textbf{Persistence trial and model.} Agree PostgreSQL setup with Ilmam. Model a workspace, user/membership, tracked product, monitor, attempt and observation as needed. Explain relationships and ownership before adding tables. Add reviewed migrations; verify a clean database can be created. Store money without binary floating-point calculations.
+\item \textbf{Authentication trial.} Validate the recommended maintained auth integration with the actual runtime/database. Record the choice and compatibility result. Do not design password/session cryptography yourself. Implement sign-in/out with the agreed account-provisioning path; public registration is not automatically required.
+\item \textbf{Tenant-safe data access.} Derive tenant from the verified session. Check it on every delivered read/write. Test signed-out requests and two distinct retailer workspaces. Wrong-role actions must be rejected where such actions exist; do not invent unbuilt admin functionality to claim coverage.
+\item \textbf{Product and monitor operations.} Build the selected create/view flow with runtime validation, duplicate handling and agreed limits. Coordinate allowed listing rules with Shewon. Schema changes need migrations and the affected owners' review.
+\item \textbf{Collection handoff.} Agree with Ilmam how authorized enqueue, attempt status and observation storage connect. Keep job enqueue/result persistence consistent under failure. Workers also check monitor ownership/state. Do not fetch the source inside a dashboard read.
+\item \textbf{Read results.} Return last successful observation separately from latest attempt/error. Extend the shared contract with A/C/D before wiring the real UI. Verify failure preserves previous data.
+\end{enumerate}
+\section*{Handoffs and explain-back}
+Provide Dilsan example success/error responses early. Give Ilmam migration/setup requirements and ownership rules. Ask Shewon about missing values, variants, sellers and source limitations rather than guessing.
+
+Before review, answer: Where is ownership established? Why can a browser not choose its tenant? What is the difference between a monitor, attempt and observation? How do we preserve a previous price after failure? Which checks did you personally run?
+\sharedfinish

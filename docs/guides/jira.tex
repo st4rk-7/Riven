@@ -1,0 +1,98 @@
+\input{common.tex}
+\begin{document}
+\fancyfoot[L]{\small 30 September 2026 / team workflow}
+{\LARGE\bfseries\textcolor{riven}{Jira working guide}}\par
+{\large Riven / coordinator and team members}\par
+\textbf{Status:} Instructions, not evidence that tickets, assignments or integrations exist. UI labels can vary between Jira project types and versions.
+
+\section*{1. What belongs where?}
+\begin{itemize}
+\item \textbf{Jira:} selected work, actual assignee, sprint, status, blockers, check results and links to reviews.
+\item \textbf{GitHub:} manual, requirements, member guides, source code, commits and pull requests (PRs).
+\item \textbf{PDF guide:} how to approach the work. It is not a live progress tracker or an assignment by itself.
+\end{itemize}
+A project backlog describes the whole product. A sprint backlog is the work selected for the current sprint. A task is a small deliverable; a subtask is an optional part of it. Keep one live board, not competing Jira and GitHub-issue boards. Confluence, automation, story-point schemes and elaborate issue hierarchies are not required to start.
+
+\section*{2. Coordinator: verify the existing project first}
+\begin{enumerate}
+\item Open the existing RIV project and inspect its backlog, board and sprint list. The previous handoff reported zero work items and an empty future Sprint 1. That is historical information, not a current verification. Check for existing items before creating duplicates.
+\item Check that all four members can access the project and that the assignee picker contains the correct accounts. Confirm identity, not just a familiar display name. Shewon is the coordinator; a secondary account's display name does not change his identity. Resolve uncertain mapping before assigning.
+\item Check whether backlog and sprint controls are available. An earlier board report said \texttt{simple}; do not infer Scrum functionality from the name. If controls are absent, stop and ask the project administrator about available features. Do not create a second project or change project type blindly.
+\item Reuse the existing Sprint 1 if suitable. Proposed full sprint window: 28 September--18 October 2026, with development through 11 October and evaluation from 12 October. Confirm current course dates. Starting the board late must not be presented as evidence of earlier work; record the actual setup date and the course window separately.
+\item Put the shared sprint goal in the sprint description/goal: sign in, add a supported listing, collect and view a trustworthy observation in the retailer's workspace. Keep the Amazon dependency explicit. Start the sprint only after the team agrees selected scope; enter honest actual/planned dates appropriate to the board.
+\end{enumerate}
+\textbf{Permissions:} Use normal project invitations/roles. Do not share accounts, tokens or passwords. If you cannot assign, start a sprint or edit a field, ask an administrator; do not work around access controls.
+
+\newpage
+\section*{3. Coordinator and owner: create a small task}
+Start with one selected task per person, not every future step in their PDF. One person owns a task; another reviews it. Use Task for technical work, Story for a user outcome if useful, and Bug for a defect. Do not add a custom workflow simply to match this guide.
+
+Use this description template:
+\begin{quote}
+\textbf{Result:} What will work or what decision/evidence will exist?\\
+\textbf{Included / excluded:} What is in this task, and what is not?\\
+\textbf{References:} Manual/guide section; relevant PB, FR and NFR IDs.\\
+\textbf{Dependencies:} What or whom do I need?\\
+\textbf{Acceptance checks:} Two or three observable checks.\\
+\textbf{Reviewer:} The teammate who will review it.\\
+\textbf{Evidence:} Add actual commands, results, demo and PR link during work.
+\end{quote}
+Set the assignee and selected sprint. Agree a rough size if useful; do not invent hours or points. Priority means importance, not progress. If Reviewer is not a field, put the name in the description; no custom field is necessary.
+
+\subsection*{Example: Dilsan's first selected slice}
+\textbf{Title:} Display a synthetic observation from the backend.\\
+\textbf{Included:} Result card, loading and request-failure states.\\
+\textbf{Excluded:} Login, live source collection, charts and billing.\\
+\textbf{Dependency:} Hirukshanan's agreed sample endpoint and Ilmam's setup.\\
+\textbf{Checks:} Display returned values with a synthetic label; show missing price as unavailable; demonstrate a failed request.\\
+\textbf{Reviewer:} Hirukshanan. References: member guide; manual section 7; selected PB-07/12 and NFR-05/06 scope.
+
+This is an example, not an existing assignment. A guide's T01/PB label is not a Jira key. Jira generates the actual key when the work item is created. A completed task does not automatically complete its whole parent backlog item.
+
+\section*{4. Member: work and update simply}
+\begin{enumerate}
+\item Open your assigned item. Read the result/checks and relevant guide section. Explain the task and ask about anything unclear before a broad change.
+\item Move to \textbf{In Progress} when you actually start. Work on a branch containing the actual Jira key, for example \texttt{feature/RIV-123-result-card}; RIV-123 here is illustrative. Use a simple accurate commit/PR title with the real key.
+\item Implement one small step, run checks yourself and inspect the result. Keep the ticket useful, not verbose. Once per working day or at a meaningful handoff, comment: \textbf{Result / Next / Blocker}.
+\item Open a focused PR and paste its URL into Jira. In the PR, link back to the Jira item and include actual checks and limitations. The owner explains the code to the reviewer.
+\end{enumerate}
+Automatic development links depend on the GitHub--Jira integration and repository access. A key in a title alone does not guarantee linking. Manual links are sufficient initially. Once the new documentation is published, link its real repository location; do not invent URLs for unpushed files or use another member's inaccessible local file path.
+
+\newpage
+\section*{5. Blocked work and review}
+Use the existing \textbf{To Do / In Progress / Done} states where available. A task awaiting PR review stays In Progress unless the team already uses a Review state. Do not invent a new status for every situation.
+
+If blocked, flag the item if the project supports it, then comment:
+\begin{quote}
+Blocked by: specific dependency or failure.\\
+Tried: actual check and result.\\
+Need from: named person or decision.\\
+Can continue: independent next step, if any.
+\end{quote}
+Link a blocking work item when one exists; otherwise describe the dependency. Do not mark a blocked task Done or silently change its acceptance criteria. If selected scope changes, record what changed and why with the owner/reviewer and coordinator; source or product scope changes may require the client.
+
+\textbf{Amazon example:} The access investigation can be Done after a reviewed evidence-backed blocked verdict. The live connector and live-source demonstration remain blocked. A synthetic adapter can be a separately selected deliverable, but it does not turn live collection into Done.
+
+\section*{6. When is Done appropriate?}
+For implementation, verify:
+\begin{itemize}
+\item The ticket's agreed acceptance checks pass, with actual evidence.
+\item The owner can explain the requirement, data flow, code, checks and limits.
+\item A teammate reviewed the change and explanation; feedback is addressed.
+\item The PR is merged with appropriate human approval and the integrated result is demonstrated.
+\item Affected guidance is updated; material AI assistance is disclosed according to module rules. No critical defect is hidden by the status.
+\end{itemize}
+For research or documentation, use the agreed evidence/review checks rather than inventing executable tests. Attach a short result or link to the reviewed artifact. Do not paste credentials, private conversations, copyrighted source pages without permission, or personal delivery details into tickets.
+
+\section*{7. Evaluation and sprint closure}
+Before evaluation starts on 12 October, rehearse the actual integrated result and list unfinished/blocked acceptance checks. Each member explains their contribution. Do not move everything to Done to make the board look complete.
+
+At review, record the demonstrated result, client/evaluator feedback, limitations and one process improvement. When completing the sprint, inspect unfinished items and deliberately return them to the backlog or select them for a later sprint. Do not blindly carry everything forward. Keep the original history and dates honest.
+
+\section*{Quick routine}
+\textbf{Coordinator:} clear goal, real account mapping, one selected task each, dependencies visible, help reviewers and resolve scope questions.\\
+\textbf{Member:} understand, start, build/check, update, link PR, explain, review, integrate.\\
+\textbf{Everyone:} Jira records what happened; GitHub holds the work; guides explain how to proceed. Do not maintain duplicate status reports.
+
+\textbf{First action:} Inspect the existing RIV backlog with the team. Confirm access and account identities, then create only the first selected tasks using the template above. This document has not created or assigned anything in Jira.
+\end{document}

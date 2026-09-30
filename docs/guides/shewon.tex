@@ -1,0 +1,29 @@
+\input{common.tex}
+\guideheader{Shewon}{Collection, data quality and coordination}
+\sharedintro
+\section*{Your deliverable and boundaries}
+Establish whether the intended source use is supported, define trustworthy observation meanings, and then build a small replaceable collector if its dependencies permit it. Reviewer: Hirukshanan; Ilmam reviews execution/failure behaviour. Relevant scope: PB-01/02/06/12, FR-03--06/11, NFR-02/04/05/10. Read manual sections 7--10 and the SRS source-access section.
+
+You coordinate shared decisions, not write everyone's code. Amazon-first is selected; UK/wired mice and exact offer meaning were recommendations, not verified client decisions. No paid provider or source substitution without agreement.
+\section*{First working slice: meanings and access verdict}
+\begin{enumerate}
+\item Agree the synthetic observation with A/B. Explain price plus currency, missing price, unknown availability, collection time and uncertain match. Make sure nobody labels the fixture as Amazon output.
+\item Read the existing source-access findings and cited official conditions. Check whether a candidate route supports retailer monitoring, history retention, sharing and required fields. Record date, references, applicable limits and evidence; never copy credentials or private delivery addresses.
+\item Clarify the first marketplace, exact listing/variant, seller versus featured offer, condition and delivery context needed for a meaningful sample. Ask the client only the questions that block this decision.
+\item Time-box the initial investigation to two working days after starting. Return supported, supported with limits, or blocked. A repository, API key or HTTP 200 is not permission or accuracy evidence. If unresolved, report the blocker and the concrete access/scope decision needed.
+\end{enumerate}
+\textbf{Checkpoint evidence:} A reviewed observation example and dated access assessment. A well-supported blocked verdict is a completed investigation, not successful live collection. Other members continue synthetic integration.
+\newpage
+\section*{Next slices toward the full sprint goal}
+\begin{enumerate}
+\item \textbf{Adapter boundary.} Agree input/output and error meanings with B/D. Accept validated listing/context and return a candidate or classified failure. Do not write database rows or UI code in the adapter. First exercise it with controlled synthetic fixtures.
+\item \textbf{Validation tests.} Cover missing price, unknown currency/stock, malformed data, variant uncertainty and seller changes where relevant. Reject or flag ambiguous identity instead of claiming a confident equivalent offer. Keep fixtures small, synthetic or permitted and sanitized.
+\item \textbf{Live sample only after access passes.} Use 3--5 verified listings under the agreed context where permitted. Compare extracted values with contemporaneous manual checks and repeat under supported limits. Record successes, failures and mismatches, not only the successful requests. Do not retain source content beyond allowed terms.
+\item \textbf{Failure handling.} Coordinate timeouts, allowed URLs/destinations and classified errors with D. No CAPTCHA/access-control bypass and no automatic browser/proxy workaround for denial. Limits follow the source terms; fixtures cover failures without stressing third parties.
+\item \textbf{Integrate and demonstrate.} Give the candidate result to the worker, check stored/displayed fields with B/A, and trace an attempt from request to result. A worker failure preserves the previous observation and exposes failure honestly.
+\end{enumerate}
+\section*{If live access remains blocked}
+Keep the live adapter and full source acceptance visibly blocked. You can still deliver the source-neutral interface, validation tests, and a clearly labelled fixture adapter after selecting that slice. Ask the client for suitable access or an explicit alternative scope; do not silently switch sources or claim completion.
+\section*{Coordination and explain-back}
+Check that members can connect their outputs; raise shared blockers and arrange a reviewer. Rebalance work rather than becoming the only implementer. Before review, explain: What makes this observation comparable? What evidence supports use and retention? What is synthetic? Why can a seller/variant change invalidate a comparison? What remains unproven?
+\sharedfinish

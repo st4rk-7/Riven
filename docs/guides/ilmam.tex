@@ -1,0 +1,31 @@
+\input{common.tex}
+\guideheader{Ilmam}{Setup, execution and integration}
+\sharedintro
+\section*{Your deliverable and boundaries}
+Make the application reproducible, then help deliver reliable collection execution. You own implementation as well as checks; you are not the team's only tester. Reviewer: Hirukshanan; Shewon reviews source execution limits. Relevant scope: PB-03/06/12, FR-05/06/11, NFR-02/03/07--09/11. Read manual sections 5--8 and 10.
+
+Start with the minimum tools for the sample flow. No Kubernetes, cloud account, paid service or extra database/queue system for appearance. The proposed Node/npm/React/Vite/Fastify baseline needs verification, not blind copying of the archived package file.
+\section*{First working slice: reproducible setup}
+\begin{enumerate}
+\item Check Git, runtime, package tool and editor availability on team machines. Record actual blockers; do not assume identical operating systems or hardware. Agree the minimum baseline with the team once.
+\item Establish the shared project setup with A/B. Pin a tested runtime expectation and compatible package versions through one lockfile. Provide short commands for starting the page and backend; placeholders must not be described as working commands.
+\item Help a second member run from the actual shared source on a clean directory. Before publication, a clean source copy can be a preliminary check; after publication, repeat from a clean clone. Record which was tested.
+\item Verify A's page reaches B's synthetic endpoint. Document ports and the local request/proxy path only as implemented. No public exposure of personal development machines.
+\item Add one repeatable check command when tests/types exist. Add basic CI after local commands work and remote access is available. Do not report CI success from a local-only run.
+\end{enumerate}
+\textbf{Checkpoint evidence:} Another member runs the connected sample flow using your instructions, and actual commands/results are recorded. The sample checkpoint does not need PostgreSQL or the job queue yet.
+\newpage
+\section*{Next slices toward the full sprint goal}
+\begin{enumerate}
+\item \textbf{Database setup.} With B, trial the proposed PostgreSQL route on team hardware and run migrations. Pick a reproducible native or container path; do not require every possible deployment method. Check no credentials enter Git.
+\item \textbf{Queue compatibility.} Trial the recommended PostgreSQL-backed queue and separate worker. Explain a persisted job and what happens if the worker stops. Verify library/runtime compatibility before dependent code commits to it.
+\item \textbf{Authorized enqueue.} With B, accept collection work only for the verified workspace/monitor. Agree atomic or recoverable enqueue and result persistence; do not confuse a saved job with guaranteed crash recovery.
+\item \textbf{Worker integration.} Call C's adapter through the agreed contract, starting with fixtures. Save attempt status and a valid observation or safe failure. Do not duplicate source parsing or embed source rules into the queue.
+\item \textbf{Recovery checks.} Use controlled local tests for interruption, duplicate requests/replay, source failure and previous-success preservation. Coordinate bounded retries/concurrency with C; never load-test external sources. Demonstrate that dashboard stored-data reads remain available when collection is unavailable.
+\item \textbf{Restore and demo.} With B, back up a test database, restore into a separate database and verify relevant records. Rehearse clean setup and the integrated journey with everyone. Document actual limits; local operation is not a 24/7 hosted service.
+\end{enumerate}
+\section*{Handoffs and explain-back}
+You need B's migration/auth/ownership rules, C's adapter/errors and A's collection-status needs. Provide reproducible commands and runtime/job behaviour early. Each owner still tests their own component.
+
+Before review, explain: What processes run and why? How does the page reach the API? Where does work wait if the worker stops? What prevents duplicates or wrong-workspace results? Which recovery checks did you actually execute?
+\sharedfinish

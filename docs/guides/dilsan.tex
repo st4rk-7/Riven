@@ -1,0 +1,39 @@
+\input{common.tex}
+\guideheader{Dilsan}{Product experience and frontend}
+\sharedintro
+\section*{Your deliverable and boundaries}
+Build a clear retailer interface and connect it to the team's API. First reviewer: Hirukshanan; Ilmam helps verify the integrated journey. Relevant scope: PB-05/07/12, FR-02--04/07/11, NFR-04/06/07. Read manual sections 6--8 and 10.
+
+\section*{Sharplink-to-Riven design handoff}
+Sharplink is the selected visual reference: dark cinematic presentation, restrained large typography, square controls, fine dividers, generous spacing and a business dashboard. The preserved editable Riven prototype already adapts this direction in React/TypeScript. Ask Shewon for the reviewed prototype handoff and source; it is not currently part of the fresh repository.
+
+Treat it as \textbf{design input and reusable UI reference}, not accepted production functionality. Its landing page/dashboard, responsive CSS, mobile navigation, loading/empty/error patterns and accessibility work can inform implementation. However, its listings, prices, histories, refresh action and collection timestamps are sample/simulated; it uses browser-local storage, has no real authentication, tenant boundary or backend integration, and used a separate Bun setup. Do not present those behaviours as completed Sprint 1 work.
+
+Do not publish or copy the captured Sharplink mirror, branding, scripts, copy or proprietary imagery. Replace the reference hero footage and confirm font licensing and the final Riven logo before publication. Build original Riven components and content inspired by the reference; do not attempt an exact site clone. Move only understood/reviewed pieces into the team's agreed app and package workflow so there is one production frontend and one lockfile.
+
+Avoid polishing the full marketing site while the core journey is disconnected. No charts, billing, alerts or admin screens in your first task.
+\newpage
+\section*{First working slice: result card}
+\begin{enumerate}
+\item Explain what a retailer learns from an observation: product, price, currency, availability, source, time and uncertainty. Sketch the card briefly inside this task; a separate design report is unnecessary.
+\item Agree the sample response with Hirukshanan and Shewon using manual section 7. Do not rename fields independently. The sample must say synthetic, not Amazon.
+\item After Ilmam verifies the minimum setup, build the card with a local sample. You may adapt an understood prototype card/style into the shared frontend rather than copying the whole prototype. Show missing price as unavailable, not zero. Keep unknown stock separate from out of stock. Show unverified matching clearly.
+\item Request the agreed demo endpoint rather than retaining a second hard-coded copy. Show loading and request failure; use a retry action or an understandable recovery path.
+\item Together with Hirukshanan, trace browser request, backend response and displayed fields. Ask Ilmam to run the same flow on another machine.
+\end{enumerate}
+\textbf{Checkpoint evidence:} Show synthetic data from the real local endpoint, not a simulated network action. Demonstrate unknown price, unknown stock and a failed API request using controlled local examples. Check keyboard focus, readable labels and a narrow screen. Record what you actually tested.
+\section*{Next slices toward the full sprint goal}
+Do not begin all of these at once. Select the next slice with the team after the first checkpoint.
+\begin{enumerate}
+\item \textbf{Review the visual direction.} Walk through the preserved Riven prototype with the team. Record which visual patterns/components are accepted for the product and which assets/behaviours must be replaced. Do not make migrating the whole prototype a prerequisite for the connected Sprint 1 flow.
+\item \textbf{Account screens.} Once Hirukshanan defines the auth flow, build sign-in/out states against it. You may adapt the prototype's visual language, but do not simulate authentication in local storage. Check signed-out and expired-session handling. Backend authorization remains mandatory even when a button is hidden.
+\item \textbf{Product and listing entry.} Use the agreed create/view endpoints and supported-source rules. Show validation, duplicate and limit messages from the API. Do not guess a client-approved quota.
+\item \textbf{Collection status.} Once the job/status interface exists, connect the collection action and display pending, success and failure states. Avoid requests continuing after logout/unmount; coordinate any polling interval with B/D rather than choosing aggressive polling.
+\item \textbf{Trustworthy result.} Display last success separately from last attempt, uncertainty and agreed stale status. A failed collection keeps the previous observation visible as an older result, never as a fresh success.
+\item \textbf{Demonstrate.} Walk through the selected journey with another member and, when arranged, the client. Show the real supported source only after Shewon's gate passes; otherwise label live acceptance blocked.
+\end{enumerate}
+\section*{Handoffs and explain-back}
+You need Hirukshanan's response/error contract and session behaviour; Shewon's field meanings and access to the reviewed prototype handoff; Ilmam's reproducible setup and job status support. Provide the UI states you need early rather than waiting for a finished backend. If a prototype component is reused, identify its source, explain the changes, remove simulated behaviour, and verify it in the shared app.
+
+Before review, answer: Where did this displayed price come from? What happens when the request fails? Why is unknown different from zero? Which checks protect another retailer's data? Be able to change a small UI behaviour and explain it.
+\sharedfinish
