@@ -6,7 +6,7 @@
 
 **Module:** EC5406 Software Group Project, subject to the [schedule-label clarification](roadmap.md#schedule-basis)
 
-**Updated:** 27 September 2026
+**Updated:** 28 September 2026
 
 ## Problem and intended value
 
@@ -41,7 +41,9 @@ Each retailer's workspace and data must be isolated from other tenants. The clie
 - Configurable subscription tiers, enforced limits and agreed administration views. Mock billing is acceptable; exact behaviour and the tier-management actor remain to be confirmed.
 - A deployed, tested application with setup, user and operating documentation.
 
-Source platforms, listing input, matching rules, intervals, quantities, alert channels, stack, hosting and operating budget remain open. The [requirements](requirements.md) define these decisions in detail.
+Amazon is the first required platform, selected by the user on 28 September. TypeScript is confirmed; development currently has only personal computers and no funded services. Amazon UK, wired USB mice and manual URL entry are recommended starting choices. Amazon access and repeated collection are not proven. The second platform remains open; two platforms remain in the final scope unless explicitly changed.
+
+The [whole-product baseline](architecture/system-baseline.md) recommends the architecture and stack, the [collection strategy](architecture/collection-strategy.md) defines the source feasibility gate, and the [requirements](requirements.md) retain unresolved client decisions. Proposed technical choices are not automatically client-approved requirements.
 
 ## Outside the initial core
 
@@ -62,4 +64,4 @@ The initial definition is sufficient to begin requirements review and Sprint 1 p
 
 Success means the agreed workflow operates on the selected sources, meets agreed quality targets, is accepted by the client, and can be deployed and handed over with the module evidence. It does not guarantee increased retailer profit.
 
-Next: resolve the decisions needed for the first journey, then finalise the [Sprint 1 plan](sprints/sprint-01.md). Test source feasibility early enough to change a source or reduce scope before building around an unreliable dependency.
+Next: review the whole-product architecture and quality baseline, resolve the Amazon access dependency and agree team ownership, then finalise the [Sprint 1 plan](sprints/sprint-01.md). Test source feasibility early enough to change a source or reduce scope before building around an unreliable dependency.

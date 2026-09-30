@@ -1,6 +1,6 @@
 # Requirements
 
-**Updated:** 27 September 2026
+**Updated:** 28 September 2026
 
 **Status:** Draft for client review. Numerical targets and unresolved operating rules are proposals, not approved commitments.
 
@@ -12,7 +12,7 @@ The [project overview](project-overview.md) defines the objective and boundaries
 | --- | --- |
 | FR-01 | **User accounts.** Retailers shall sign in and out and access their own tenant account. The administrator shall have a separate role. |
 | FR-02 | **Product management.** Retailers shall add, view, update and remove tracked products within their subscription limits. |
-| FR-03 | **Competitor listings.** Retailers shall associate competitor listings with tracked products on two agreed source platforms. Platforms and listing input method require confirmation. |
+| FR-03 | **Competitor listings.** Retailers shall associate competitor listings with tracked products on two agreed source platforms. Amazon is selected first; the second platform remains open. Manual URL entry is recommended. One-source Sprint 1 delivery does not remove the final two-platform requirement. |
 | FR-04 | **Product matching.** The system shall check that a listing represents the intended product and variant and flag uncertain matches for review. |
 | FR-05 | **Periodic collection.** Background workers shall collect price, stock availability and available offers at configured intervals. Supported intervals require confirmation. |
 | FR-06 | **Historical records.** Observations shall retain the product, competitor, source, currency and collection time, including earlier observations for comparison. |
@@ -35,22 +35,34 @@ The [project overview](project-overview.md) defines the objective and boundaries
 | NFR-07 | **Maintainability.** Separate source collection and notification logic into modules. Use version control, agreed coding standards and automated checks for critical behaviour. Changes to one source must pass regression checks for the other. |
 | NFR-08 | **Recovery.** Document backup and restore procedures and verify restoration from a test backup. Agree backup frequency and acceptable data loss. |
 
+## Additional whole-product quality requirements (proposed 28 September)
+
+The original NFR-01–08 IDs remain unchanged. These additions explicitly capture the user's scalability, adaptability and troubleshooting expectations.
+
+| ID | Requirement and validation |
+| --- | --- |
+| NFR-09 | **Scalability.** Meet an agreed pilot workload with bounded queries, durable jobs and controlled concurrency. Measure application performance on synthetic data; never load-test a source website. |
+| NFR-10 | **Adaptability.** Replace/add a source adapter without rewriting tenant, history or dashboard logic; version contracts and validate schema migrations against existing data. |
+| NFR-11 | **Operability.** Record traceable collection failures, connector versions and useful service health information; document and test pause, diagnosis, repair and resume. |
+
+[Quality targets](architecture/quality-targets.md) propose measurable acceptance, test conditions and checks across all six sprints. Numerical targets remain subject to team/client agreement, not achieved results.
+
 ## Constraints and decisions to resolve
 
-Delivery involves four students and six sprints. The [roadmap](roadmap.md) contains the module windows. All decisions below are currently **open**; record the agreed answer, date and affected requirement IDs when resolved.
+Delivery involves four students and six sprints. The [roadmap](roadmap.md) contains the module windows. Confirmed on 28 September: TypeScript, Amazon first, four members and personal-computer development with no funded services. The technical baseline makes concrete recommendations; the remaining decisions below are open unless explicitly noted. Record the answer, date and affected requirement IDs when resolved.
 
 | Decision | What needs agreement | Needed for |
 | --- | --- | --- |
-| Source access | Two platforms, regions, categories, access method and reliable repeated access; confirm a supported alternative if necessary | FR-03–05; source probe in Sprint 1 |
-| First journey | First source, sample listings, input method, required fields, matching rules and initial collection trigger | Sprint 1 acceptance |
+| Source access | Amazon first (confirmed); UK/wired USB mice recommended. Confirm access/use/retention, seller versus featured offer, delivery context and live reliability; second platform open | FR-03–05; source probe in Sprint 1 |
+| First journey | Amazon access gate, verified sample listings; manual URL entry and manual first collection recommended; confirm required fields and matching/offer rules | Sprint 1 acceptance |
 | Tracking limits | Products per tenant and competitors per product; five products and two or three competitors are suggestions only | FR-02, FR-09; initial limits in Sprint 1 |
 | Observation rules | Currency comparison, variant equivalence, available offers and stock availability versus stock quantity | FR-04–07; NFR-05 |
 | Collection and freshness | Intervals, stale threshold, retry limits and retention needs | FR-05–06, FR-11; NFR-02, NFR-04 |
 | Alerts | Conditions, first channel, acceptable delay and duplicate handling | FR-08; NFR-04 |
 | Service tiers | Who configures tiers, enforced allowances, tier changes and mock billing behaviour | FR-09 |
 | Administration | Tenant controls, collection visibility and resource metrics | FR-10 |
-| Quality targets | Performance measurement, accuracy sample/threshold, usability checks and backup recovery targets | NFR-03–08 |
-| Resources | Technology stack, hosting, operating budget and team availability | Architecture and sprint capacity |
+| Quality targets | Performance measurement, accuracy sample/threshold, usability checks and backup recovery targets | NFR-03–11 |
+| Resources | TypeScript and personal-computer-only resources confirmed; review proposed stack/clean setup, team capacity and later hosting/deployment arrangement | Architecture and sprint capacity |
 | Retailer price changes | Whether recording a retailer's own price changes is required; automated repricing remains outside established scope | Scope review |
 
 Resolve decisions before their dependent implementation is committed. Later features do not need every detail fixed before Sprint 1 starts.

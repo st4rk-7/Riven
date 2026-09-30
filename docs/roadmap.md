@@ -1,6 +1,6 @@
 # Riven — Project Roadmap
 
-**Updated:** 27 September 2026
+**Updated:** 28 September 2026
 
 **Status:** Proposed feature forecast; dates follow the supplied module schedule.
 
@@ -28,12 +28,12 @@ These activities overlap. Design, testing, documentation and integration happen 
 ## 3. Next steps, in order
 
 1. **Review the existing requirements with the client.** Confirm the essential workflow and scope boundaries. Resolve decisions needed for Sprint 1: candidate sources, product/variant identification, required fields, tracking limits, monitoring interval and acceptance measures. Record decisions; retain explicit unknowns.
-2. **Prepare the team workflow.** Set up the repository, issue board, team access, branch/PR review rules and repeatable local setup. Assign a person to coordinate backlog priorities with the client and agree team availability. The module outline mentions Jira; confirm whether GitHub Projects is accepted for assessed tracking.
+2. **Prepare the team workflow.** Use the Riven Scrum project in Jira for sprint tasks, owners and progress; use GitHub for code, blueprints and pull requests. Agree team access, branch/PR review rules and repeatable local setup. Assign a person to coordinate priorities with the client and agree team availability.
 3. **Agree a Definition of Done.** Acceptance criteria met; relevant tests pass; another team member reviews the change; code is merged and integrated into the running application; affected documentation is updated; no known critical defect remains in the increment.
 4. **Hold Sprint 1 Planning on its start date.** Agree one Sprint Goal, select a realistic set of existing backlog items, split them into tasks, estimate them and coordinate ownership. The team chooses work against actual capacity, not an assumed number of story points.
 5. **Deliver and review Sprint 1, then repeat.** Do not wait for every later feature or screen to be fully designed.
 
-Initial architecture, wireframes, data modelling and source-feasibility investigations are work to include in Sprint 1. Prepare enough to begin; continue refining them inside the sprint. Keep the initial technical approach small: a modular web application, persistent storage and background workers. Choose frameworks and hosting based on team skills, source needs and budget.
+Initial architecture, wireframes, data modelling and source-feasibility investigations are work to include in Sprint 1. Prepare enough to begin; continue refining them inside the sprint. Keep the initial technical approach small: a modular web application, persistent storage and background workers. Review the concrete recommendations in the [whole-product baseline](architecture/system-baseline.md), with decision rationale in the [ADRs](architecture/decisions.md). Current resources are personal computers only; resolve source access now and a realistic deployment arrangement before final delivery. Continuous monitoring while the host is offline is not possible.
 
 ## 4. Six-sprint delivery forecast
 
@@ -41,7 +41,7 @@ Dates below are from the supplied revised schedule, checked 27 September 2026. F
 
 | Sprint | Development window | Evaluation window | Proposed working outcome |
 |---|---|---|---|
-| 1 | 28 Sep–11 Oct 2026 | 12–18 Oct 2026 | First end-to-end workflow: a retailer signs in, adds a supported competitor listing and sees its collected price, availability and timestamp. Establish tenant isolation, minimal UI/data design and a runnable application. Probe both candidate sources early. |
+| 1 | 28 Sep–11 Oct 2026 | 12–18 Oct 2026 | First end-to-end workflow: a retailer signs in, adds a supported competitor listing and sees its collected price, availability and timestamp. Establish tenant isolation, minimal UI/data design and a runnable application. Resolve Amazon access and validate the first connector; begin second-platform assessment. |
 | 2 | 19 Oct–1 Nov 2026 | 2–8 Nov 2026 | Repeatable collection: scheduled jobs, timestamped history, collection status and bounded retries; extend to the second agreed source. Make matching/variant checks explicit and show missing/stale data correctly. |
 | 3 | 9–22 Nov 2026 | 23–29 Nov 2026 | Useful comparison workflow: manage products/listings, compare competitors and inspect price-history charts. Demonstrate correctly matched observations from both agreed sources. |
 | 4 | 4–17 Jan 2027 | 18–24 Jan 2027 | Actionable alerts: configure agreed conditions, deliver through the first agreed channel and prevent duplicate alerts. Validate the complete monitoring-to-alert journey with the client. |
@@ -79,7 +79,7 @@ The sprint backlog is a selection from the single product backlog plus the deliv
 | Tenant data leaks or background jobs duplicate records/alerts | Build access control early and verify these behaviours as they are implemented. |
 | Hosting or notification costs exceed resources | Agree operating budget and expected workload before choosing services. |
 
-The four students collectively deliver the system and coordinate task ownership during planning. The client validates usefulness and scope decisions; module evaluators assess course requirements. Record the backlog coordinator and technical/review owners on the team board during planning.
+The four students collectively deliver the system, using the [team guide](team-working-guide.md) for continuing responsibility areas with backup reviewers and flexible sprint assignments. The client validates usefulness and scope decisions; module evaluators assess course requirements. Record the backlog coordinator and technical/review owners on the team board during planning.
 
 ## 7. Completion and handover
 

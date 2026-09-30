@@ -6,9 +6,15 @@
 
 **Evaluation:** 12–18 October 2026
 
-**Updated:** 27 September 2026
+**Updated:** 30 September 2026
 
 **Status:** Proposed scope. Estimates, ownership and capacity must be agreed at Sprint Planning.
+
+## Whole-product basis
+
+Use the [system baseline](../architecture/system-baseline.md), [quality targets](../architecture/quality-targets.md), [collection strategy](../architecture/collection-strategy.md) and [team guide](../team-working-guide.md). TypeScript and Amazon-first are confirmed. Other technology choices are recommendations to ratify with a clean setup; no Amazon live collection method has passed its feasibility gate.
+
+The baseline specifies PostgreSQL, durable job handling, source contracts and tenant isolation from the foundation, so later history, scheduling, alerts and tiers build on the same model. Do not implement all later features in Sprint 1.
 
 ## Sprint goal
 
@@ -21,7 +27,7 @@ These development and evaluation windows form one three-week sprint in the [modu
 | Parent item | Proposed Sprint 1 scope |
 | --- | --- |
 | PB-01 (part) | Confirm first source, sample products, input method, required fields, matching rules, initial limits and collection trigger. |
-| PB-02 | Probe repeated collection and correct matching on both candidate sources. Prioritise the first source; record any unfinished second-source investigation explicitly. |
+| PB-02 (part) | Resolve the Amazon access/offer/retention gate and probe repeated collection with verified sample listings. Record second-platform investigation as unfinished if not selected; final PB-02 acceptance still covers both sources. |
 | PB-03 | Establish a runnable application, database, team workflow and basic automated checks. |
 | PB-04 | Implement sign-in/sign-out and server-side tenant access controls for this journey, under NFR-01. |
 | PB-05 (part) | Add a tracked product and its competitor listing through a minimal form. |
@@ -33,7 +39,7 @@ See the [product backlog](../product-backlog.md) for full parent acceptance crit
 
 ## Scope boundary
 
-Deliver one supported production connector first. Investigate both candidate sources early to reduce risk. Agree whether the first collection runs when a listing is added or through a manual action; perform collection in background work so it does not block the dashboard.
+Deliver one supported connector first, targeting Amazon. Amazon UK/wired USB mice, pasted listing URLs and manual collection are recommended starting choices. Source availability is not guaranteed: if the access gate fails, report the real-source milestone as blocked and obtain an explicit client decision. Begin the second-platform assessment early enough for Sprint 2. Perform collection as durable background work so it does not block the dashboard.
 
 Full recurring scheduling, the second production connector, edit/remove workflows beyond the selected journey, historical charts, alerts, billing and advanced administration remain in the product backlog. Initial tenant isolation, input validation and agreed tracking limits belong in this sprint.
 
@@ -43,12 +49,12 @@ Full recurring scheduling, the second production connector, edit/remove workflow
 | --- | --- | --- |
 | S1-01 | **Confirm the demonstration.** Record source, sample listings, product/variant rules, fields, initial limits, collection trigger and expected results with the client. | PB-01; informs the source probe and acceptance checks |
 | S1-02 | **Check source feasibility.** Time-box repeated collection trials, compare with source listings and record failures/access constraints. Agree an alternative if a source is unreliable. | PB-02; before committing to a connector |
-| S1-03 | **Establish the foundation.** Choose the initial stack, sketch architecture/data model/screen flow, and establish application, database and repeatable setup/checks. | PB-03; may run alongside S1-02 |
+| S1-03 | **Establish the foundation.** Ratify the whole-product stack and versioned contracts; establish PostgreSQL/migrations, tenant enforcement, durable queue/API-worker setup and repeatable checks. Use the architecture baseline, not an independent Sprint 1 stack. | PB-03; may run alongside S1-02 |
 | S1-04 | **Build secure workspace access.** Implement authentication and server-side tenant ownership checks; verify using two retailer accounts. | PB-04 / NFR-01; uses S1-03 |
 | S1-05 | **Connect listing entry to results.** Implement form, first-source collection, observation storage and results screen, including visible failure handling. Integrate continuously. | Partial PB-05–07; uses S1-01–04 |
 | S1-06 | **Validate and demonstrate.** Test success/failure cases, fix defects, update setup instructions and prepare the live journey. Record review feedback and retrospective actions. | Partial PB-12; uses the integrated journey |
 
-All task estimates and owners are **unassigned** until the team checks availability and plans together. Do not infer completed work from this table.
+Named owners and estimates must be recorded in the Riven Jira Scrum project after the four Jira accounts and team capacity are confirmed. The [team guide](../team-working-guide.md) proposes four continuing responsibility areas and specific implementation tickets. Existing GitHub issues #1–#4 cover preparation only; closing them cannot complete S1-04–06 or the sprint goal.
 
 ## Acceptance checks
 
@@ -60,7 +66,7 @@ All task estimates and owners are **unassigned** until the team checks availabil
 - A second retailer cannot read or change the first retailer's data through screens or direct application requests; an unauthorised retailer cannot access administrator-only operations.
 - The integrated application runs from documented setup steps and the full journey is demonstrated with real supported-source data.
 
-Apply [NFR-01, NFR-02, NFR-04–07](../requirements.md#non-functional-requirements) to the functionality delivered. Broader load, alert-delay and recovery checks are refined with their dependent features and agreed targets.
+Apply [NFR-01, NFR-02, NFR-04–07](../requirements.md#non-functional-requirements) to the functionality delivered. Run an initial backup/restore and worker-restart check in this sprint. The [quality matrix](../architecture/quality-targets.md) adds proposed NFR-09–11 and schedules broader load, alert-delay and recovery evidence as the dependent features arrive.
 
 ## Definition of Done
 
