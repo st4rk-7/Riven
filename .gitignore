@@ -10,3 +10,4 @@ coverage/
 .DS_Store
 docs/guides/build/
 handouts/
+server/node_modules/
