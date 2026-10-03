@@ -164,7 +164,7 @@ Do not solve tenant safety by hiding buttons. Do not solve uncertainty by guessi
 
 ## 9. Feasibility and escalation
 
-Amazon is the first intended source, not a proven route. Earlier evidence and official links are in the SRS. Recheck applicable access, permitted purpose, retention, sharing, quotas, and client credentials without putting secrets in chat, code, or public records.
+Amazon is the first intended source, not a proven route. Earlier evidence and official links are in the SRS; the current access gate and first alternative candidate are in the [source access decision](source-access-decision.md). Recheck applicable access, permitted purpose, retention, sharing, quotas, and client credentials without putting secrets in chat, code, or public records.
 
 Shewon time-boxes the initial investigation to two working days after starting. A supported verdict needs access/use evidence and field-level sample checks where permitted. If unresolved, report **blocked** and ask the client for access or an explicit source/scope decision. A scraper repository, an API key, or successful HTTP response does not establish product suitability.
 
