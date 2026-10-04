@@ -1,6 +1,7 @@
 import Fastify, { type FastifyInstance } from "fastify";
 
 import type { DemoObservation } from "../shared/demo-observation.js";
+import { collectBookObservation } from "./sources/books-toscrape.js";
 
 type BuildAppOptions = {
   logger?: boolean;
@@ -24,6 +25,17 @@ export function buildApp(
 
   app.get("/api/v1/demo-observation", async () => {
     return demoObservation;
+  });
+
+  app.get("/api/v1/practice-observation", async (_request, reply) => {
+    try {
+      return await collectBookObservation(
+        "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html",
+      );
+    } catch (error) {
+      app.log.error(error);
+      return reply.code(502).send({ error: "Could not collect from the practice site." });
+    }
   });
 
   return app;
