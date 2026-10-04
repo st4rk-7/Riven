@@ -1,17 +1,9 @@
+import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import type { DemoObservation } from "../shared/demo-observation";
+import { fetchDemoObservation } from "./observation-api";
 
-// Temporary local sample. Replace with the backend response during integration.
-const observation: DemoObservation = {
-  mode: "synthetic",
-  productName: "Sample wired mouse",
-  price: "19.99",
-  currency: "GBP",
-  availability: "in_stock",
-  source: "Synthetic fixture (not Amazon)",
-  observedAt: "2026-09-30T00:00:00Z",
-  matchStatus: "unverified",
-};
+
 
 const availabilityLabels = {
   in_stock: "In stock",
@@ -25,12 +17,16 @@ const matchLabels = {
   mismatch: "Mismatch — do not treat this as the same product.",
 };
 
-function App() {
+function ObservationCard({
+  observation,
+}: {
+  observation: DemoObservation;
+}) {
   return (
     <main>
       <h1>Riven</h1>
       <p>
-        Mode: {observation.mode}. Local sample — backend not connected.
+        Mode: {observation.mode}. Received from the local backend.
       </p>
 
       <article aria-labelledby="observation-title">
@@ -64,6 +60,77 @@ function App() {
           <dd>{matchLabels[observation.matchStatus]}</dd>
         </dl>
       </article>
+    </main>
+  );
+}
+
+type ObservationState =
+  | { status: "loading" }
+  | { status: "success"; observation: DemoObservation }
+  | { status: "error" };
+
+function App() {
+  const [state, setState] = useState<ObservationState>({
+    status: "loading",
+  });
+  const [attempt, setAttempt] = useState(0);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    setState({ status: "loading" });
+
+    const timeout = window.setTimeout(() => {
+      controller.abort();
+      setState({ status: "error" });
+    }, 10000);
+
+    fetchDemoObservation(controller.signal)
+      .then((observation) => {
+        if (!controller.signal.aborted) {
+          setState({ status: "success", observation });
+        }
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setState({ status: "error" });
+        }
+      })
+      .finally(() => {
+        window.clearTimeout(timeout);
+      });
+
+    return () => {
+      window.clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [attempt]);
+
+  if (state.status === "success") {
+    return <ObservationCard observation={state.observation} />;
+  }
+
+  return (
+    <main>
+      <h1>Riven</h1>
+      <p>Synthetic observation demo — not live Amazon data.</p>
+
+      {state.status === "loading" ? (
+        <p role="status">Loading observation…</p>
+      ) : (
+        <>
+          <p role="alert">
+            Could not load the observation. Check that the local backend
+            is running, then retry.
+          </p>
+          <button
+            type="button"
+            onClick={() => setAttempt((previous) => previous + 1)}
+          >
+            Retry
+          </button>
+        </>
+      )}
     </main>
   );
 }
