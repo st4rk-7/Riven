@@ -20,6 +20,7 @@
   },
   "scripts": {
     "dev:web": "vite",
-    "typecheck:web": "tsc -p web/tsconfig.json"
+    "typecheck:web": "tsc -p web/tsconfig.json",
+    "build:web": "npm run typecheck:web && vite build"
   }
 }
