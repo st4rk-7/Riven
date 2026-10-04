@@ -4,7 +4,7 @@
 
 RIV-5 has an integrated frontend/backend setup verified in the working repository and from a separate clean clone.
 
-Human review and second-member reproduction remain pending. The ticket stays In Progress.
+Second-member reproduction was reported by Dilsan on 4 October 2026. Human review remains pending, so the ticket stays In Progress.
 
 This setup supports the synthetic Sprint 1 checkpoint only. It is not a production service or live Amazon integration.
 
@@ -153,9 +153,34 @@ Observed results:
 8. No browser console warnings or errors were reported.
 9. The clean clone remained unchanged after installation and checks.
 
+### Second-member reproduction
+
+Dilsan reported testing [PR #6](https://github.com/st4rk-7/Riven/pull/6) from a separate clean clone of `RIV-5-reproducible-setup` at commit `de0fd16` on 4 October 2026.
+
+Environment:
+
+- Windows
+- Node.js v24.16.0
+- npm 11.13.0
+
+Reported results:
+
+- `npm.cmd ci` passed with 117 packages installed.
+- Frontend and backend TypeScript checks passed.
+- `npm.cmd test` passed one endpoint test.
+- `npm.cmd run dev` started the frontend and backend.
+- The browser displayed the synthetic observation.
+- `GET /api/v1/demo-observation` returned status 200.
+- The displayed price matched the endpoint response.
+- Direct backend and frontend-proxy requests returned matching synthetic responses.
+- The clean working folder remained unchanged.
+
+Dilsan reported that ChatGPT guided the steps, ran or verified TypeScript and direct HTTP checks, and helped interpret the results. Dilsan ran the installation, endpoint test and startup, and checked the browser flow.
+
+These reported results support the shared setup reproduction. They do not establish production readiness, completion of RIV-3, or live Amazon access.
+
 ## Known limitations
 
-- A second team member has not yet followed the final integrated instructions.
 - Reviewer approval is pending.
 - The branch has not been merged.
 - CI has not been configured or run.
@@ -168,6 +193,7 @@ Observed results:
 
 AI assistance was used to explain and plan RIV-5, review teammate branches, guide clean reproductions, propose the shared structure, supply code for Ilmam to enter and inspect, guide checks, and inspect the rendered pages and browser console.
 
+
 Ilmam ran the Git, npm, type-check, test, development-server, HTTP, commit, and push commands and reviewed the observed results.
 
-No reviewer approval, second-member reproduction, CI success, merge, live-source acceptance, or completed ticket is claimed.
+No reviewer approval, CI success, merge, live-source acceptance, or completed ticket is claimed.
