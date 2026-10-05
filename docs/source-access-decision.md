@@ -52,7 +52,7 @@ An official API, licensed feed, client-authorized data or expressly permitted HT
 | Redirects | Not followed; a 3xx response is a failure, so collection cannot leave the allowed host |
 | Retries | None. Failures (4xx including 403/429, 5xx, timeout, redirect, unexpected HTML) return HTTP 502 and stop |
 | Unexpected HTML | Missing title → failure; missing/unparseable price → `null`; missing stock text → `unknown` |
-| Runtime | Under 1 second per request when the site is reachable |
+| Runtime | Not yet measured. Proposed target: under 1 second per request when the site is reachable; to be measured and recorded in RIV-6 |
 | Storage | None; observations are not persisted in Sprint 1 |
 | Identification | `User-Agent: Riven student project (EC5406)` |
 
