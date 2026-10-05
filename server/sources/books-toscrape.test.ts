@@ -12,7 +12,7 @@ const observedAt = new Date("2026-10-04T12:00:00Z");
 
 test("parses a saved book page into an observation", () => {
   expect(parseBookPage(page, observedAt)).toEqual({
-    mode: "synthetic",
+    mode: "practice",
     productName: "A Light in the Attic",
     price: "51.77",
     currency: "GBP",

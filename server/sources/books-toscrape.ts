@@ -23,7 +23,7 @@ export function parseBookPage(html: string, observedAt: Date): DemoObservation {
       : "unknown";
 
   return {
-    mode: "synthetic",
+    mode: "practice",
     productName,
     price,
     currency: "GBP",
@@ -45,7 +45,12 @@ export async function collectBookObservation(url: string): Promise<DemoObservati
   const response = await fetch(target, {
     headers: { "User-Agent": "Riven student project (EC5406)" },
     signal: AbortSignal.timeout(10_000),
+    redirect: "manual",
   });
+
+  if (response.status >= 300 && response.status < 400) {
+    throw new Error("Redirects are not followed, so collection stays on the allowed host.");
+  }
 
   if (!response.ok) {
     throw new Error(`Request failed with status ${response.status}.`);

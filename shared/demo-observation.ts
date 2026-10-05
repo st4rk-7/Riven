@@ -1,5 +1,6 @@
 export type DemoObservation = {
-  mode: "synthetic";
+  // "synthetic" = fixture values; "practice" = fetched live from the practice site.
+  mode: "synthetic" | "practice";
   productName: string;
   price: string | null;
   currency: string;
