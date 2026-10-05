@@ -9,6 +9,7 @@ A four-student software project helping retailers monitor selected competitors' 
 1. Read [Sprint 1](docs/sprint-1.md) for the shared goal.
 2. Read sections 2–5 of the [core manual](docs/manual.md) for the product, responsibilities, and basic data flow.
 3. Open your [member guide](docs/guides/README.md). Follow one working slice at a time; explain and check your work.
+4. Work **understand first, then build**: explain each step in your own words before writing it ([manual section 10](docs/manual.md#10-jira-github-learning-and-change)).
 
 ## Reference shelf
 
