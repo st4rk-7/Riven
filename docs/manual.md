@@ -179,9 +179,11 @@ Documentation in repositories is normal professional practice: it keeps design a
 1. Match member accounts; owner agrees a small deliverable. A guide label is not a Jira key.
 2. Create one current Jira task per member. Include result, relevant requirement/backlog IDs, checks, reviewer, dependencies, and link to the guide. Use subtasks only if they help; the guide's steps need not each be tickets.
 3. Branch with an actual key, e.g. `feature/RIV-12-result-card`. Write a simple accurate commit message. Never invent past dates or another member's authorship.
-4. Owner explains the task, plans a small change, implements and runs checks. AI can teach and review; it must not autonomously complete the member's submission.
-5. Integrate early with the dependent member. Open a focused PR with actual command/results, limitations, and material AI assistance.
-6. Another member reviews and hears the explanation. Merge with human approval; verify integration; then mark the task Done. A review-pending task remains In Progress.
+4. **Understand first, then work.** Before writing code or docs, the owner explains the task and the idea behind the change in their own words, then plans a small change, implements it and runs checks. AI can teach and review; it must not autonomously complete the member's submission. When using an AI tutor that does not read `AGENTS.md` (for example a chat website), start with:
+
+   > Act as my tutor for this task, not my coder. Don't write the solution for me. Explain one small step at a time, then ask me to explain it back in my own words before moving on. If I'm wrong, correct me and ask again. Only show code after I've described what it should do.
+5. Integrate early with the dependent member. Open a focused PR using the PR template: the owner writes "In my own words" (what and why, one thing learned, one thing still unsure) without AI, plus actual command/results, limitations, and material AI assistance.
+6. Another member reviews and hears the explanation. The reviewer asks at least one "why" question on the PR and approves only after the owner answers it in their own words. Merge with human approval; verify integration; then mark the task Done. A review-pending task remains In Progress.
 
 Daily update: result, next step, blocker. No separate daily essay. Each PR answers: what changed, why, how checked, what remains. Client reviews validate usefulness; tests verify behaviour. Both matter.
 
