@@ -1,6 +1,6 @@
 # Source access decision — RIV-2
 
-**Recorded:** 2 October 2026 · **Updated:** 3 October 2026 · **Status:** active · **Owner:** Shewon
+**Recorded:** 2 October 2026 · **Updated:** 5 October 2026 · **Status:** active · **Owner:** Shewon
 
 ## Decision
 
@@ -33,21 +33,40 @@ An official API, licensed feed, client-authorized data or expressly permitted HT
 
 ## Confirmed Sprint 1 source: books.toscrape.com
 
-**Decision date:** 3 October 2026 · **Accepted by:** mentor
+**Decision date:** 3 October 2026 · **Mentor acceptance:** reported by Shewon (3 Oct 2026); written confirmation to be attached to RIV-2 in Jira
 
 [books.toscrape.com](https://books.toscrape.com) is a public practice site built explicitly for scraping. No ToS restrictions, no authentication, no ethical concerns. It provides product names, prices (GBP), availability and catalogue structure — enough to demonstrate Riven's full collection → backend → observation pipeline with real scraping code.
 
 **What it proves:** the adapter pattern works, the scraping code is real, and the observation contract flows end-to-end. It is not a real marketplace — that comes later.
 
-**What it does not claim:** live competitor monitoring. The `source` field will read `"books.toscrape.com (practice site)"` and `mode` stays `"synthetic"` until a permitted commercial source is connected.
+**What it does not claim:** live competitor monitoring. Observations use `mode: "practice"` and `source: "books.toscrape.com (practice site)"`, served from `GET /api/v1/practice-observation`. `"synthetic"` stays reserved for fixture values from `GET /api/v1/demo-observation`, so a practice observation never implies fabricated values and never claims live monitoring. See [manual section 7](manual.md#7-shared-data-meanings-and-first-interface).
+
+### Sprint 1 collection limits
+
+| Limit | Value |
+| --- | --- |
+| Scope | One fixed book page per request; no crawling, no pagination, no other hosts |
+| Requests | 1 per endpoint call; manual demo use only (expected under 50 requests in Sprint 1) |
+| Concurrency | 1; no scheduler or background job |
+| Timeout | 10 seconds |
+| Redirects | Not followed; a 3xx response is a failure, so collection cannot leave the allowed host |
+| Retries | None. Failures (4xx including 403/429, 5xx, timeout, redirect, unexpected HTML) return HTTP 502 and stop |
+| Unexpected HTML | Missing title → failure; missing/unparseable price → `null`; missing stock text → `unknown` |
+| Runtime | Under 1 second per request when the site is reachable |
+| Storage | None; observations are not persisted in Sprint 1 |
+| Identification | `User-Agent: Riven student project (EC5406)` |
+
+The 1,000-product catalogue is **not** collected; one page is enough to prove the pipeline.
 
 ## Later sprint candidates
 
-| Option | Sprint | Action required |
+**Status: unverified candidates — not part of Sprint 1.** None has passed the gate above. Quotas, terms and permissions below are unconfirmed until an official source and the gate checks (access, purpose, fields, retention, display, cost) are recorded for the specific route.
+
+| Option | Earliest sprint | Must be established before any collection |
 | --- | --- | --- |
-| **Kroger API** (free, 10K calls/day) | 2 | Register developer account; proves a real API adapter |
-| **Shopify store with written permission** | 2–3 | Contact a store owner; one signed email = legal live e-commerce data |
-| **Consenting shop owner** (any platform) | 3+ | Find a small retailer willing to grant academic permission |
+| **Kroger API** | 2 | Official documentation for quota, authentication, location context, permitted use, retention and display terms. Registration alone does not prove suitability. |
+| **Shopify store with written permission** | 2–3 | Written permission covering retention and display; the exact route (Storefront/Admin API or pages), token scopes and request limits; secrets kept out of Git. |
+| **Consenting shop owner** (any platform) | 3+ | Same gate checks as above for that owner's platform. |
 
 ## Impact on current work
 

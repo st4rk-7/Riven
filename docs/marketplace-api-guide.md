@@ -1,7 +1,9 @@
 # Marketplace API application guide
 
 **Created:** 2 October 2026 · **Owner:** Shewon  
-**Purpose:** Track application status and requirements for each marketplace's official API or data-access route, pursued in parallel with Sprint 1 synthetic/eBay work.
+**Purpose:** Track application status and requirements for each marketplace's official API or data-access route.
+
+> **Historical record (superseded 3 October 2026).** eBay rejected the developer account on 3 October 2026, so eBay is no longer a Sprint 1 candidate. The Sprint 1 source is books.toscrape.com. The current decision and statuses are in [source-access-decision.md](source-access-decision.md); where this guide disagrees, that document wins.
 
 ---
 
@@ -9,7 +11,7 @@
 
 | Marketplace | Route | Prerequisites | Approval time | Cost | Riven suitability | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| **eBay** | Browse API (production) | Developer account, eBay Partner Network (EPN) | Dev account: ~1 day; EPN + production: days–weeks | Free (5,000 calls/day) | ✅ Best Sprint 1 candidate | 🟡 Dev account pending |
+| **eBay** | Browse API (production) | Developer account, eBay Partner Network (EPN) | Dev account: ~1 day; EPN + production: days–weeks | Free (5,000 calls/day) | ❌ Not available | ⛔ Dev account rejected (3 Oct 2026) |
 | **Walmart** | Solution Provider program | Business entity, application form, Zoom demo | 3–5 weeks | Free after approval | ⚠️ Seller-tool oriented; Riven must justify use | 🔴 Not started |
 | **AliExpress** | Open Platform API | AliExpress seller account, business licence, app approval | 1–2 days for review | Free (seller-authorized) | ⚠️ Requires seller account; seller authorization needed for data | 🔴 Not started |
 | **Temu** | Partner Platform / Research API | ISV registration, app key approval | Unknown (limited public info) | Unknown | ⚠️ Seller-oriented; Research API exists but access unclear | 🔴 Not started |
@@ -305,7 +307,7 @@ Third-party scraping API service. Handles proxies, rendering, CAPTCHAs, and retu
 ## Application priority order
 
 ```text
-1. eBay Browse API        ← Sprint 1 live candidate (in progress)
+1. eBay Browse API        ← rejected 3 Oct 2026 (historical)
 2. Temu Research API      ← ask about access now (quick inquiry)
 3. Oxylabs free trial     ← test after eBay; confirm licence first
 4. Walmart Solution Provider ← apply after Sprint 1 (3-5 week timeline)
@@ -315,7 +317,7 @@ Third-party scraping API service. Handles proxies, rendering, CAPTCHAs, and retu
 
 ## Action checklist
 
-- [x] eBay: Developer account created (pending approval)
+- [x] eBay: Developer account created — **rejected 3 Oct 2026**; remaining eBay items cancelled
 - [ ] eBay: Apply for EPN membership
 - [ ] eBay: Generate production keyset after dev account approval
 - [ ] eBay: Make one production `search` + `getItem` call, record response
