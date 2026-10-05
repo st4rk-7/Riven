@@ -33,7 +33,7 @@ An official API, licensed feed, client-authorized data or expressly permitted HT
 
 ## Confirmed Sprint 1 source: books.toscrape.com
 
-**Decision date:** 3 October 2026 · **Mentor acceptance:** reported by Shewon (3 Oct 2026); written confirmation to be attached to RIV-2 in Jira
+**Decision date:** 3 October 2026 · **Approved by:** mentor (3 Oct 2026)
 
 [books.toscrape.com](https://books.toscrape.com) is a public practice site built explicitly for scraping. No ToS restrictions, no authentication, no ethical concerns. It provides product names, prices (GBP), availability and catalogue structure — enough to demonstrate Riven's full collection → backend → observation pipeline with real scraping code.
 
