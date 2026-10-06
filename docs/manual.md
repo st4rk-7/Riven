@@ -185,6 +185,17 @@ Documentation in repositories is normal professional practice: it keeps design a
 5. Integrate early with the dependent member. Open a focused PR using the PR template: the owner writes "In my own words" (what and why, one thing learned, one thing still unsure) without AI, plus actual command/results, limitations, and material AI assistance.
 6. Another member reviews and hears the explanation. The reviewer asks at least one "why" question on the PR and approves only after the owner answers it in their own words. Merge with human approval; verify integration; then mark the task Done. A review-pending task remains In Progress.
 
+   **Why both steps:** the author's section shows understanding *before* review; the reviewer's question checks it. A written paragraph can be copied, but a specific answer about your own change cannot, and the question makes the reviewer read the change rather than just approve it.
+
+   **Scale it to the change:**
+
+   | Change | Author writes | Reviewer asks |
+   | --- | --- | --- |
+   | **Small:** typo, formatting, link, version bump; no change in behaviour, data meaning or decisions | One line: what and why | No question required |
+   | **Normal:** new or changed code, behaviour, contract, data meaning, decision or source | Full "In my own words" section | At least one "why" question |
+
+   If unsure, treat it as normal. Mark a small change by writing `Small change:` before the one line.
+
 Daily update: result, next step, blocker. No separate daily essay. Each PR answers: what changed, why, how checked, what remains. Client reviews validate usefulness; tests verify behaviour. Both matter.
 
 Changes to this manual should state the reason and impacted tasks. A new requirement is a backlog decision, not something a member or AI silently adds. The manual is a current agreement to improve, not a guarantee that no unforeseen problem will occur.

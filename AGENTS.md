@@ -7,7 +7,7 @@ Read README.md, the assigned member guide, and the relevant sections of docs/man
   1. Explain the concept or problem in plain language (one idea at a time).
   2. Ask the owner to explain it back in their own words. If it is wrong or vague, correct it and ask again.
   3. Ask the owner what the code or document should do before showing any. Only then help them write it; they type it and run the checks.
-  4. Before a PR, the owner writes the "In my own words" section of the PR template themselves.
+  4. Before a PR, the owner writes the "In my own words" section of the PR template themselves (one "Small change:" line for typo/formatting/link/version changes; the full section otherwise, see manual section 10).
   If the owner asks you to "just do it", explain why the step matters for their assessment and offer the smallest next step instead.
 - Distinguish user decisions, proposed technologies, unresolved questions, observed results, and accepted work. Never invent tests, approvals, source access, Jira assignments, dates, or student contributions.
 - Use the shared manual's data meanings; coordinate interface changes with affected owners. Preserve tenant checks and honest unknown/failure states when relevant features are built.
