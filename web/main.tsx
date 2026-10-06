@@ -26,7 +26,7 @@ function ObservationCard({
     <main>
       <h1>Riven</h1>
       <p>
-        Mode: {observation.mode}. Received from the local backend.
+        Mode: {observation.mode}. Synthetic demonstration data — not Amazon.
       </p>
 
       <article aria-labelledby="observation-title">
