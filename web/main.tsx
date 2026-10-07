@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-
 import type { DemoObservation } from "../shared/demo-observation";
+import { fetchDemoObservation } from "./observation-api";
+
+
 
 const availabilityLabels = {
   in_stock: "In stock",
@@ -15,128 +17,119 @@ const matchLabels = {
   mismatch: "Mismatch — do not treat this as the same product.",
 };
 
-function isDemoObservation(value: unknown): value is DemoObservation {
-  if (typeof value !== "object" || value === null) {
-    return false;
-  }
-
-  const candidate = value as Record<string, unknown>;
-
+function ObservationCard({
+  observation,
+}: {
+  observation: DemoObservation;
+}) {
   return (
-    candidate.mode === "synthetic" &&
-    typeof candidate.productName === "string" &&
-    (candidate.price === null || typeof candidate.price === "string") &&
-    typeof candidate.currency === "string" &&
-    (candidate.availability === "in_stock" ||
-      candidate.availability === "out_of_stock" ||
-      candidate.availability === "unknown") &&
-    typeof candidate.source === "string" &&
-    typeof candidate.observedAt === "string" &&
-    (candidate.matchStatus === "confirmed" ||
-      candidate.matchStatus === "unverified" ||
-      candidate.matchStatus === "mismatch")
+    <main>
+      <h1>Riven</h1>
+      <p>
+        Mode: {observation.mode}. Synthetic demonstration data — not Amazon.
+      </p>
+
+      <article aria-labelledby="observation-title">
+        <h2 id="observation-title">{observation.productName}</h2>
+
+        <dl>
+          <dt>Price</dt>
+          <dd>
+            {observation.price === null
+              ? "Price unavailable"
+              : observation.price}
+          </dd>
+
+          <dt>Currency</dt>
+          <dd>{observation.currency}</dd>
+
+          <dt>Availability</dt>
+          <dd>{availabilityLabels[observation.availability]}</dd>
+
+          <dt>Source</dt>
+          <dd>{observation.source}</dd>
+
+          <dt>Observed at</dt>
+          <dd>
+            <time dateTime={observation.observedAt}>
+              {new Date(observation.observedAt).toUTCString()}
+            </time>
+          </dd>
+
+          <dt>Product match</dt>
+          <dd>{matchLabels[observation.matchStatus]}</dd>
+        </dl>
+      </article>
+    </main>
   );
 }
 
-async function fetchObservation(
-  signal?: AbortSignal,
-): Promise<DemoObservation> {
-  const response = await fetch("/api/v1/demo-observation", { signal });
-
-  if (!response.ok) {
-    throw new Error(`Observation request failed with status ${response.status}`);
-  }
-
-  const value: unknown = await response.json();
-
-  if (!isDemoObservation(value)) {
-    throw new Error("Observation response did not match the agreed contract");
-  }
-
-  return value;
-}
+type ObservationState =
+  | { status: "loading" }
+  | { status: "success"; observation: DemoObservation }
+  | { status: "error" };
 
 function App() {
-  const [observation, setObservation] = useState<DemoObservation | null>(null);
-  const [status, setStatus] = useState<"loading" | "ready" | "error">(
-    "loading",
-  );
-
-  const requestObservation = useCallback(async (signal?: AbortSignal) => {
-    setStatus("loading");
-
-    try {
-      const nextObservation = await fetchObservation(signal);
-      setObservation(nextObservation);
-      setStatus("ready");
-    } catch (error) {
-      if (error instanceof DOMException && error.name === "AbortError") {
-        return;
-      }
-
-      setObservation(null);
-      setStatus("error");
-    }
-  }, []);
+  const [state, setState] = useState<ObservationState>({
+    status: "loading",
+  });
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
 
-    void requestObservation(controller.signal);
+    setState({ status: "loading" });
+
+    const timeout = window.setTimeout(() => {
+      controller.abort();
+      setState({ status: "error" });
+    }, 10000);
+
+    fetchDemoObservation(controller.signal)
+      .then((observation) => {
+        if (!controller.signal.aborted) {
+          setState({ status: "success", observation });
+        }
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setState({ status: "error" });
+        }
+      })
+      .finally(() => {
+        window.clearTimeout(timeout);
+      });
 
     return () => {
+      window.clearTimeout(timeout);
       controller.abort();
     };
-  }, [requestObservation]);
+  }, [attempt]);
+
+  if (state.status === "success") {
+    return <ObservationCard observation={state.observation} />;
+  }
 
   return (
     <main>
       <h1>Riven</h1>
-      <p>Demo mode: synthetic data only — not Amazon.</p>
+      <p>Synthetic observation demo — not live Amazon data.</p>
 
-      {status === "loading" && <p role="status">Loading observation…</p>}
-
-      {status === "error" && (
-        <div role="alert">
-          <p>Could not load the synthetic observation.</p>
-          <button type="button" onClick={() => void requestObservation()}>
+      {state.status === "loading" ? (
+        <p role="status">Loading observation…</p>
+      ) : (
+        <>
+          <p role="alert">
+            Could not load the observation. Check that the local backend
+            is running, then retry.
+          </p>
+          <button
+            type="button"
+            onClick={() => setAttempt((previous) => previous + 1)}
+          >
             Retry
           </button>
-        </div>
-      )}
-
-      {status === "ready" && observation && (
-        <article aria-labelledby="observation-title">
-          <h2 id="observation-title">{observation.productName}</h2>
-
-          <dl>
-            <dt>Price</dt>
-            <dd>
-              {observation.price === null
-                ? "Price unavailable"
-                : observation.price}
-            </dd>
-
-            <dt>Currency</dt>
-            <dd>{observation.currency}</dd>
-
-            <dt>Availability</dt>
-            <dd>{availabilityLabels[observation.availability]}</dd>
-
-            <dt>Source</dt>
-            <dd>{observation.source}</dd>
-
-            <dt>Observed at</dt>
-            <dd>
-              <time dateTime={observation.observedAt}>
-                {new Date(observation.observedAt).toUTCString()}
-              </time>
-            </dd>
-
-            <dt>Product match</dt>
-            <dd>{matchLabels[observation.matchStatus]}</dd>
-          </dl>
-        </article>
+        </>
       )}
     </main>
   );

@@ -31,6 +31,7 @@
     "test": "vitest run",
     "typecheck": "npm run typecheck:web && npm run typecheck:server",
     "typecheck:web": "tsc -p web/tsconfig.json",
-    "typecheck:server": "tsc -p server/tsconfig.json"
+    "typecheck:server": "tsc -p server/tsconfig.json",
+    "build:web": "npm run typecheck:web && vite build"
   }
 }
