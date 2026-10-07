@@ -138,6 +138,8 @@ The first proposed endpoint is `GET /api/v1/demo-observation`. It returns synthe
 }
 ```
 
+`mode` says where the values came from: `synthetic` means fixture values written by the team (never collected); `practice` means values actually fetched from the practice site (`books.toscrape.com`, see the [source access decision](source-access-decision.md)). Neither is a live competitor observation. A future live mode is added only when a permitted commercial source passes the access gate.
+
 This timestamp is an example, not evidence of collection. `price` may be `null`; missing price is not zero. Use a decimal string plus currency; do not use binary floating-point for price calculations. Availability is `in_stock`, `out_of_stock`, or `unknown`; it is not stock quantity. Match status is `confirmed`, `unverified`, or `mismatch`. The UI must not imply comparison validity for unverified matches.
 
 For the full journey, B/C/D extend the contract together with product/monitor IDs, source URL, attempt status, seller/variant/delivery context, last attempt and last successful observation. Dilsan reviews what the UI needs. Do not silently change field names or types. Define each real endpoint's request, response, error, and ownership check before wiring it.
@@ -164,7 +166,7 @@ Do not solve tenant safety by hiding buttons. Do not solve uncertainty by guessi
 
 ## 9. Feasibility and escalation
 
-Amazon is the first intended source, not a proven route. Earlier evidence and official links are in the SRS. Recheck applicable access, permitted purpose, retention, sharing, quotas, and client credentials without putting secrets in chat, code, or public records.
+Amazon is the first intended source, not a proven route. Earlier evidence and official links are in the SRS; the current access gate and first alternative candidate are in the [source access decision](source-access-decision.md). Recheck applicable access, permitted purpose, retention, sharing, quotas, and client credentials without putting secrets in chat, code, or public records.
 
 Shewon time-boxes the initial investigation to two working days after starting. A supported verdict needs access/use evidence and field-level sample checks where permitted. If unresolved, report **blocked** and ask the client for access or an explicit source/scope decision. A scraper repository, an API key, or successful HTTP response does not establish product suitability.
 
