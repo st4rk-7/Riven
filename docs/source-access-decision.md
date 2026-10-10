@@ -1,8 +1,19 @@
 # Source access decision — RIV-2
 
-**Recorded:** 2 October 2026 · **Updated:** 5 October 2026 · **Status:** active · **Owner:** Shewon
+**Recorded:** 2 October 2026 · **Updated:** 10 October 2026 · **Status:** active · **Owner:** Shewon
 
-## Decision
+## Current decision (10 October 2026): Amazon test phase
+
+After the proposal evaluation, the client and the team agreed a new direction:
+
+- **Amazon product pages are now the primary source, in a test phase.** Collection uses Crawlee/Playwright (client-approved): low volume, team-seeded product URLs, manual trigger, no sign-in, no retries. A blocked response is recorded as `blocked` and collection stops. The demo falls back to a dated snapshot of earlier results.
+- **The source is locked once the collection tests pass.** After testing completes for all sites, the collection method moves to a production route.
+- **books.toscrape.com is retired** after serving as the Sprint 1 checkpoint source (RIV-6).
+- **MVP flow:** the retailer picks or searches a product and Riven lists competitor offers automatically; no manual competitor selection.
+
+See [manual sections 6 and 9](manual.md#6-technology-decisions-recommended-starting-baseline) for the collection tool, pipeline and test-phase rules. The sections below are the earlier investigation (2–5 October 2026), kept as history.
+
+## Original decision (2 October 2026)
 
 Keep Amazon as the client's **first intended source**, but do not enable live Amazon collection: no route suitable for Riven's users, purpose and budget has been established. Build the first connected checkpoint with clearly labelled synthetic data. Evaluate live-source candidates through the gate below, without silently replacing Amazon or claiming that a sandbox or trial proves live collection.
 

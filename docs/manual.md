@@ -35,7 +35,7 @@ Success means the agreed features are useful to the client, behave correctly und
 
 | Status | What we know |
 | --- | --- |
-| User decisions | Four members; TypeScript; Amazon first; six sprints; currently personal computers and no funded services. |
+| User decisions | Four members; TypeScript; Amazon first; six sprints; currently personal computers and no funded services. MVP lists competitors automatically for a chosen product (client, 10 Oct 2026); no mobile app. |
 | Reported, not independently certified | Proposal submitted by the team. The preserved reference copy has blank signature fields. |
 | Draft | Detailed requirements, technical stack below, sprint scope, quality thresholds, and capacity. |
 | Unproven dependency | A suitable Amazon collection route, including intended retailer use and history retention. |
@@ -77,6 +77,8 @@ The browser displays data; it does not fetch competitor pages or decide which te
 
 **First learning checkpoint:** browser → one backend endpoint → explicitly synthetic observation. No accounts, persistence, or live collection are claimed at this checkpoint. This is a short integration exercise inside the same project, not a second product.
 
+**Collection pipeline:** Fastify only enqueues a job (returns 202) → pg-boss worker → crawler → parse → validate → one database transaction. Every try writes an attempt; an observation is written only when it validates. The UI always reads the database, never a live site.
+
 **Full first journey:** add accounts and persistence; store a collection job; run it outside the dashboard request; save an observation or failed attempt; display the last result. No microservices, message-broker cluster, Kubernetes, or data warehouse is needed.
 
 ### Proposed working layout (create folders when used)
@@ -103,8 +105,9 @@ These are **recommendations pending the first setup check and team agreement**, 
 | Backend | Fastify; small explicit HTTP endpoints and validation | Express is also viable; switching without a concrete reason creates churn | First endpoint |
 | Persistence | PostgreSQL with reviewed SQL migrations and a small database-access module | SQLite is easier for experiments, but avoid adopting it only because old prototype code exists | Before persistence |
 | Authentication | Evaluate Better Auth with the chosen database; use maintained sessions | Custom password/session code adds security maintenance; hosted auth adds service dependency | Before account work |
-| Jobs | Evaluate pg-boss backed by the same PostgreSQL; separate worker entry point | In-memory timers are not recovery; a custom durable queue has lease/retry complexity | Before persistent collection |
-| Source | Access-compatible official API/feed or permitted collection, selected by evidence | No specific Amazon transport is approved; browser automation does not solve permission | Before live calls |
+| Jobs | pg-boss on the same PostgreSQL; separate worker process runs one short-lived crawler per job | In-memory timers are not recovery; a custom durable queue has lease/retry complexity | Before persistent collection |
+| Collection | Crawlee 3.x (pinned ^3.18): CheerioCrawler (HTTP + HTML) by default; PlaywrightCrawler only for sources whose data needs JavaScript; one shared parseOffer() per source | Plain Playwright lacks queue/retries/rate limits; Crawlee v4 still a release candidate | Before collection work |
+| Source | Amazon product pages, test phase: low volume, team-seeded URLs, manual trigger, no retries. books.toscrape.com was the Sprint 1 checkpoint source only | After testing completes for all sites, the collection method moves to a production route | Now |
 | Styling/testing | Plain CSS initially; Node tests for backend; add UI tests as behaviour exists | No new design-system framework or test stack just for completeness | As code appears |
 
 No exact package-version compatibility has been verified for this fresh start. Ilmam verifies supported compatible releases, records the runtime, commits one lockfile, and reproduces setup on a second computer. Do not copy old dependency pins blindly. Drizzle, Tailwind, global state/query libraries, OpenAPI generation, and database row policies are not prerequisites for the first sample flow. Reconsider them for a demonstrated need; application tenant checks remain mandatory.
@@ -116,6 +119,14 @@ For a consequential choice, append one short row here (or a small linked note if
 `date | question | choice/status | why and tradeoff | evidence | affected members | revisit trigger`
 
 Current baseline: **30 September 2026 | simplify earlier architecture | proposed above | preserve quality, stage learning and dependencies | setup/auth/queue trials still needed | all four | trial fails or requirement changes**.
+
+Decisions since the baseline:
+
+- **10 October 2026 | MVP competitor flow** | Retailer signs in, picks or searches a product; Riven lists competitor offers automatically. No manual competitor selection in the MVP | Client decision after proposal evaluation; retailers should not have to know every competitor | Client meeting reported by Shewon, 10 Oct 2026 | all four | client changes scope
+- **10 October 2026 | Collection tool** | Crawlee with Cheerio default, Playwright where needed | Client approved Playwright/Crawlee; TypeScript fit; built-in queue, retries and politeness | reports/Scraping method for Riven (research, 10 Oct) | Shewon, Hirukshanan | a source needs a capability Crawlee lacks
+- **10 October 2026 | Collection pipeline** | Fastify enqueues, pg-boss worker collects, PostgreSQL stores | Keeps slow scraping out of web requests; one store; retries and scheduling built in | Scraping method research, 10 Oct | Shewon, Hirukshanan, Ilmam | pg-boss trial fails
+- **10 October 2026 | Primary source** | Amazon in a test phase; method changed for production after testing completes; books.toscrape retired after the Sprint 1 checkpoint | Client approved Playwright/Crawlee collection | Client meeting, 10 Oct 2026 | all four | testing completes or a source blocks
+- **10 October 2026 | Product matching** | Identifier first, then conflict check, then title similarity as unverified, then retailer confirm/reject | Titles alone are unreliable; keeps the human in control of comparisons | Scraping method research, 10 Oct | Shewon, Hirukshanan, Dilsan | match accuracy is poor in testing
 
 Routine CSS changes or function names need no architecture decision record. Shared interfaces require the affected owners' review. Source, paid-service, or product-scope changes require coordinator/client involvement.
 
@@ -141,6 +152,8 @@ The first proposed endpoint is `GET /api/v1/demo-observation`. It returns synthe
 `mode` says where the values came from: `synthetic` means fixture values written by the team (never collected); `practice` means values actually fetched from the practice site (`books.toscrape.com`, see the [source access decision](source-access-decision.md)). Neither is a live competitor observation. A future live mode is added only when a permitted commercial source passes the access gate.
 
 This timestamp is an example, not evidence of collection. `price` may be `null`; missing price is not zero. Use a decimal string plus currency; do not use binary floating-point for price calculations. Availability is `in_stock`, `out_of_stock`, or `unknown`; it is not stock quantity. Match status is `confirmed`, `unverified`, or `mismatch`. The UI must not imply comparison validity for unverified matches.
+
+**Matching order:** (1) same product identifier (GTIN/EAN/UPC, ASIN, or brand + model number) → `confirmed`; a different identifier → `mismatch`. (2) Conflicting model or pack-size details → `mismatch`. (3) Similar title only → `unverified`. (4) The retailer confirms (→ `confirmed`) or rejects (→ `mismatch`). A title match alone never sets `confirmed`.
 
 For the full journey, B/C/D extend the contract together with product/monitor IDs, source URL, attempt status, seller/variant/delivery context, last attempt and last successful observation. Dilsan reviews what the UI needs. Do not silently change field names or types. Define each real endpoint's request, response, error, and ownership check before wiring it.
 
@@ -169,6 +182,8 @@ Do not solve tenant safety by hiding buttons. Do not solve uncertainty by guessi
 Amazon is the first intended source, not a proven route. Earlier evidence and official links are in the SRS; the current access gate and first alternative candidate are in the [source access decision](source-access-decision.md). Recheck applicable access, permitted purpose, retention, sharing, quotas, and client credentials without putting secrets in chat, code, or public records.
 
 Shewon time-boxes the initial investigation to two working days after starting. A supported verdict needs access/use evidence and field-level sample checks where permitted. If unresolved, report **blocked** and ask the client for access or an explicit source/scope decision. A scraper repository, an API key, or successful HTTP response does not establish product suitability.
+
+Test phase (team decision, 10 Oct 2026): Amazon collection uses no sign-in and no retries; a blocked response is recorded as `blocked` and collection stops. The demo falls back to a dated snapshot of earlier results. After testing completes for all sites, the method is changed for production.
 
 Independent page/API work proceeds with synthetic data. Never call it an Amazon connector demonstration. A short evidence note with references, observed results, limits, and reviewer is enough; no empty success report.
 
