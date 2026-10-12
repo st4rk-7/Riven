@@ -1,0 +1,8 @@
+{
+  "manifest_version": 3,
+  "name": "Riven",
+  "version": "0.1.0",
+  "description": "Send the Amazon product you are viewing to Riven.",
+  "action": { "default_title": "Riven", "default_popup": "popup.html" },
+  "permissions": ["activeTab", "scripting"]
+}
