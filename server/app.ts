@@ -1,6 +1,7 @@
 import Fastify, { type FastifyInstance } from "fastify";
 
 import type { DemoObservation } from "../shared/demo-observation.js";
+import { registerObservationRoutes } from "./observations.js";
 import { collectBookObservation } from "./sources/books-toscrape.js";
 
 type BuildAppOptions = {
@@ -37,6 +38,8 @@ export function buildApp(
       return reply.code(502).send({ error: "Could not collect from the practice site." });
     }
   });
+
+  registerObservationRoutes(app);
 
   return app;
 }

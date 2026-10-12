@@ -3,6 +3,15 @@
   "name": "Riven",
   "version": "0.1.0",
   "description": "Send the Amazon product you are viewing to Riven.",
-  "action": { "default_title": "Riven", "default_popup": "popup.html" },
-  "permissions": ["activeTab", "scripting"]
+  "action": {
+    "default_title": "Riven",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:3000/*"
+  ]
 }

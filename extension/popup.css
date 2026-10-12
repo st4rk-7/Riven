@@ -8,3 +8,6 @@ dt { color: #6b7280; }
 dd { margin: 0; font-weight: 500; color: #111827; }
 .muted { color: #6b7280; margin: 0; }
 .error { color: #b91c1c; margin: 0; }
+button { height: 34px; border: 0; border-radius: 8px; background: #111827; color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+button:disabled { opacity: 0.5; cursor: default; }
+.ok { color: #047857; margin: 0; }
