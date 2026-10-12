@@ -47,7 +47,13 @@ export function parseAmazonProductPage(html: string): AmazonOffer {
   const asin = String($("input[name=ASIN]").first().val() ?? "").trim();
 
   // Only the buy box price counts; other prices on the page belong to other products.
-  const priceText = $("#buybox .priceToPay .a-offscreen").first().text();
+  // Amazon marks it with either class depending on the page layout.
+  const priceText =
+    $("#buybox")
+      .find(".priceToPay .a-offscreen, .apex-pricetopay-value .a-offscreen")
+      .toArray()
+      .map((el) => $(el).text().trim())
+      .find((text) => text.length > 0) ?? "";
   const { price, currency } = parsePrice(priceText);
 
   const availabilityText = $("#availability").first().text().replace(/\s+/g, " ").trim();

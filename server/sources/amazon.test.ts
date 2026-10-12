@@ -18,6 +18,16 @@ describe("parseAmazonProductPage", () => {
     });
   });
 
+  test("reads the price when the buy box uses the apex price class", () => {
+    expect(parseAmazonProductPage(fixture("amazon-uk-centre-price.html"))).toMatchObject({
+      asin: "B0H5JXRYQ9",
+      price: "67.79",
+      currency: "SGD",
+      availability: "in_stock",
+      seller: "Deeneya",
+    });
+  });
+
   test("returns no price when the page has no featured offer", () => {
     const offer = parseAmazonProductPage(fixture("amazon-sg-no-offer.html"));
 
