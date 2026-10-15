@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { matchOffer, modelTokens, packSize } from "./matching.js";
+import { linkOffer, matchOffer, modelTokens, packSize } from "./matching.js";
 
 const mouse = { name: "M185 Wireless Mouse, Grey", brand: "Logitech" };
 
@@ -45,4 +45,30 @@ test.each([
   ["Twin Pack Mouse", 2],
 ])("pack size of %s is %i", (title, size) => {
   expect(packSize(title)).toBe(size);
+});
+
+describe("linkOffer", () => {
+  const products = [
+    { id: "p1", name: "M185 Mouse, Black", brand: "Logitech" },
+    { id: "p2", name: "M185 Wireless Mouse, Grey", brand: "Logitech" },
+    { id: "p3", name: "Coin Purse", asin: "B07W6JN8V8" },
+  ];
+
+  test("prefers a confirmed ASIN over any title", () => {
+    expect(linkOffer(products, { productName: "Logitech M185 Wireless Mouse, Grey", asin: "B07W6JN8V8" })).toEqual({
+      product: products[2],
+      status: "confirmed",
+    });
+  });
+
+  test("picks the most similar unverified product", () => {
+    expect(linkOffer(products, { productName: "Logitech M185 Wireless Mouse - Grey" })).toEqual({
+      product: products[1],
+      status: "unverified",
+    });
+  });
+
+  test("links nothing when every product is ruled out", () => {
+    expect(linkOffer(products, { productName: "Logitech M190 Full-Size Wireless Mouse" })).toBeNull();
+  });
 });

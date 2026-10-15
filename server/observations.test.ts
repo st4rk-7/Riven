@@ -1,6 +1,7 @@
 import { expect, test } from "vitest";
 
 import { buildApp } from "./app.js";
+import { toObservation } from "./observations.js";
 
 const offer = {
   pageUrl: "https://www.amazon.co.uk/dp/1529922607",
@@ -71,4 +72,16 @@ test("rejects invalid values and unsupported sites", async () => {
   } finally {
     await app.close();
   }
+});
+
+test("links an offer to the retailer product with the same ASIN", () => {
+  const products = [{ id: "p1", name: "Billion-Dollar Ransom", asin: "1529922607" }];
+  const observation = toObservation({ ...offer, availability: "in_stock" }, new Date(), products);
+  expect(observation).toMatchObject({ productId: "p1", matchStatus: "confirmed" });
+});
+
+test("leaves an offer unlinked when no product matches", () => {
+  const products = [{ id: "p1", name: "Something else", asin: "B004YAVF8I" }];
+  const observation = toObservation({ ...offer, availability: "in_stock" }, new Date(), products);
+  expect(observation).toMatchObject({ productId: null, matchStatus: "unverified" });
 });

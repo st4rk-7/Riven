@@ -27,6 +27,8 @@ export type ExtensionOffer = z.infer<typeof ExtensionOfferSchema>;
 // What Riven stores and shows for a collected offer.
 export type CollectedObservation = {
   id: string;
+  // The retailer product this offer was linked to; null when none matched.
+  productId: string | null;
   asin: string;
   productName: string;
   price: string | null;

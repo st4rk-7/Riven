@@ -64,3 +64,16 @@ export function matchOffer(product: RetailerProduct, offer: OfferForMatching): M
   const name = product.brand ? `${product.brand} ${product.name}` : product.name;
   return titleSimilarity(name, offer.productName) >= SIMILAR_TITLE ? "unverified" : "mismatch";
 }
+
+// Links an offer to the retailer product it matches best: a confirmed match wins,
+// otherwise the most similar unverified one. Null when every product is ruled out.
+export function linkOffer<P extends RetailerProduct>(
+  products: P[],
+  offer: OfferForMatching,
+): { product: P; status: MatchStatus } | null {
+  const confirmed = products.find((p) => matchOffer(p, offer) === "confirmed");
+  if (confirmed) return { product: confirmed, status: "confirmed" };
+  const score = (p: P) => titleSimilarity(p.brand ? `${p.brand} ${p.name}` : p.name, offer.productName);
+  const best = products.filter((p) => matchOffer(p, offer) === "unverified").sort((a, b) => score(b) - score(a))[0];
+  return best ? { product: best, status: "unverified" } : null;
+}
