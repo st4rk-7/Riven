@@ -1,7 +1,7 @@
 import { type AmazonOffer, parseAmazonProductPage } from "../../server/sources/amazon.js";
 
 const ALLOWED_HOSTS = ["www.amazon.co.uk", "amazon.co.uk"];
-const RIVEN_API = "http://127.0.0.1:3000/api/v1/observations";
+const RIVEN_API = "http://127.0.0.1:3000/api/v1";
 
 const result = document.getElementById("result")!;
 
@@ -35,7 +35,7 @@ function render(offer: AmazonOffer, pageUrl: string) {
     status.className = "muted";
     status.textContent = "Sending…";
     try {
-      const response = await fetch(RIVEN_API, {
+      const response = await fetch(`${RIVEN_API}/observations`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ pageUrl, ...offer }),
@@ -68,7 +68,19 @@ async function main() {
   try {
     render(parseAmazonProductPage(String(injection?.result ?? "")), tab.url!);
   } catch (error) {
-    show(`<p class="error">${escape((error as Error).message)}</p>`);
+    const reason = (error as Error).message;
+    show(`<p class="error">${escape(reason)}</p><p id="status" class="muted">Recording the failed attempt…</p>`);
+    const status = document.getElementById("status")!;
+    try {
+      const response = await fetch(`${RIVEN_API}/attempts`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ pageUrl: tab.url, status: "failed", reason: reason.slice(0, 300) }),
+      });
+      status.textContent = response.ok ? "Failed attempt recorded in Riven." : "Riven did not record the attempt.";
+    } catch {
+      status.textContent = "Riven server not reachable; attempt not recorded.";
+    }
   }
 }
 

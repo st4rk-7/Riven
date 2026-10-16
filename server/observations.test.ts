@@ -85,3 +85,46 @@ test("leaves an offer unlinked when no product matches", () => {
   const observation = toObservation({ ...offer, availability: "in_stock" }, new Date(), products);
   expect(observation).toMatchObject({ productId: null, matchStatus: "unverified" });
 });
+
+test("records an attempt for every send, including invalid offers", async () => {
+  const app = buildApp({ logger: false });
+  try {
+    await app.inject({ method: "POST", url: "/api/v1/observations", payload: offer });
+    await app.inject({ method: "POST", url: "/api/v1/observations", payload: { ...offer, price: "0" } });
+    await app.inject({
+      method: "POST",
+      url: "/api/v1/observations",
+      payload: { ...offer, pageUrl: "https://example.com/dp/1529922607" },
+    });
+
+    const attempts = (await app.inject({ method: "GET", url: "/api/v1/attempts" })).json();
+    expect(attempts).toHaveLength(2);
+    expect(attempts[0]).toMatchObject({ source: "Amazon UK", status: "failed" });
+    expect(attempts[0].reason).toContain("price");
+    expect(attempts[1]).toMatchObject({ source: "Amazon UK", status: "ok", reason: null });
+  } finally {
+    await app.close();
+  }
+});
+
+test("records a page the extension could not read without touching observations", async () => {
+  const app = buildApp({ logger: false });
+  try {
+    await app.inject({ method: "POST", url: "/api/v1/observations", payload: offer });
+    const reported = await app.inject({
+      method: "POST",
+      url: "/api/v1/attempts",
+      payload: { pageUrl: offer.pageUrl, status: "failed", reason: "No product title on the page." },
+    });
+    expect(reported.statusCode).toBe(201);
+    expect(reported.json()).toMatchObject({ status: "failed", source: "Amazon UK" });
+
+    const observations = (await app.inject({ method: "GET", url: "/api/v1/observations" })).json();
+    expect(observations).toHaveLength(1);
+
+    const bad = await app.inject({ method: "POST", url: "/api/v1/attempts", payload: { pageUrl: offer.pageUrl } });
+    expect(bad.json()).toMatchObject({ code: "INVALID_ATTEMPT" });
+  } finally {
+    await app.close();
+  }
+});

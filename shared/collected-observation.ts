@@ -40,3 +40,22 @@ export type CollectedObservation = {
   matchStatus: "confirmed" | "unverified" | "mismatch";
   collectedVia: "extension" | "crawler";
 };
+
+// What the extension sends when it could not read an offer from a page.
+export const AttemptReportSchema = z.object({
+  pageUrl: z.url(),
+  status: z.enum(["failed", "blocked"]),
+  reason: z.string().trim().min(1).max(300),
+});
+
+export type AttemptReport = z.infer<typeof AttemptReportSchema>;
+
+// One try at collecting an offer, kept whether or not it produced an observation.
+export type CollectionAttempt = {
+  id: string;
+  productId: string | null;
+  source: string;
+  status: "ok" | "blocked" | "failed";
+  reason: string | null;
+  attemptedAt: string;
+};
