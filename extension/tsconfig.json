@@ -1,0 +1,9 @@
+{
+  "extends": "../server/tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM"],
+    "types": ["chrome"],
+    "noEmit": true
+  },
+  "include": ["src", "../server/sources/amazon.ts"]
+}
