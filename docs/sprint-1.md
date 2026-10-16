@@ -39,12 +39,12 @@ Integrate the sample flow together before opening a second task for each person.
 2. Say what one small change you will make and how you will check it.
 3. Work on a short branch, for example `feature/RIV-12-observation-card`, using a real ticket key.
 4. Run the checks yourself. Record what actually happened and explain failures.
-5. Open a small PR, explain the change, and demonstrate it to your reviewer.
-6. Merge reviewed work, verify it together, then mark the task Done.
+5. Open a PR that says what changed, why, how it was checked, and what remains.
+6. Merge it yourself once the app runs and checks pass, then mark the task Done. Announce big shared changes first (manual, section 10).
 
-Jira: **To Do → In Progress → Done**. Work awaiting review stays In Progress. Note blockers on the task. Give a short update: result, next step, blocker. Do not maintain a competing GitHub-issue backlog.
+Jira: **To Do → In Progress → Done**. Note blockers on the task. Give a short update: result, next step, blocker. Do not maintain a competing GitHub-issue backlog.
 
-A task needs only: owner, intended result, a few steps/checks, reviewer, and a blocker if one exists. AI assistance should be disclosed according to module rules. Nobody is expected to understand the whole stack on day one, but everyone must explain the changes they submit.
+A task needs only: owner, intended result, a few steps/checks, due date, and a blocker if one exists. AI assistance should be disclosed according to module rules. Nobody is expected to understand the whole stack on day one, but everyone must explain the changes they submit.
 
 ## Sprint review evidence
 

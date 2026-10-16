@@ -46,14 +46,14 @@ Never silently remove a proposal feature to simplify delivery. Record a client-a
 
 ## 4. Ownership without silos
 
-| Member | Intended area | First reviewer |
+| Member | Area | Sprint 1 tickets |
 | --- | --- | --- |
-| Dilsan | Screens, user flow, accessibility, frontend integration | Hirukshanan |
-| Hirukshanan | HTTP API, accounts, tenant checks, data model/storage | Ilmam; Shewon reviews observation meanings |
-| Shewon | Source access, collection adapter, observation quality, coordination | Hirukshanan |
-| Ilmam | Reproducible setup, checks, job execution/recovery, integration | Hirukshanan; Shewon reviews source limits |
+| Dilsan | Screens, user flow, accessibility, frontend integration | RIV-16 |
+| Hirukshanan | HTTP API, accounts, tenant checks, data model/storage (all tables, including user and session tables) | RIV-15 |
+| Shewon | Source access, collection, observation quality, coordination | RIV-17 |
+| Ilmam | Reproducible setup, seed data, automated checks, job execution/recovery | RIV-18, RIV-22 |
 
-Owners implement, test, and explain their work. Reviewers help, not take over. Shewon coordinates blockers and client decisions; he is not responsible for completing everyone's code. Roles can be rebalanced when someone is blocked or overloaded. All four must eventually trace and run the complete journey.
+Each owner decides, implements, tests, merges, and explains their own ticket. No one waits for another member's approval inside their own area. Shewon coordinates blockers and client decisions; he is not responsible for completing everyone's code. Roles can be rebalanced when someone is blocked or overloaded. All four must eventually trace and run the complete journey.
 
 ## 5. Architecture: one application with understandable parts
 
@@ -128,8 +128,9 @@ Decisions since the baseline:
 - **10 October 2026 | Primary source** | Amazon in a test phase; method changed for production after testing completes; books.toscrape retired after the Sprint 1 checkpoint | Client approved Playwright/Crawlee collection | Client meeting, 10 Oct 2026 | all four | testing completes or a source blocks
 - **10 October 2026 | Product matching** | Identifier first, then conflict check, then title similarity as unverified, then retailer confirm/reject | Titles alone are unreliable; keeps the human in control of comparisons | Scraping method research, 10 Oct | Shewon, Hirukshanan, Dilsan | match accuracy is poor in testing
 - **12 October 2026 | Amazon collection route** | Riven browser extension: the retailer's own browser views an Amazon product page; the extension reads it with the shared parser and sends the offer to Riven's API. Server-side Crawlee stays for sites that permit collection | Server-side requests were refused by Amazon in the live check; no third-party data provider | Live check, 12 Oct 2026; client and mentor suggestion | all four | extension cannot read pages reliably
+- **16 October 2026 | Team workflow** | Owners complete and merge their own tickets; mandatory reviewers and pre-approval removed; big shared changes are announced on Jira with a 24-hour objection window | Review and confirmation loops were slowing every ticket | Team lead decision, 16 Oct 2026 | all four | main breaks repeatedly or the module requires peer review
 
-Routine CSS changes or function names need no architecture decision record. Shared interfaces require the affected owners' review. Source, paid-service, or product-scope changes require coordinator/client involvement.
+Routine CSS changes or function names need no architecture decision record. Shared interface changes are announced as described in section 10. Source, paid-service, or product-scope changes require coordinator/client involvement.
 
 ## 7. Shared data meanings and first interface
 
@@ -156,7 +157,7 @@ This timestamp is an example, not evidence of collection. `price` may be `null`;
 
 **Matching order:** (1) same product identifier (GTIN/EAN/UPC, ASIN, or brand + model number) → `confirmed`; a different identifier → `mismatch`. (2) Conflicting model or pack-size details → `mismatch`. (3) Similar title only → `unverified`. (4) The retailer confirms (→ `confirmed`) or rejects (→ `mismatch`). A title match alone never sets `confirmed`.
 
-For the full journey, B/C/D extend the contract together with product/monitor IDs, source URL, attempt status, seller/variant/delivery context, last attempt and last successful observation. Dilsan reviews what the UI needs. Do not silently change field names or types. Define each real endpoint's request, response, error, and ownership check before wiring it.
+For the full journey, B/C/D extend the contract together with product/monitor IDs, source URL, attempt status, seller/variant/delivery context, last attempt and last successful observation. Hirukshanan publishes each endpoint's request, response and errors in `docs/api.md`; Dilsan builds against that file. Do not silently change field names or types. Define each real endpoint's request, response, error, and ownership check before wiring it.
 
 Suggested error shape: `{ "code": "SOURCE_UNAVAILABLE", "message": "Collection failed; previous result retained." }`. User-facing errors are safe summaries, not raw upstream HTML or credentials. Use appropriate HTTP statuses and keep them consistent.
 
@@ -195,11 +196,13 @@ Other escalation triggers: another member cannot reproduce setup; a shared inter
 Documentation in repositories is normal professional practice: it keeps design and usage guidance beside the code it describes. Jira and repository documents have different jobs. Do not duplicate live status in PDFs.
 
 1. Match member accounts; owner agrees a small deliverable. A guide label is not a Jira key.
-2. Create one current Jira task per member. Include result, relevant requirement/backlog IDs, checks, reviewer, dependencies, and link to the guide. Use subtasks only if they help; the guide's steps need not each be tickets.
+2. Create one current Jira task per member. Include result, relevant requirement/backlog IDs, checks, due date, and link to the guide. Use subtasks only if they help; the guide's steps need not each be tickets.
 3. Branch with an actual key, e.g. `feature/RIV-12-result-card`. Write a simple accurate commit message. Never invent past dates or another member's authorship.
-4. Owner explains the task, plans a small change, implements and runs checks. AI can teach and review; it must not autonomously complete the member's submission.
-5. Integrate early with the dependent member. Open a focused PR with actual command/results, limitations, and material AI assistance.
-6. Another member reviews and hears the explanation. Merge with human approval; verify integration; then mark the task Done. A review-pending task remains In Progress.
+4. The owner completes the whole ticket: plans, implements, and runs the checks. AI can teach; it must not autonomously complete the member's submission.
+5. Open a PR with what changed, why, how it was checked (actual commands/results), and what remains. This is the review record.
+6. The owner merges once the app runs and the checks pass, then marks the task Done. If a merge breaks main, the owner fixes it the same day.
+
+**Big changes only — announce, don't ask.** Post a comment on your Jira ticket before merging if you change: an API request/response, a database table, an observation field's meaning, a data source, or anything that breaks a teammate's work. If nobody objects within 24 hours, proceed. Everything else (file names, UI details, code structure, small libraries) is the owner's call. Stuck for more than half a day: comment on the ticket and tag Shewon. Source, paid-service and product-scope changes still go through Shewon and the client.
 
 Daily update: result, next step, blocker. No separate daily essay. Each PR answers: what changed, why, how checked, what remains. Client reviews validate usefulness; tests verify behaviour. Both matter.
 
