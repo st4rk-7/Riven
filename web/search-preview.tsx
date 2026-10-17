@@ -4,44 +4,96 @@ import { createRoot } from "react-dom/client";
 
 import Shell from "./calui/Shell";
 import { Badge } from "./calui/Badge";
+import { Button } from "./calui/Button";
+
 import { Search } from "./screens/Search";
+import { Competitors } from "./screens/Competitors";
 import { products } from "./data";
 
 import "./index.css";
 
 function SearchPreview() {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(
+    null
+  );
+
+  const [selectedOfferId, setSelectedOfferId] = useState<
+    string | null
+  >(null);
 
   const selectedProduct = products.find(
     (product) => product.id === selectedId
   );
 
+  const selectedOffer = selectedProduct?.offers.find(
+    (offer) => offer.id === selectedOfferId
+  );
+
+  function backToProducts() {
+    setSelectedId(null);
+    setSelectedOfferId(null);
+  }
+
   return (
     <Shell
       userName="Demo retailer"
-      heading="Products"
-      subtitle="Search a product. Riven lists its competitor offers."
+      heading={
+        selectedProduct ? selectedProduct.name : "Products"
+      }
+      subtitle={
+        selectedProduct
+          ? `${selectedProduct.brand} · ${selectedProduct.offers.length} competitor offers`
+          : "Search a product to view competitor offers"
+      }
       nav={[
         {
           name: "Products",
           icon: "package",
           current: true,
-          onClick: () => setSelectedId(null),
+          onClick: backToProducts,
         },
       ]}
       bottomNav={[]}
-      CTA={<Badge variant="orange">Sample data</Badge>}
-    >
-      <Search onOpen={setSelectedId} />
+      CTA={
+        <div className="flex items-center gap-2">
+          <Badge variant="orange">Sample data</Badge>
 
-      {selectedProduct && (
-        <div
-          role="status"
-          className="mt-4 rounded-md border border-subtle bg-default p-4 text-sm text-default"
-        >
-          Selected: <strong>{selectedProduct.name}</strong>.
-          The competitor offers screen will be connected next.
+          {selectedProduct && (
+            <Button
+              color="secondary"
+              StartIcon="arrow-left"
+              onClick={backToProducts}
+            >
+              Products
+            </Button>
+          )}
         </div>
+      }
+    >
+      {selectedProduct ? (
+        <>
+          <Competitors
+            product={selectedProduct}
+            onOpenOffer={setSelectedOfferId}
+          />
+
+          {selectedOffer && (
+            <div
+              role="status"
+              className="mt-4 rounded-md border border-subtle bg-default p-4 text-sm text-default"
+            >
+              Selected offer: {selectedOffer.seller}.
+              The detail screen will be connected next.
+            </div>
+          )}
+        </>
+      ) : (
+        <Search
+          onOpen={(productId) => {
+            setSelectedId(productId);
+            setSelectedOfferId(null);
+          }}
+        />
       )}
     </Shell>
   );
