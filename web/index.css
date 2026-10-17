@@ -1,0 +1,29 @@
+/* Mirrors Cal.diy apps/web/styles/globals.css: tailwind, Cal tokens, coss-ui. */
+@import "tailwindcss";
+@import "./cal/tokens.css";
+@import "./coss/styles/globals.css";
+
+@source "./coss";
+@source "./screens";
+@source "./*.tsx";
+@source "./calui";
+
+@font-face {
+  font-family: "Cal Sans";
+  src: url("./cal/fonts/CalSans-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+
+:root {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-cal: "Cal Sans", "Inter", system-ui, sans-serif;
+  --font-heading: var(--font-cal);
+  --riven-accent: #146ef5;
+}
+
+body {
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
