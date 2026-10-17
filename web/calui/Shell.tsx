@@ -1,7 +1,7 @@
 // Port of Cal.diy apps/web/modules/shell (Shell.tsx, SideBar.tsx, navigation/*,
 // user-dropdown/UserDropdown.tsx). Markup and classes are kept as in the source;
 // only Next.js, session, i18n and analytics wiring is removed.
-import { ChevronDownIcon, SearchIcon } from "lucide-react";
+import { ChevronDownIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
 import classNames from "./classNames";
@@ -40,13 +40,13 @@ function UserDropdown({ name, onSignOut }: { name: string; onSignOut?: () => voi
     <button
       type="button"
       onClick={onSignOut}
-      title="Sign out"
+      title="Exit sample dashboard"
       className="hover:bg-emphasis group mx-0 flex w-full cursor-pointer appearance-none items-center rounded-full px-2 py-1.5 text-left outline-none transition focus:outline-none focus:ring-0 md:rounded-none lg:rounded">
       <span className="relative h-5 w-5 shrink-0 rounded-full ltr:mr-2 rtl:ml-2">
         <span className="bg-emphasis text-emphasis flex h-5 w-5 items-center justify-center overflow-hidden rounded-full text-[10px] font-medium">
           {name.charAt(0)}
         </span>
-        <span className="border-muted absolute -bottom-0.5 right-0 h-2 w-2 rounded-full border bg-green-500" />
+
       </span>
       <span className="flex grow items-center gap-2">
         <span className="w-24 shrink-0 text-sm leading-none">
@@ -57,17 +57,6 @@ function UserDropdown({ name, onSignOut }: { name: string; onSignOut?: () => voi
           aria-hidden="true"
         />
       </span>
-    </button>
-  );
-}
-
-function KBarTrigger() {
-  return (
-    <button
-      type="button"
-      aria-label="Search"
-      className="todesktop:hover:!bg-transparent group flex rounded-md px-3 py-2 font-medium text-default text-sm transition hover:bg-subtle lg:px-2 lg:hover:bg-emphasis lg:hover:text-emphasis">
-      <SearchIcon className="h-4 w-4 shrink-0 text-inherit" />
     </button>
   );
 }
@@ -98,9 +87,7 @@ function SideBar({
                 <UserDropdown name={userName} onSignOut={onSignOut} />
               </span>
             </div>
-            <div className="flex w-full justify-end rtl:space-x-reverse">
-              <KBarTrigger />
-            </div>
+
           </header>
           <nav className="mt-2 flex-1 md:px-2 lg:mt-4 lg:px-0">
             {nav.map((item) => (
@@ -158,13 +145,13 @@ function ShellMain(props: ShellProps) {
   return (
     <>
       {props.heading && (
-        <div className="bg-default mb-0 flex items-center md:mb-6 md:mt-0 lg:mb-8 sticky top-0 z-10">
-          <header className="flex w-full max-w-full items-center truncate">
-            <div className="w-full truncate ltr:mr-4 rtl:ml-4 md:block">
-              <h3 className="font-cal text-emphasis max-w-28 sm:max-w-72 md:max-w-80 hidden truncate font-semibold tracking-wide sm:text-xl md:block xl:max-w-full text-xl">
+        <div className="bg-default sticky top-0 z-10 mb-4 md:mb-6 lg:mb-8">
+          <header className="flex w-full min-w-0 flex-wrap items-center justify-between gap-2 sm:flex-nowrap">
+            <div className="min-w-0 flex-1">
+              <h1 className="font-cal text-emphasis break-words text-xl font-semibold tracking-wide">
                 {props.heading}
-              </h3>
-              {props.subtitle && <p className="text-default hidden text-sm md:block">{props.subtitle}</p>}
+              </h1>
+              {props.subtitle && <p className="text-default text-sm">{props.subtitle}</p>}
             </div>
             {props.CTA && <div className="relative shrink-0">{props.CTA}</div>}
           </header>
@@ -178,10 +165,40 @@ function ShellMain(props: ShellProps) {
 export default function Shell(props: ShellProps) {
   return (
     <div className="flex min-h-screen flex-col">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-2 focus:z-50 focus:rounded focus:bg-default focus:p-2 focus:text-default"
+      >
+        Skip to main content
+      </a>
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-subtle bg-cal-muted p-3 lg:hidden">
+        <nav aria-label="Compact navigation" className="flex flex-wrap gap-2">
+          {props.nav.filter((item) => item.onClick).map((item) => (
+            <button
+              key={item.name}
+              type="button"
+              onClick={item.onClick}
+              aria-current={item.current ? "page" : undefined}
+              className="rounded-md border border-subtle bg-default px-3 py-2 text-sm text-emphasis focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              {item.name}
+            </button>
+          ))}
+        </nav>
+        {props.onSignOut && (
+          <button
+            type="button"
+            onClick={props.onSignOut}
+            className="rounded-md border border-subtle px-3 py-2 text-sm text-default focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
+            Exit demo
+          </button>
+        )}
+      </div>
       <div className="flex flex-1" data-testid="dashboard-shell">
         <SideBar userName={props.userName} nav={props.nav} bottomNav={props.bottomNav} onSignOut={props.onSignOut} />
         <div className="flex w-0 flex-1 flex-col">
-          <main className="bg-default relative z-0 flex-1 focus:outline-none">
+          <main id="main-content" tabIndex={-1} className="bg-default relative z-0 flex-1 focus:outline-none">
             <div className="max-w-full p-2 sm:p-4 lg:p-6">
               <ShellMain {...props} />
             </div>

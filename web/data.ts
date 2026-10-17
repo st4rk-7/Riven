@@ -50,8 +50,12 @@ export function formatPrice(price: string | null): string {
   return price === null ? "Price unavailable" : `£${price}`;
 }
 
+// Only confirmed matches are used for a trustworthy competitor comparison.
 export function lowestPrice(list: Offer[]): string | null {
-  const prices = list.map((o) => o.price).filter((p): p is string => p !== null);
-  if (prices.length === 0) return null;
-  return prices.reduce((a, b) => (Number(a) <= Number(b) ? a : b));
+  const prices = list
+    .filter((o) => o.matchStatus === "confirmed" && o.price !== null)
+    .map((o) => Number(o.price))
+    .filter((value) => Number.isFinite(value) && value >= 0);
+
+  return prices.length > 0 ? Math.min(...prices).toFixed(2) : null;
 }

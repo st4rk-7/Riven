@@ -1,21 +1,34 @@
-import { useState } from "react";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { Button } from "../calui/Button";
-import classNames from "../calui/classNames";
 import { formatPrice, priceHistory, type Product } from "../data";
 import { MatchBadge, StockBadge } from "../status";
 
-export function Detail({ product, offerId }: { product: Product; offerId: string }) {
-  const offer = product.offers.find((o) => o.id === offerId) ?? product.offers[0];
-  const [range, setRange] = useState("Daily");
+export function Detail({
+  product,
+  offerId,
+  onMatchDecision,
+}: {
+  product: Product;
+  offerId: string;
+  onMatchDecision?: (decision: "confirmed" | "mismatch") => void;
+}) {
+  const offer = product.offers.find((o) => o.id === offerId);
+
+  if (!offer) {
+    return (
+      <div role="alert" className="rounded-md border border-subtle p-6 text-sm text-default">
+        Offer unavailable. Return to the competitor list and choose another offer.
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <div className="rounded-md border border-subtle bg-default px-4 py-3">
           <p className="text-subtle text-sm">Current price</p>
-          <p className="text-emphasis mt-1 text-xl font-semibold tabular-nums">{formatPrice(offer.price)}</p>
+          <p className="text-emphasis mt-1 break-words text-base font-semibold tabular-nums sm:text-xl">{formatPrice(offer.price)}</p>
           <p className="text-muted mt-1 text-xs">As of {offer.observedAt}</p>
         </div>
         <div className="rounded-md border border-subtle bg-default px-4 py-3">
@@ -37,25 +50,12 @@ export function Detail({ product, offerId }: { product: Product; offerId: string
       </div>
 
       <div className="rounded-md border border-subtle bg-default">
-        <div className="flex items-center justify-between border-b border-subtle px-4 py-3 sm:px-6">
-          <p className="text-emphasis text-sm font-semibold">Price history</p>
-          <div className="bg-cal-muted flex rounded-md p-0.5">
-            {["Daily", "Weekly", "Monthly"].map((r) => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setRange(r)}
-                className={classNames(
-                  "rounded-[5px] px-2.5 py-1 text-sm font-medium transition",
-                  r === range ? "bg-default text-emphasis shadow-sm" : "text-subtle hover:text-emphasis"
-                )}>
-                {r}
-              </button>
-            ))}
-          </div>
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-subtle px-4 py-3 sm:px-6">
+          <p className="text-emphasis text-sm font-semibold">Sample product-wide price history</p>
+          <span className="text-xs text-subtle">7-day example · Not this seller's actual history</span>
         </div>
         <div className="px-4 py-4 sm:px-6">
-          <div className="h-72" role="img" aria-label="Line chart of lowest and average competitor price over the last 7 days">
+          <div className="h-72" role="img" aria-label="Example seven-day line chart of lowest and average competitor prices, not a history of the selected seller">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={priceHistory} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="var(--cal-border-subtle)" />
@@ -81,13 +81,28 @@ export function Detail({ product, offerId }: { product: Product; offerId: string
       </div>
 
       {offer.matchStatus === "unverified" && (
-        <div className="flex items-center justify-between rounded-md border border-subtle bg-default px-4 py-3 sm:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-subtle bg-default px-4 py-3 sm:px-6">
           <p className="text-default text-sm">Is this the same product as yours?</p>
-          <div className="flex gap-2">
-            <Button color="secondary">Not the same</Button>
-            <Button color="primary">Confirm match</Button>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              color="secondary"
+              disabled={!onMatchDecision}
+              onClick={() => onMatchDecision?.("mismatch")}
+            >
+              Not the same
+            </Button>
+            <Button
+              color="primary"
+              disabled={!onMatchDecision}
+              onClick={() => onMatchDecision?.("confirmed")}
+            >
+              Confirm match
+            </Button>
           </div>
         </div>
+      )}
+      {offer.matchStatus === "unverified" && !onMatchDecision && (
+        <p className="text-xs text-subtle">Review controls require the Riven application API.</p>
       )}
     </div>
   );

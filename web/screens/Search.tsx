@@ -3,12 +3,7 @@ import { useState } from "react";
 
 import { Badge } from "../calui/Badge";
 import { Button } from "../calui/Button";
-import {
-  formatPrice,
-  lowestPrice,
-  products,
-  type Product,
-} from "../data";
+import { formatPrice, lowestPrice, products, type Product } from "../data";
 
 // Same structure as Cal.diy's Event Types list (event-types-listing-view.tsx).
 export function Search({
@@ -19,12 +14,12 @@ export function Search({
   items?: Product[];
 }) {
   const [query, setQuery] = useState("");
-  const shown = items.filter((p) => `${p.brand} ${p.name}`.toLowerCase().includes(query.toLowerCase()));
+  const shown = items.filter((p) => `${p.brand} ${p.name}`.toLowerCase().includes(query.trim().toLowerCase()));
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
-        <label className="border-default bg-default flex h-9 max-w-64 flex-1 items-center gap-2 rounded-[10px] border px-3 text-sm focus-within:shadow-outline-gray-focused">
+        <label className="border-default bg-default flex h-9 w-full max-w-sm flex-1 items-center gap-2 rounded-[10px] border px-3 text-sm focus-within:shadow-outline-gray-focused">
           <SearchIcon className="h-4 w-4 text-subtle" />
           <span className="sr-only">Search products</span>
           <input
@@ -40,21 +35,17 @@ export function Search({
       <div className="flex flex-col overflow-hidden rounded-md border border-subtle bg-default">
         <ul className="w-full divide-y divide-subtle">
           {shown.length === 0 && (
-            <li className="px-6 py-12 text-center">
-              <p role="status" className="text-sm font-semibold text-emphasis">
-                {query.trim()
-                  ? "No matching products found"
-                  : "No products available"}
+            <li className="px-5 py-12 text-center" role="status">
+              <p className="text-sm font-semibold text-emphasis">
+                {query.trim() ? "No matching products found" : "No products available"}
               </p>
-
               <p className="mt-2 text-sm text-subtle">
                 {query.trim()
-                  ? "Try searching with a different product name or brand."
-                  : "Products will appear here when available."}
+                  ? "Try searching for another product name or brand."
+                  : "Products will appear when they are available."}
               </p>
             </li>
           )}
-
           {shown.map((p) => {
             const unverified = p.offers.filter((o) => o.matchStatus === "unverified").length;
             return (
@@ -72,9 +63,11 @@ export function Search({
                           {p.offers.length} offers
                         </Badge>
                         <Badge variant="gray" startIcon="tag">
-                          Lowest {formatPrice(lowestPrice(p.offers))}
+                          Lowest confirmed {formatPrice(lowestPrice(p.offers))}
                         </Badge>
-                        {unverified > 0 ? (
+                        {p.offers.length === 0 ? (
+                          <Badge variant="gray">No offers yet</Badge>
+                        ) : unverified > 0 ? (
                           <Badge variant="orange">{unverified} need review</Badge>
                         ) : (
                           <Badge variant="green">All matched</Badge>
@@ -83,7 +76,7 @@ export function Search({
                     </div>
                   </button>
                   <div className="mr-4 hidden shrink-0 sm:flex sm:mr-6">
-                    <Button color="secondary" variant="icon" StartIcon="external-link" onClick={() => onOpen(p.id)} aria-label="Open" />
+                    <Button color="secondary" variant="icon" StartIcon="arrow-right" onClick={() => onOpen(p.id)} aria-label={`Open ${p.name} offers`} />
                   </div>
                 </div>
               </li>

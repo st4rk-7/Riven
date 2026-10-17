@@ -14,7 +14,7 @@ export function SignIn({ onSignIn }: { onSignIn: () => void }) {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Welcome back</CardTitle>
-          <CardDescription>Sign in to see your competitors' prices.</CardDescription>
+          <CardDescription>Preview Riven's competitor dashboard.</CardDescription>
         </CardHeader>
         <CardPanel>
           <form
@@ -25,21 +25,21 @@ export function SignIn({ onSignIn }: { onSignIn: () => void }) {
             }}
           >
             <Field>
-              <FieldLabel>Email</FieldLabel>
-              <Input type="email" placeholder="you@shop.com" />
+              <FieldLabel>Email (demo only)</FieldLabel>
+              <Input type="email" disabled placeholder="Available after authentication is connected" />
             </Field>
             <Field>
-              <FieldLabel>Password</FieldLabel>
-              <Input type="password" placeholder="Your password" />
+              <FieldLabel>Password (demo only)</FieldLabel>
+              <Input type="password" disabled placeholder="Do not enter a real password" />
             </Field>
             <Button type="submit" className="w-full">
-              Sign in
+              Continue to sample dashboard
             </Button>
           </form>
         </CardPanel>
       </Card>
 
-      <p className="text-muted-foreground text-sm">Competitor price and stock tracking for online retailers</p>
+      <p className="max-w-sm text-center text-muted-foreground text-sm">Demo preview: no login or account access. Never enter real credentials here.</p>
     </div>
   );
 }
