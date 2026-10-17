@@ -9,7 +9,10 @@
     "strict": true,
     "isolatedModules": true,
     "noEmit": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@coss/ui/*": ["./coss/*"]
+    }
   },
   "include": ["**/*.ts", "**/*.tsx"]
 }

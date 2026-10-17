@@ -1,3 +1,4 @@
+import "./index.css";
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import type { DemoObservation } from "../shared/demo-observation";
@@ -24,7 +25,9 @@ function ObservationCard({
 }) {
   return (
     <main>
-      <h1>Riven</h1>
+      <h1 className="font-cal text-emphasis text-xl">
+        Riven
+      </h1>
       <p>
         Mode: {observation.mode}. Synthetic demonstration data — not Amazon.
       </p>
@@ -112,7 +115,9 @@ function App() {
 
   return (
     <main>
-      <h1>Riven</h1>
+      <h1 className="font-cal text-emphasis text-xl">
+        Riven
+      </h1>
       <p>Synthetic observation demo — not live Amazon data.</p>
 
       {state.status === "loading" ? (
