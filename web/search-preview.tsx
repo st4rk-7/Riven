@@ -8,18 +8,14 @@ import { Button } from "./calui/Button";
 
 import { Search } from "./screens/Search";
 import { Competitors } from "./screens/Competitors";
+import { Detail } from "./screens/Detail";
 import { products } from "./data";
 
 import "./index.css";
 
 function SearchPreview() {
-  const [selectedId, setSelectedId] = useState<string | null>(
-    null
-  );
-
-  const [selectedOfferId, setSelectedOfferId] = useState<
-    string | null
-  >(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null);
 
   const selectedProduct = products.find(
     (product) => product.id === selectedId
@@ -29,28 +25,40 @@ function SearchPreview() {
     (offer) => offer.id === selectedOfferId
   );
 
-  function backToProducts() {
+  function showProducts() {
     setSelectedId(null);
     setSelectedOfferId(null);
   }
 
+  function showCompetitors() {
+    setSelectedOfferId(null);
+  }
+
+  const isDetail = selectedProduct && selectedOffer;
+
+  const heading = isDetail
+    ? `${selectedOffer.seller} · ${selectedOffer.source}`
+    : selectedProduct
+      ? selectedProduct.name
+      : "Products";
+
+  const subtitle = isDetail
+    ? selectedProduct.name
+    : selectedProduct
+      ? `${selectedProduct.brand} · Competitor offers`
+      : "Search a product to view competitor offers";
+
   return (
     <Shell
       userName="Demo retailer"
-      heading={
-        selectedProduct ? selectedProduct.name : "Products"
-      }
-      subtitle={
-        selectedProduct
-          ? `${selectedProduct.brand} · ${selectedProduct.offers.length} competitor offers`
-          : "Search a product to view competitor offers"
-      }
+      heading={heading}
+      subtitle={subtitle}
       nav={[
         {
           name: "Products",
           icon: "package",
-          current: true,
-          onClick: backToProducts,
+          current: !selectedProduct,
+          onClick: showProducts,
         },
       ]}
       bottomNav={[]}
@@ -58,35 +66,43 @@ function SearchPreview() {
         <div className="flex items-center gap-2">
           <Badge variant="orange">Sample data</Badge>
 
-          {selectedProduct && (
+          {isDetail ? (
             <Button
               color="secondary"
               StartIcon="arrow-left"
-              onClick={backToProducts}
+              onClick={showCompetitors}
+            >
+              Back to offers
+            </Button>
+          ) : selectedProduct ? (
+            <Button
+              color="secondary"
+              StartIcon="arrow-left"
+              onClick={showProducts}
             >
               Products
             </Button>
-          )}
+          ) : null}
         </div>
       }
     >
-      {selectedProduct ? (
+      {isDetail ? (
         <>
-          <Competitors
+          <Detail
             product={selectedProduct}
-            onOpenOffer={setSelectedOfferId}
+            offerId={selectedOffer.id}
           />
 
-          {selectedOffer && (
-            <div
-              role="status"
-              className="mt-4 rounded-md border border-subtle bg-default p-4 text-sm text-default"
-            >
-              Selected offer: {selectedOffer.seller}.
-              The detail screen will be connected next.
-            </div>
-          )}
+          <p className="mt-4 text-sm text-subtle">
+            Demonstration only: Price history is sample data.
+            Match confirmation is not connected to the backend.
+          </p>
         </>
+      ) : selectedProduct ? (
+        <Competitors
+          product={selectedProduct}
+          onOpenOffer={setSelectedOfferId}
+        />
       ) : (
         <Search
           onOpen={(productId) => {
