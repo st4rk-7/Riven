@@ -3,12 +3,23 @@ import { useState } from "react";
 
 import { Badge } from "../calui/Badge";
 import { Button } from "../calui/Button";
-import { formatPrice, lowestPrice, products } from "../data";
+import {
+  formatPrice,
+  lowestPrice,
+  products,
+  type Product,
+} from "../data";
 
 // Same structure as Cal.diy's Event Types list (event-types-listing-view.tsx).
-export function Search({ onOpen }: { onOpen: (productId: string) => void }) {
+export function Search({
+  onOpen,
+  items = products,
+}: {
+  onOpen: (productId: string) => void;
+  items?: Product[];
+}) {
   const [query, setQuery] = useState("");
-  const shown = products.filter((p) => `${p.brand} ${p.name}`.toLowerCase().includes(query.toLowerCase()));
+  const shown = items.filter((p) => `${p.brand} ${p.name}`.toLowerCase().includes(query.toLowerCase()));
 
   return (
     <div className="flex flex-col gap-4">
@@ -28,6 +39,22 @@ export function Search({ onOpen }: { onOpen: (productId: string) => void }) {
 
       <div className="flex flex-col overflow-hidden rounded-md border border-subtle bg-default">
         <ul className="w-full divide-y divide-subtle">
+          {shown.length === 0 && (
+            <li className="px-6 py-12 text-center">
+              <p role="status" className="text-sm font-semibold text-emphasis">
+                {query.trim()
+                  ? "No matching products found"
+                  : "No products available"}
+              </p>
+
+              <p className="mt-2 text-sm text-subtle">
+                {query.trim()
+                  ? "Try searching with a different product name or brand."
+                  : "Products will appear here when available."}
+              </p>
+            </li>
+          )}
+
           {shown.map((p) => {
             const unverified = p.offers.filter((o) => o.matchStatus === "unverified").length;
             return (
