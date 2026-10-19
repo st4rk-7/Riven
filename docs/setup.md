@@ -275,6 +275,10 @@ npm.cmd run dev:web
 
 Use `npm.cmd run dev` for the normal connected application.
 
+The current visible sign-in inputs are intentionally disabled. Authentication
+and retailer isolation are verified through PostgreSQL integration tests, not
+through a completed browser sign-in flow.
+
 ## Development request path
 
 ```text
@@ -288,6 +292,9 @@ Browser on 127.0.0.1:5173
 
 The frontend must not select the active retailer by supplying a retailer ID.
 Protected backend routes derive the retailer from the verified session.
+
+The current demo observation endpoint remains explicitly synthetic and does not
+require a signed-in browser session.
 
 ## Docker lifecycle
 
@@ -342,6 +349,8 @@ Environment:
 - Docker Compose 5.5.1
 - PostgreSQL image `postgres:18.6-alpine`
 
+### Working repository
+
 Observed results:
 
 - Docker Compose configuration validation passed.
@@ -363,6 +372,32 @@ Observed results:
 - The committed environment example contains placeholders only.
 - The real `.env` remained ignored by Git.
 
+### Fresh-clone reproduction
+
+A separate clean clone of commit `790bb3f` was verified on 19 October 2026.
+
+Observed results:
+
+- `npm.cmd ci` installed 548 packages from the lockfile.
+- The clean working tree remained unchanged after installation.
+- A separate Docker network and PostgreSQL volume were created.
+- PostgreSQL became healthy on `127.0.0.1:5432`.
+- Both migrations applied from scratch.
+- `npm.cmd run db:check` passed.
+- `npm.cmd run db:seed` created two retailers, users, products and observations.
+- All frontend, backend and extension TypeScript checks passed.
+- The normal suite passed 49 tests.
+- Eleven database tests were skipped by the normal suite as expected.
+- Both integration files passed all 11 PostgreSQL tests.
+- `npm.cmd run dev` started the frontend and backend.
+- The frontend returned HTTP 200.
+- The demo endpoint returned the expected explicitly synthetic observation.
+- The clean working tree remained unchanged.
+
+The visible sign-in inputs are currently intentionally disabled. Authentication
+and retailer isolation were verified through the real PostgreSQL integration
+tests, not through a completed browser sign-in flow.
+
 During dependency installation, npm reported four dependency vulnerabilities:
 two moderate and two critical. No automatic or forced audit fix was applied
 because dependency changes require separate review and testing.
@@ -371,14 +406,11 @@ because dependency changes require separate review and testing.
 
 Before RIV-18 is complete:
 
-- Reproduce this workflow from a separate fresh clone.
-- Confirm the application starts from that clean clone.
-- Record the clean-clone environment and results.
 - Open a pull request and obtain the required review.
 - Merge only after acceptance and review.
 
-These checks do not prove production readiness, public deployment or live
-Amazon collection.
+These checks do not prove production readiness, public deployment, a completed
+browser sign-in flow or live Amazon collection.
 
 ## AI assistance
 
