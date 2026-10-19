@@ -1,21 +1,16 @@
 import { Badge } from "../calui/Badge";
 import { Button } from "../calui/Button";
-import { formatPrice, lowestPrice, type Product } from "../data";
+import { averagePrice, formatPrice, formatTime, lowestPrice, type Product } from "../data";
 import { MatchBadge, StockBadge } from "../status";
 
 // Same list structure as Cal.diy's Event Types / Bookings lists.
 export function Competitors({ product, onOpenOffer }: { product: Product; onOpenOffer: (offerId: string) => void }) {
-  const confirmed = product.offers.filter((o) => o.matchStatus === "confirmed" && o.price !== null);
-  const average =
-    confirmed.length > 0
-      ? (confirmed.reduce((sum, o) => sum + Number(o.price), 0) / confirmed.length).toFixed(2)
-      : null;
   const inStock = product.offers.filter((o) => o.availability === "in_stock").length;
 
   const stats = [
     { label: "Your price", value: "Not connected" },
-    { label: "Lowest confirmed offer", value: formatPrice(lowestPrice(product.offers)) },
-    { label: "Average (confirmed)", value: formatPrice(average) },
+    { label: "Lowest confirmed offer", value: lowestPrice(product.offers) },
+    { label: "Average (confirmed)", value: averagePrice(product.offers) },
     { label: "In stock", value: `${inStock} of ${product.offers.length}` },
   ];
 
@@ -36,7 +31,7 @@ export function Competitors({ product, onOpenOffer }: { product: Product; onOpen
             <li className="px-5 py-12 text-center" role="status">
               <p className="text-sm font-semibold text-emphasis">No competitor offers yet</p>
               <p className="mt-2 text-sm text-subtle">
-                Offers will appear here once they have been collected.
+                Send a product page to Riven with the browser extension and its offer will appear here.
               </p>
             </li>
           )}
@@ -52,12 +47,12 @@ export function Competitors({ product, onOpenOffer }: { product: Product; onOpen
                     <small className="hidden font-normal text-subtle leading-4 sm:inline">/{o.source}</small>
                     <div className="mt-2 flex flex-wrap gap-2">
                       <Badge variant="gray" startIcon="tag">
-                        {formatPrice(o.price)}
+                        {formatPrice(o.price, o.currency)}
                       </Badge>
                       <StockBadge value={o.availability} />
                       <MatchBadge value={o.matchStatus} />
                       <Badge variant="gray" startIcon="clock">
-                        {o.observedAt}
+                        {formatTime(o.observedAt)}
                       </Badge>
                     </div>
                   </div>

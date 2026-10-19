@@ -3,16 +3,10 @@ import { useState } from "react";
 
 import { Badge } from "../calui/Badge";
 import { Button } from "../calui/Button";
-import { formatPrice, lowestPrice, products, type Product } from "../data";
+import { lowestPrice, type Product } from "../data";
 
 // Same structure as Cal.diy's Event Types list (event-types-listing-view.tsx).
-export function Search({
-  onOpen,
-  items = products,
-}: {
-  onOpen: (productId: string) => void;
-  items?: Product[];
-}) {
+export function Search({ onOpen, items }: { onOpen: (productId: string) => void; items: Product[] }) {
   const [query, setQuery] = useState("");
   const shown = items.filter((p) => `${p.brand} ${p.name}`.toLowerCase().includes(query.trim().toLowerCase()));
 
@@ -42,7 +36,7 @@ export function Search({
               <p className="mt-2 text-sm text-subtle">
                 {query.trim()
                   ? "Try searching for another product name or brand."
-                  : "Products will appear when they are available."}
+                  : "Your products will appear here once they are added to your account."}
               </p>
             </li>
           )}
@@ -57,13 +51,13 @@ export function Search({
                     className="group flex w-full max-w-full items-center justify-between overflow-hidden px-4 py-4 text-left sm:px-6">
                     <div className="relative flex-1 overflow-hidden pr-4 text-sm">
                       <span className="break-words font-semibold text-default ltr:mr-1 rtl:ml-1">{p.name}</span>
-                      <small className="hidden font-normal text-subtle leading-4 sm:inline">/{p.brand.toLowerCase()}</small>
+                      {p.brand && <small className="hidden font-normal text-subtle leading-4 sm:inline">/{p.brand.toLowerCase()}</small>}
                       <div className="mt-2 flex flex-wrap gap-2">
                         <Badge variant="gray" startIcon="store">
-                          {p.offers.length} offers
+                          {p.offers.length} {p.offers.length === 1 ? "offer" : "offers"}
                         </Badge>
                         <Badge variant="gray" startIcon="tag">
-                          Lowest confirmed {formatPrice(lowestPrice(p.offers))}
+                          Lowest confirmed {lowestPrice(p.offers)}
                         </Badge>
                         {p.offers.length === 0 ? (
                           <Badge variant="gray">No offers yet</Badge>

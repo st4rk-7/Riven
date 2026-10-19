@@ -40,7 +40,7 @@ function UserDropdown({ name, onSignOut }: { name: string; onSignOut?: () => voi
     <button
       type="button"
       onClick={onSignOut}
-      title="Exit sample dashboard"
+      title="Sign out"
       className="hover:bg-emphasis group mx-0 flex w-full cursor-pointer appearance-none items-center rounded-full px-2 py-1.5 text-left outline-none transition focus:outline-none focus:ring-0 md:rounded-none lg:rounded">
       <span className="relative h-5 w-5 shrink-0 rounded-full ltr:mr-2 rtl:ml-2">
         <span className="bg-emphasis text-emphasis flex h-5 w-5 items-center justify-center overflow-hidden rounded-full text-[10px] font-medium">
@@ -191,7 +191,7 @@ export default function Shell(props: ShellProps) {
             onClick={props.onSignOut}
             className="rounded-md border border-subtle px-3 py-2 text-sm text-default focus-visible:outline-2 focus-visible:outline-offset-2"
           >
-            Exit demo
+            Sign out
           </button>
         )}
       </div>
