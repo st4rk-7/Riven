@@ -36,11 +36,13 @@ function render(offer: AmazonOffer, pageUrl: string) {
     status.textContent = "Sending…";
     try {
       const response = await fetch(`${RIVEN_API}/observations`, {
+        credentials: "include",
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ pageUrl, ...offer }),
       });
       const body = await response.json();
+      if (response.status === 401) throw new Error("Sign in to Riven in this Chrome profile first");
       if (!response.ok) throw new Error(body.message ?? `HTTP ${response.status}`);
       status.className = "ok";
       status.textContent = `Saved to Riven at ${new Date(body.observedAt).toLocaleTimeString()}`;
@@ -73,11 +75,13 @@ async function main() {
     const status = document.getElementById("status")!;
     try {
       const response = await fetch(`${RIVEN_API}/attempts`, {
+        credentials: "include",
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ pageUrl: tab.url, status: "failed", reason: reason.slice(0, 300) }),
       });
-      status.textContent = response.ok ? "Failed attempt recorded in Riven." : "Riven did not record the attempt.";
+      status.textContent = response.status === 401 ? "Sign in to Riven in this Chrome profile first; attempt not recorded."
+        : response.ok ? "Failed attempt recorded in Riven." : "Riven did not record the attempt.";
     } catch {
       status.textContent = "Riven server not reachable; attempt not recorded.";
     }

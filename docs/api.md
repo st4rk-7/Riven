@@ -1,10 +1,10 @@
 # Riven API
 
-Status: proposed contract for RIV-15.
+Status: implemented backend contract for RIV-15; frontend and real-browser
+extension integration checks remain pending.
 
-Authentication, database persistence and retailer isolation are not
-implemented by this document. Authentication endpoint names remain
-proposed until the authentication integration is selected.
+Authentication uses Better Auth 1.7.11 and PostgreSQL. Only the three
+authentication routes described here are exposed; public sign-up is disabled.
 
 Base path: /api/v1
 Request and response bodies use JSON unless stated otherwise.
@@ -22,7 +22,13 @@ All examples contain illustrative data.
 - Product matching considers only the signed-in retailer's products.
 - Missing, invalid or expired sessions return 401 on protected endpoints.
 - Cookie, origin and CSRF handling for both the web app and extension
-  must be verified during authentication integration.
+  is restricted to the configured WEB_ORIGIN, API origin and optional exact
+  RIVEN_EXTENSION_ORIGIN. Browser writes must include a trusted Origin.
+  Non-browser writes without Origin require X-Riven-Client: riven.
+  Cross-origin browser requests must use credentials: include.
+- Sessions expire after 24 hours without automatic refresh. Every protected
+  request verifies the database session; there is no client-side session cache.
+- Authenticated responses use Cache-Control: no-store.
 
 ## Errors
 
@@ -43,6 +49,8 @@ Errors use this shape:
 | 400 | UNSUPPORTED_SOURCE | Source is not supported |
 | 401 | INVALID_CREDENTIALS | Email or password is incorrect |
 | 401 | UNAUTHENTICATED | Missing, invalid or expired session |
+| 403 | FORBIDDEN_ORIGIN | Request origin is not allowed |
+| 429 | RATE_LIMITED | Too many sign-in attempts; see Retry-After |
 | 500 | INTERNAL_ERROR | Unexpected server failure |
 
 Messages must not expose passwords, session tokens, database details
@@ -82,6 +90,9 @@ Errors:
 
 Use the same credentials error whether or not the email exists.
 Passwords and session tokens are never returned in the JSON response.
+Sign-in permits up to five attempts per client IP in a 60-second window.
+The limiter is process-local; multiple server processes require shared storage.
+Login accepts only email and password. Public registration is not provided.
 
 ## Current session
 
@@ -310,9 +321,10 @@ Errors:
 - Failed collection preserves earlier valid observations.
 - Existing extension request and response shapes remain compatible.
 
-## Remaining integration decisions
+## Remaining integration work
 
-- Confirm the maintained authentication integration and its schema.
-- Define database migrations and the migration command.
-- Verify authentication from both the web app and browser extension.
+- RIV-18 provisions two retailer accounts using the agreed user/account tables.
+- Connect Dilsan's sign-in screen and real catalogue requests to these endpoints.
+- Verify cookies and sign-out in a real browser and the configured Chrome extension.
+- Announce the API and database changes on RIV-15 before merging, following manual section 10.
 - Agree any additional product operations before implementing them.
