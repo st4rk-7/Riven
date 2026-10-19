@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import type { FastifyInstance } from "fastify";
+import type { Pool, PoolClient } from "pg";
 
 import {
   AttemptReportSchema,
@@ -48,43 +49,61 @@ export function toObservation(
   };
 }
 
-type ObservationRouteOptions = {
-  now?: () => Date;
-  // The signed-in retailer's products; empty until sign-in and the database land.
-  products?: () => LinkableProduct[];
-};
-
-// shortcut: in-memory stores, replace with the agreed tables once the database lands.
-export function registerObservationRoutes(
-  app: FastifyInstance,
-  { now = () => new Date(), products = () => [] }: ObservationRouteOptions = {},
-) {
-  const store: CollectedObservation[] = [];
-  const attempts: CollectionAttempt[] = [];
-
-  // Every try is recorded, so a failure never hides or erases an earlier observation.
-  function recordAttempt(attempt: Omit<CollectionAttempt, "id" | "attemptedAt">) {
-    attempts.unshift({ id: randomUUID(), attemptedAt: now().toISOString(), ...attempt });
+export function registerObservationRoutes(app: FastifyInstance, database: Pool) {
+  async function recordAttempt(
+    retailerId: string,
+    attempt: Omit<CollectionAttempt, "id" | "attemptedAt">,
+    connection: Pool | PoolClient = database,
+  ): Promise<CollectionAttempt> {
+    const result = { id: randomUUID(), attemptedAt: new Date().toISOString(), ...attempt };
+    await connection.query(`INSERT INTO attempts (id, retailer_id, product_id, source, status, reason, attempted_at)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+    [result.id, retailerId, result.productId, result.source, result.status, result.reason, result.attemptedAt]);
+    return result;
   }
 
   app.post("/api/v1/observations", async (request, reply) => {
+    const retailerId = request.identity!.retailer.id;
     const parsed = ExtensionOfferSchema.safeParse(request.body);
     if (!parsed.success) {
-      const message = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
+      const message = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ").slice(0, 300);
       const source = sourceOf((request.body as { pageUrl?: unknown } | null)?.pageUrl);
-      if (source) recordAttempt({ productId: null, source, status: "failed", reason: message });
+      if (source) await recordAttempt(retailerId, { productId: null, source, status: "failed", reason: message });
       return reply.code(400).send({ code: "INVALID_OFFER", message });
     }
-    const observation = toObservation(parsed.data, now(), products());
-    if (!observation) {
+    if (!sourceOf(parsed.data.pageUrl)) {
       return reply.code(400).send({ code: "UNSUPPORTED_SOURCE", message: "Only Amazon UK pages are accepted." });
     }
-    store.unshift(observation);
-    recordAttempt({ productId: observation.productId, source: observation.source, status: "ok", reason: null });
-    return reply.code(201).send(observation);
+    const connection = await database.connect();
+    try {
+      await connection.query("BEGIN");
+      const { rows: products } = await connection.query<LinkableProduct>(
+        "SELECT id, name, brand, asin FROM products WHERE retailer_id = $1 ORDER BY id", [retailerId]);
+      const observation = toObservation(parsed.data, new Date(), products)!;
+      await connection.query(`INSERT INTO observations
+        (id, retailer_id, product_id, asin, product_name, price, currency, availability, seller, source, observed_at, match_status, collected_via)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+      [observation.id, retailerId, observation.productId, observation.asin, observation.productName,
+        observation.price, observation.currency, observation.availability, observation.seller,
+        observation.source, observation.observedAt, observation.matchStatus, observation.collectedVia]);
+      await recordAttempt(retailerId, { productId: observation.productId, source: observation.source, status: "ok", reason: null }, connection);
+      await connection.query("COMMIT");
+      return reply.code(201).send(observation);
+    } catch (error) {
+      await connection.query("ROLLBACK");
+      throw error;
+    } finally {
+      connection.release();
+    }
   });
 
-  app.get("/api/v1/observations", async () => store);
+  app.get("/api/v1/observations", async (request) => {
+    const { rows } = await database.query(`SELECT id, product_id AS "productId", asin,
+      product_name AS "productName", price, currency, availability, seller, source,
+      observed_at AS "observedAt", match_status AS "matchStatus", collected_via AS "collectedVia"
+      FROM observations WHERE retailer_id = $1 ORDER BY observed_at DESC, id`, [request.identity!.retailer.id]);
+    return rows;
+  });
 
   app.post("/api/v1/attempts", async (request, reply) => {
     const parsed = AttemptReportSchema.safeParse(request.body);
@@ -95,9 +114,15 @@ export function registerObservationRoutes(
     if (!source) {
       return reply.code(400).send({ code: "UNSUPPORTED_SOURCE", message: "Only Amazon UK pages are accepted." });
     }
-    recordAttempt({ productId: null, source, status: parsed.data.status, reason: parsed.data.reason });
-    return reply.code(201).send(attempts[0]);
+    const attempt = await recordAttempt(request.identity!.retailer.id,
+      { productId: null, source, status: parsed.data.status, reason: parsed.data.reason });
+    return reply.code(201).send(attempt);
   });
 
-  app.get("/api/v1/attempts", async () => attempts);
+  app.get("/api/v1/attempts", async (request) => {
+    const { rows } = await database.query(`SELECT id, product_id AS "productId", source, status, reason,
+      attempted_at AS "attemptedAt" FROM attempts WHERE retailer_id = $1 ORDER BY attempted_at DESC, id`,
+    [request.identity!.retailer.id]);
+    return rows;
+  });
 }

@@ -10,6 +10,22 @@ jobs:
   checks:
     name: Install, typecheck, and test
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: riven
+          POSTGRES_PASSWORD: riven_ci_test_only
+          POSTGRES_DB: riven_ci_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U riven -d riven_ci_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://riven:riven_ci_test_only@127.0.0.1:5432/riven_ci_test
 
     steps:
       - name: Check out repository
@@ -31,6 +47,9 @@ jobs:
 
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Check database migrations and constraints
+        run: npm run db:check
 
       - name: Run tests
         run: npm test
