@@ -1,17 +1,21 @@
-// Sample data only — shapes follow Riven's observation contract.
+import type { ApiObservation, ApiProduct } from "./riven-api";
 
-export type Availability = "in_stock" | "out_of_stock" | "unknown";
-export type MatchStatus = "confirmed" | "unverified" | "mismatch";
+export type Availability = ApiObservation["availability"];
+export type MatchStatus = ApiObservation["matchStatus"];
 
+export type PricePoint = { observedAt: string; price: number | null };
+
+// One competitor listing: its newest observation plus every earlier one.
 export type Offer = {
   id: string;
   seller: string;
   source: string;
   price: string | null;
-  currency: "GBP";
+  currency: string | null;
   availability: Availability;
   matchStatus: MatchStatus;
   observedAt: string;
+  history: PricePoint[];
 };
 
 export type Product = {
@@ -21,41 +25,68 @@ export type Product = {
   offers: Offer[];
 };
 
-const offers: Offer[] = [
-  { id: "a", seller: "Seller A", source: "Amazon UK", price: "11.49", currency: "GBP", availability: "in_stock", matchStatus: "confirmed", observedAt: "10 Oct, 14:05" },
-  { id: "b", seller: "Seller B", source: "Amazon UK", price: "12.19", currency: "GBP", availability: "in_stock", matchStatus: "confirmed", observedAt: "10 Oct, 14:05" },
-  { id: "c", seller: "Seller C", source: "Amazon UK", price: "12.49", currency: "GBP", availability: "unknown", matchStatus: "unverified", observedAt: "10 Oct, 14:04" },
-  { id: "d", seller: "Seller D", source: "Amazon UK", price: "12.99", currency: "GBP", availability: "in_stock", matchStatus: "confirmed", observedAt: "10 Oct, 14:04" },
-  { id: "e", seller: "Seller E", source: "Amazon UK", price: "13.20", currency: "GBP", availability: "out_of_stock", matchStatus: "confirmed", observedAt: "10 Oct, 14:03" },
-  { id: "f", seller: "Seller F", source: "Amazon UK", price: null, currency: "GBP", availability: "in_stock", matchStatus: "confirmed", observedAt: "10 Oct, 14:03" },
-];
+export const UNLINKED_ID = "unlinked";
 
-export const products: Product[] = [
-  { id: "m185", brand: "Logitech", name: "M185 Wireless Mouse, Grey", offers },
-  { id: "m330", brand: "Logitech", name: "M330 Silent Plus Wireless Mouse", offers: offers.slice(0, 4) },
-  { id: "m350", brand: "Logitech", name: "Pebble M350 Wireless Mouse", offers: offers.slice(1, 6) },
-];
+// Observations arrive newest first; the first one per listing is its current offer.
+export function buildCatalog(products: ApiProduct[], observations: ApiObservation[]): Product[] {
+  const offersByProduct = new Map<string, Map<string, Offer>>();
+  for (const o of observations) {
+    const productKey = o.productId ?? UNLINKED_ID;
+    const listingKey = `${o.source}|${o.seller ?? ""}|${o.asin}`;
+    const listings = offersByProduct.get(productKey) ?? new Map<string, Offer>();
+    offersByProduct.set(productKey, listings);
+    const point = { observedAt: o.observedAt, price: o.price === null ? null : Number(o.price) };
+    const existing = listings.get(listingKey);
+    if (existing) {
+      existing.history.unshift(point);
+      continue;
+    }
+    const seller = o.seller ?? "Unknown seller";
+    listings.set(listingKey, {
+      id: o.id,
+      seller: o.productId === null ? `${seller} · ${o.productName}` : seller,
+      source: o.source,
+      price: o.price,
+      currency: o.currency,
+      availability: o.availability,
+      matchStatus: o.matchStatus,
+      observedAt: o.observedAt,
+      history: [point],
+    });
+  }
 
-export const priceHistory = [
-  { day: "4 Oct", lowest: 12.49, average: 13.4 },
-  { day: "5 Oct", lowest: 12.49, average: 13.31 },
-  { day: "6 Oct", lowest: 12.19, average: 13.22 },
-  { day: "7 Oct", lowest: 12.19, average: 13.05 },
-  { day: "8 Oct", lowest: 11.99, average: 12.98 },
-  { day: "9 Oct", lowest: 11.99, average: 12.91 },
-  { day: "10 Oct", lowest: 11.49, average: 12.86 },
-];
-
-export function formatPrice(price: string | null): string {
-  return price === null ? "Price unavailable" : `£${price}`;
+  const catalog: Product[] = products.map((p) => ({
+    id: p.id,
+    brand: p.brand,
+    name: p.name,
+    offers: [...(offersByProduct.get(p.id)?.values() ?? [])],
+  }));
+  const unlinked = offersByProduct.get(UNLINKED_ID);
+  if (unlinked) catalog.push({ id: UNLINKED_ID, brand: "", name: "Offers not linked to a product", offers: [...unlinked.values()] });
+  return catalog;
 }
 
-// Only confirmed matches are used for a trustworthy competitor comparison.
-export function lowestPrice(list: Offer[]): string | null {
-  const prices = list
-    .filter((o) => o.matchStatus === "confirmed" && o.price !== null)
-    .map((o) => Number(o.price))
-    .filter((value) => Number.isFinite(value) && value >= 0);
-
-  return prices.length > 0 ? Math.min(...prices).toFixed(2) : null;
+export function formatPrice(price: string | null, currency: string | null): string {
+  if (price === null) return "Price unavailable";
+  return currency === "GBP" ? `£${price}` : `${price} ${currency ?? ""}`.trim();
 }
+
+export function formatTime(iso: string): string {
+  return new Date(iso).toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+}
+
+// Only confirmed matches in one currency give a trustworthy comparison; null means mixed currencies.
+function comparable(list: Offer[]): Offer[] | null {
+  const priced = list.filter((o) => o.matchStatus === "confirmed" && o.price !== null);
+  return new Set(priced.map((o) => o.currency)).size > 1 ? null : priced;
+}
+
+function summarise(list: Offer[], pick: (prices: number[]) => number): string {
+  const offers = comparable(list);
+  if (offers === null) return "Mixed currencies";
+  if (offers.length === 0) return formatPrice(null, null);
+  return formatPrice(pick(offers.map((o) => Number(o.price))).toFixed(2), offers[0].currency);
+}
+
+export const lowestPrice = (list: Offer[]) => summarise(list, (p) => Math.min(...p));
+export const averagePrice = (list: Offer[]) => summarise(list, (p) => p.reduce((a, b) => a + b, 0) / p.length);

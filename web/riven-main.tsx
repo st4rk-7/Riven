@@ -2,9 +2,9 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import Shell from "./calui/Shell";
-import { Badge } from "./calui/Badge";
 import { Button } from "./calui/Button";
-import { products, type Product } from "./data";
+import { api, ApiError, type Session } from "./riven-api";
+import { buildCatalog, type Product } from "./data";
 import { SignIn } from "./screens/SignIn";
 import { Search } from "./screens/Search";
 import { Competitors } from "./screens/Competitors";
@@ -16,7 +16,6 @@ const Detail = lazy(() =>
 );
 
 type Page =
-  | { name: "signin" }
   | { name: "search" }
   | { name: "competitors"; productId: string }
   | { name: "detail"; productId: string; offerId: string };
@@ -27,29 +26,31 @@ type CatalogState =
   | { status: "ready"; items: Product[] };
 
 function RivenApp() {
-  const [page, setPage] = useState<Page>({ name: "signin" });
+  const [session, setSession] = useState<Session | null | "checking">("checking");
+  const [page, setPage] = useState<Page>({ name: "search" });
   const [catalog, setCatalog] = useState<CatalogState>({ status: "loading" });
   const [loadKey, setLoadKey] = useState(0);
-  const [reviewNotice, setReviewNotice] = useState<string | null>(null);
 
   useEffect(() => {
-    // Mock-only catalogue states. Replace with a real data request after RIV-15.
-    const timer = window.setTimeout(() => {
-      const mode = new URLSearchParams(window.location.search).get("demoState");
-      if (mode === "error") {
-        setCatalog({ status: "error" });
-        return;
-      }
-      const items: Product[] =
-        mode === "empty"
-          ? []
-          : mode === "no-offers"
-            ? products.map((p, i) => (i === 0 ? { ...p, offers: [] } : p))
-            : products;
-      setCatalog({ status: "ready", items });
-    }, 650);
-    return () => window.clearTimeout(timer);
-  }, [loadKey]);
+    api.me().then(setSession, () => setSession(null));
+  }, []);
+
+  useEffect(() => {
+    if (session === null || session === "checking") return;
+    let cancelled = false;
+    setCatalog({ status: "loading" });
+    Promise.all([api.products(), api.observations()]).then(
+      ([products, observations]) => !cancelled && setCatalog({ status: "ready", items: buildCatalog(products, observations) }),
+      (error) => {
+        if (cancelled) return;
+        if (error instanceof ApiError && error.status === 401) setSession(null);
+        else setCatalog({ status: "error" });
+      },
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [session, loadKey]);
 
   const availableProducts = catalog.status === "ready" ? catalog.items : [];
   const product =
@@ -62,45 +63,30 @@ function RivenApp() {
       : undefined;
 
   function goToProducts() {
-    setReviewNotice(null);
     setPage({ name: "search" });
   }
 
-  function reviewMatch(decision: "confirmed" | "mismatch") {
-    if (page.name !== "detail" || catalog.status !== "ready") return;
-
-    const { productId, offerId } = page;
-    setCatalog((current) => {
-      if (current.status !== "ready") return current;
-      return {
-        status: "ready",
-        items: current.items.map((p) =>
-          p.id !== productId
-            ? p
-            : {
-                ...p,
-                offers: p.offers.map((o) =>
-                  o.id === offerId ? { ...o, matchStatus: decision } : o
-                ),
-              }
-        ),
-      };
-    });
-    setReviewNotice(
-      decision === "confirmed"
-        ? "Demo only: Match marked confirmed in this session; not saved to the server."
-        : "Demo only: Offer marked as a mismatch in this session; not saved to the server."
+  if (session === "checking") {
+    return (
+      <div role="status" className="flex min-h-svh items-center justify-center text-sm text-subtle">
+        Checking your session…
+      </div>
     );
   }
 
-  if (page.name === "signin") {
+  if (session === null) {
     return (
       <SignIn
-        onSignIn={() => {
-          setCatalog({ status: "loading" });
-          setLoadKey((key) => key + 1);
-          setReviewNotice(null);
-          setPage({ name: "search" });
+        onSignIn={async (email, password) => {
+          try {
+            setSession(await api.signIn(email, password));
+            setPage({ name: "search" });
+            return null;
+          } catch (error) {
+            if (error instanceof ApiError && error.status === 429) return "Too many attempts. Wait a minute and try again.";
+            if (error instanceof ApiError && error.status === 401) return "Email or password is incorrect.";
+            return "Could not reach Riven. Check that the server is running and try again.";
+          }
         }}
       />
     );
@@ -118,11 +104,11 @@ function RivenApp() {
   const subtitle =
     page.name === "search"
       ? "Search products and view competitor offers"
-      : product?.name ?? "Sample product data";
+      : product?.name ?? "";
 
   return (
     <Shell
-      userName="Demo retailer"
+      userName={session.retailer.name}
       heading={heading}
       subtitle={subtitle}
       nav={[
@@ -134,10 +120,13 @@ function RivenApp() {
         },
       ]}
       bottomNav={[]}
-      onSignOut={() => setPage({ name: "signin" })}
+      onSignOut={() => {
+        // Clear the screen even if the request fails; the cookie expires on its own.
+        void api.signOut().catch(() => undefined);
+        setSession(null);
+      }}
       CTA={
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="orange">Sample data</Badge>
           {page.name === "competitors" && (
             <Button color="secondary" StartIcon="arrow-left" onClick={goToProducts}>
               Products
@@ -147,10 +136,7 @@ function RivenApp() {
             <Button
               color="secondary"
               StartIcon="arrow-left"
-              onClick={() => {
-                setReviewNotice(null);
-                setPage({ name: "competitors", productId: product.id });
-              }}
+              onClick={() => setPage({ name: "competitors", productId: product.id })}
             >
               Back to offers
             </Button>
@@ -158,17 +144,6 @@ function RivenApp() {
         </div>
       }
     >
-      <p className="mb-4 rounded-md border border-subtle bg-cal-muted p-3 text-sm text-default">
-        Frontend demonstration using sample products, offers and price history.
-        No live retailer account is connected.
-      </p>
-
-      {reviewNotice && (
-        <p role="status" className="mb-4 rounded-md border border-subtle bg-default p-3 text-sm text-default">
-          {reviewNotice}
-        </p>
-      )}
-
       {page.name === "search" ? (
         catalog.status === "loading" ? (
           <div role="status" className="rounded-md border border-subtle bg-default p-8 text-center text-sm text-subtle">
@@ -178,7 +153,7 @@ function RivenApp() {
           <div role="alert" className="rounded-md border border-subtle bg-default p-8 text-center">
             <p className="text-sm font-semibold text-emphasis">Could not load products</p>
             <p className="mt-2 text-sm text-subtle">
-              Simulated error. Remove ?demoState=error from the URL to resume the sample catalogue.
+              Check that the Riven server is running, then try again.
             </p>
             <Button
               className="mt-4"
@@ -199,10 +174,7 @@ function RivenApp() {
       ) : page.name === "competitors" && product ? (
         <Competitors
           product={product}
-          onOpenOffer={(offerId) => {
-            setReviewNotice(null);
-            setPage({ name: "detail", productId: product.id, offerId });
-          }}
+          onOpenOffer={(offerId) => setPage({ name: "detail", productId: product.id, offerId })}
         />
       ) : page.name === "detail" && product && offer ? (
         <Suspense
@@ -212,11 +184,7 @@ function RivenApp() {
             </div>
           }
         >
-          <Detail
-            product={product}
-            offerId={offer.id}
-            onMatchDecision={reviewMatch}
-          />
+          <Detail product={product} offerId={offer.id} />
         </Suspense>
       ) : (
         <div role="alert" className="rounded-md border border-subtle p-6">

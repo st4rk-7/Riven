@@ -1,7 +1,7 @@
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { Button } from "../calui/Button";
-import { formatPrice, priceHistory, type Product } from "../data";
+import { formatPrice, formatTime, type Product } from "../data";
 import { MatchBadge, StockBadge } from "../status";
 
 export function Detail({
@@ -23,13 +23,16 @@ export function Detail({
     );
   }
 
+  const chartData = offer.history.map((p) => ({ time: formatTime(p.observedAt), price: p.price }));
+  const pricedPoints = offer.history.filter((p) => p.price !== null).length;
+
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <div className="rounded-md border border-subtle bg-default px-4 py-3">
           <p className="text-subtle text-sm">Current price</p>
-          <p className="text-emphasis mt-1 break-words text-base font-semibold tabular-nums sm:text-xl">{formatPrice(offer.price)}</p>
-          <p className="text-muted mt-1 text-xs">As of {offer.observedAt}</p>
+          <p className="text-emphasis mt-1 break-words text-base font-semibold tabular-nums sm:text-xl">{formatPrice(offer.price, offer.currency)}</p>
+          <p className="text-muted mt-1 text-xs">As of {formatTime(offer.observedAt)}</p>
         </div>
         <div className="rounded-md border border-subtle bg-default px-4 py-3">
           <p className="text-subtle text-sm">Stock</p>
@@ -45,38 +48,43 @@ export function Detail({
         </div>
         <div className="rounded-md border border-subtle bg-default px-4 py-3">
           <p className="text-subtle text-sm">Currency</p>
-          <p className="text-emphasis mt-1 text-xl font-semibold">{offer.currency}</p>
+          <p className="text-emphasis mt-1 text-xl font-semibold">{offer.currency ?? "Unknown"}</p>
         </div>
       </div>
 
       <div className="rounded-md border border-subtle bg-default">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-subtle px-4 py-3 sm:px-6">
-          <p className="text-emphasis text-sm font-semibold">Sample product-wide price history</p>
-          <span className="text-xs text-subtle">7-day example · Not this seller's actual history</span>
+          <p className="text-emphasis text-sm font-semibold">Price history for this seller</p>
+          <span className="text-xs text-subtle">{offer.history.length} observations · {offer.source}</span>
         </div>
         <div className="px-4 py-4 sm:px-6">
-          <div className="h-72" role="img" aria-label="Example seven-day line chart of lowest and average competitor prices, not a history of the selected seller">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={priceHistory} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
-                <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="var(--cal-border-subtle)" />
-                <XAxis dataKey="day" tickLine={false} axisLine={false} fontSize={12} stroke="var(--cal-text-subtle)" />
-                <YAxis
-                  orientation="right"
-                  domain={["dataMin - 0.5", "dataMax + 0.5"]}
-                  tickFormatter={(v: number) => `£${v.toFixed(2)}`}
-                  tickLine={false}
-                  axisLine={false}
-                  fontSize={12}
-                  width={56}
-                  stroke="var(--cal-text-subtle)"
-                />
-                <Tooltip formatter={(v) => `£${Number(v).toFixed(2)}`} />
-                <Line type="monotone" dataKey="lowest" name="Lowest" stroke="var(--riven-accent)" strokeWidth={2} dot={false} isAnimationActive={false} />
-                <Line type="monotone" dataKey="average" name="Average" stroke="var(--cal-text-muted)" strokeWidth={1.5} strokeDasharray="4 4" dot={false} isAnimationActive={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <p className="text-muted mt-3 text-xs">Last updated 10 Oct, 14:05 · Sample data</p>
+          {pricedPoints < 2 ? (
+            <p role="status" className="py-12 text-center text-sm text-subtle">
+              Not enough history yet. Each time this page is sent to Riven, a new point is added.
+            </p>
+          ) : (
+            <div className="h-72" role="img" aria-label={`Line chart of ${offer.seller}'s price over ${offer.history.length} observations`}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
+                  <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="var(--cal-border-subtle)" />
+                  <XAxis dataKey="time" tickLine={false} axisLine={false} fontSize={12} stroke="var(--cal-text-subtle)" />
+                  <YAxis
+                    orientation="right"
+                    domain={["dataMin - 0.5", "dataMax + 0.5"]}
+                    tickFormatter={(v: number) => formatPrice(v.toFixed(2), offer.currency)}
+                    tickLine={false}
+                    axisLine={false}
+                    fontSize={12}
+                    width={64}
+                    stroke="var(--cal-text-subtle)"
+                  />
+                  <Tooltip formatter={(v) => formatPrice(Number(v).toFixed(2), offer.currency)} />
+                  <Line type="monotone" dataKey="price" name="Price" stroke="var(--riven-accent)" strokeWidth={2} dot={false} isAnimationActive={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+          <p className="text-muted mt-3 text-xs">Last updated {formatTime(offer.observedAt)} · Gaps mean the price was unavailable</p>
         </div>
       </div>
 
