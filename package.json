@@ -57,6 +57,7 @@
     "db:migrate": "node --env-file-if-exists=.env scripts/migrate.mjs",
     "db:check": "node --env-file-if-exists=.env --import tsx scripts/check-database.ts",
     "test:integration": "node --env-file-if-exists=.env scripts/run-integration.mjs",
-    "auth:setup": "node scripts/configure-auth.mjs"
+    "auth:setup": "node scripts/configure-auth.mjs",
+    "db:seed": "node --env-file-if-exists=.env --import tsx server/data/run-seed.ts"
   }
 }

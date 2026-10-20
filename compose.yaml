@@ -1,0 +1,23 @@
+name: riven
+
+services:
+  postgres:
+    image: postgres:18.6-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: riven_dev
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - riven-postgres-data:/var/lib/postgresql
+      - ./docker/postgres/init-test-database.sql:/docker-entrypoint-initdb.d/001-test-database.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d riven_dev"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+      start_period: 5s
+
+volumes:
+  riven-postgres-data:

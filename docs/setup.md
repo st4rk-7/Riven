@@ -1,101 +1,343 @@
 # Local development setup
 
-## Status
+## Current scope
 
-RIV-5 has an integrated frontend/backend setup verified in the working repository and from a separate clean clone.
+This guide starts the shared Riven frontend, backend and local PostgreSQL
+database from one repository.
 
-Second-member reproduction was reported by Dilsan on 4 October 2026. Human review remains pending, so the ticket stays In Progress.
+The database contains synthetic development records only. The seed data is not
+Amazon output, customer information or evidence that a live source is working.
 
-This setup supports the synthetic Sprint 1 checkpoint only. It is not a production service or live Amazon integration.
+For schema and authentication details, see `docs/database.md`.
 
-## Agreed baseline
+## Required software
 
+The verified baseline is:
+
+- Git 2.55 or later
 - Node.js 24.x
 - npm 11.x
+- Docker Engine with Docker Compose
+- A code editor such as Visual Studio Code
+- Windows 11 64-bit for the recorded local verification
+
+The repository uses:
+
+- One root `package.json`
+- One root `package-lock.json`
 - TypeScript
 - React and Vite in `web/`
 - Fastify in `server/`
-- Vitest for tests
-- One root `package.json`
-- One root `package-lock.json`
+- PostgreSQL 18 through Docker Compose
+- Vitest for unit and integration tests
 
-Do not create another package or lockfile inside `web/` or `server/`.
+Do not create separate package or lockfiles inside `web/` or `server/`.
 
-## Install
+## Fresh-clone setup
 
-From the repository root:
+Run the following commands from the repository root.
+
+### 1. Install locked dependencies
 
 ```powershell
-npm ci
+npm.cmd ci
 ```
 
 This installs the exact dependency versions recorded in `package-lock.json`.
+It does not update the lockfile.
 
-## Start the connected application
+### 2. Create the private environment file
 
 ```powershell
-npm run dev
+Copy-Item .env.example .env
+code .env
+```
+
+The `.env` file is ignored by Git and must never be committed.
+
+Replace the placeholders with:
+
+- A local PostgreSQL password.
+- The same PostgreSQL password in `DATABASE_URL`.
+- The same PostgreSQL password in `TEST_DATABASE_URL`.
+- A separate seed password containing at least 20 characters.
+
+Using only letters and numbers for the PostgreSQL password avoids URL-encoding
+mistakes. If special characters are used, they must be percent-encoded inside
+the database URLs.
+
+The seed password must be different from the PostgreSQL password. It is used
+only by the two local synthetic accounts.
+
+Leave `BETTER_AUTH_SECRET` blank, save `.env`, and run:
+
+```powershell
+npm.cmd run auth:setup
+```
+
+This generates a local `BETTER_AUTH_SECRET` without printing the value.
+
+Never put real passwords or secrets in `.env.example`, documentation, GitHub,
+Jira or terminal evidence.
+
+### 3. Validate and start PostgreSQL
+
+Confirm that local port 5432 is available:
+
+```powershell
+Get-NetTCPConnection `
+    -LocalPort 5432 `
+    -State Listen `
+    -ErrorAction SilentlyContinue
+```
+
+Validate the Compose configuration:
+
+```powershell
+docker compose --env-file .env config --quiet
+```
+
+Start PostgreSQL:
+
+```powershell
+docker compose up -d --wait postgres
+docker compose ps
+```
+
+The Compose configuration:
+
+- Uses `postgres:18.6-alpine`.
+- Creates the `riven_dev` database.
+- Creates the `riven_test` database during first-time initialization.
+- Stores data in the `riven-postgres-data` Docker volume.
+- Binds PostgreSQL only to `127.0.0.1:5432`.
+- Waits for the PostgreSQL health check.
+
+Do not expose this local database publicly.
+
+Keep the PostgreSQL password stable after the Docker volume has been created.
+Changing only `.env` does not automatically change the password stored inside
+an existing PostgreSQL volume.
+
+### 4. Apply and verify migrations
+
+```powershell
+npm.cmd run db:migrate
+npm.cmd run db:check
+```
+
+`db:migrate` uses `DATABASE_URL` and applies numbered migrations to
+`riven_dev`.
+
+`db:check` uses `TEST_DATABASE_URL`. It verifies:
+
+- Safe migration reruns.
+- The Better Auth schema.
+- Required retailer ownership.
+- Cross-retailer foreign-key protection.
+- Unmatched observation records.
+- Money and currency constraints.
+- Session foreign keys.
+
+Applied migration files must not be edited. Add a later numbered migration for
+future schema changes.
+
+### 5. Add synthetic seed records
+
+```powershell
+npm.cmd run db:seed
+```
+
+The command applies migrations first and creates or updates:
+
+- Two synthetic retailers.
+- Two synthetic login users.
+- One sample product per retailer.
+- One sample observation per retailer.
+
+Synthetic account emails:
+
+- `alpha@example.test`
+- `beta@example.test`
+
+Both accounts use the private `RIVEN_SEED_PASSWORD` from `.env`. The password
+is hashed through Better Auth and is never printed.
+
+The sample records are explicitly labelled:
+
+```text
+Synthetic seed fixture (not live collection)
+```
+
+The Alpha record contains:
+
+- Product: Synthetic Wired Mouse
+- Price: GBP 19.99
+- Availability: in stock
+
+The Beta record contains:
+
+- Product: Synthetic USB Keyboard
+- Price: unknown
+- Currency: unknown
+- Availability: unknown
+
+Unknown price and currency are stored as null values rather than invented
+values.
+
+The seed command accepts only:
+
+- PostgreSQL or Postgres URLs.
+- Host `127.0.0.1` or `localhost`.
+- Port 5432.
+- Database `riven_dev` for the normal seed command.
+
+Running the seed command again updates the same fixed synthetic records instead
+of creating duplicates.
+
+### 6. Run checks
+
+Run all TypeScript checks:
+
+```powershell
+npm.cmd run typecheck
+```
+
+This checks:
+
+- The React/Vite frontend.
+- The Fastify backend.
+- The browser extension.
+
+Run the normal Vitest suite:
+
+```powershell
+npm.cmd test
+```
+
+The normal suite runs tests that do not require a loaded local database
+environment. Database integration cases are reported as skipped in this
+command.
+
+Run the real PostgreSQL integration suite separately:
+
+```powershell
+npm.cmd run test:integration
+```
+
+The integration command loads `.env` and uses `riven_test`. It:
+
+- Applies migrations to the test database.
+- Creates isolated synthetic test records.
+- Uses real Better Auth cookies.
+- Tests sign-in and sign-out.
+- Tests invalid, expired and tampered sessions.
+- Tests origin restrictions and sign-in throttling.
+- Tests observation persistence and transaction rollback.
+- Proves that one retailer cannot read another retailer's records.
+- Cleans up only the records it created.
+
+The RIV-18 seed integration test:
+
+- Runs the seed twice.
+- Confirms that no duplicate seed records are created.
+- Confirms one product and one observation per retailer.
+- Signs in as both synthetic retailers.
+- Sends misleading client-supplied retailer IDs.
+- Confirms Alpha still sees only Alpha's data.
+- Confirms Beta still sees only Beta's data.
+
+### 7. Start the application
+
+```powershell
+npm.cmd run dev
 ```
 
 This starts:
 
-- Fastify: `http://127.0.0.1:3000`
-- Vite: `http://127.0.0.1:5173`
+- Fastify at `http://127.0.0.1:3000`
+- Vite at `http://127.0.0.1:5173`
 
-Open `http://127.0.0.1:5173` in a browser. Stop both processes with `Ctrl+C`.
+Open:
+
+```text
+http://127.0.0.1:5173
+```
+
+Stop both development processes with `Ctrl+C`.
 
 Individual development commands are also available:
 
 ```powershell
-npm run dev:server
-npm run dev:web
+npm.cmd run dev:server
+npm.cmd run dev:web
 ```
 
-Use `npm run dev` for the normal connected-flow check.
+Use `npm.cmd run dev` for the normal connected application.
 
-## Request path
+The current visible sign-in inputs are intentionally disabled. Authentication
+and retailer isolation are verified through PostgreSQL integration tests, not
+through a completed browser sign-in flow.
+
+## Development request path
 
 ```text
-Browser
-  -> Vite on port 5173
-  -> /api proxy
-  -> Fastify on port 3000
-  -> GET /api/v1/demo-observation
-  -> synthetic observation response
+Browser on 127.0.0.1:5173
+  -> Vite /api proxy
+  -> Fastify on 127.0.0.1:3000
+  -> verified session
+  -> authenticated retailer identity
+  -> retailer-scoped PostgreSQL query
 ```
 
-The frontend requests the relative path `/api/v1/demo-observation`. Neither development server is configured for public exposure.
+The frontend must not select the active retailer by supplying a retailer ID.
+Protected backend routes derive the retailer from the verified session.
 
-## Checks
+The current demo observation endpoint remains explicitly synthetic and does not
+require a signed-in browser session.
 
-Run both TypeScript checks:
+## Docker lifecycle
+
+Show the current container state:
 
 ```powershell
-npm run typecheck
+docker compose ps
 ```
 
-Run the endpoint test:
+Stop PostgreSQL without deleting its data:
 
 ```powershell
-npm test
+docker compose stop
 ```
 
-Individual type-check commands:
+Start PostgreSQL again:
 
 ```powershell
-npm run typecheck:web
-npm run typecheck:server
+docker compose up -d --wait postgres
 ```
 
-## Test-tool decision
+Do not use the following as a normal setup command:
 
-Vitest was selected instead of Jest because it supports the project’s TypeScript, ES module, Node.js 24, and Vite 8 setup without a separate CommonJS transformation configuration.
+```text
+docker compose down --volumes
+```
 
-The Fastify test uses `app.inject()`, so it can test the endpoint without opening a network port.
+Removing volumes deletes the local PostgreSQL data and requires explicit
+intent.
 
-## Verification performed
+## Vitest decision
 
-Date: 3 October 2026
+Vitest is used because it supports the repository's TypeScript, ES modules,
+Node.js 24 and Vite configuration without a separate CommonJS transformation
+configuration.
+
+Fastify route tests use `app.inject()`, which exercises requests in memory
+without opening port 3000. Database integration tests separately use the real
+local PostgreSQL test database.
+
+## Verification recorded for RIV-18
+
+Date: 19 October 2026
 
 Environment:
 
@@ -103,97 +345,80 @@ Environment:
 - Git 2.55.0.windows.2
 - Node.js 24.20.0
 - npm 11.19.0
-- Visual Studio Code 1.139.1
+- Docker Engine 29.8.2
+- Docker Compose 5.5.1
+- PostgreSQL image `postgres:18.6-alpine`
 
 ### Working repository
 
-The following passed:
+Observed results:
 
-- `npm ci`
-- `npm run typecheck`
-- `npm test`
-- `npm run dev`
-- Frontend request through the Vite proxy to Fastify
-- Rendering the returned synthetic observation
-- Stopping the combined command with `Ctrl+C`
+- Docker Compose configuration validation passed.
+- PostgreSQL started healthy on `127.0.0.1:5432`.
+- `riven_dev` and `riven_test` were created.
+- Migrations `001_retailers_auth.sql` and `002_retailer_data.sql` applied.
+- `npm.cmd run db:check` passed.
+- `npm.cmd run typecheck` passed for web, server and extension.
+- Six seed configuration tests passed.
+- The seed command ran twice successfully.
+- Two retailers, users, products and observations were reported.
+- A database query showed one product and one observation per retailer.
+- The normal suite passed 49 tests.
+- Eleven database tests were skipped by the normal suite as expected.
+- Two PostgreSQL integration test files passed.
+- All 11 PostgreSQL integration tests passed.
+- Alpha and Beta could not read one another's seeded records.
+- Misleading client-supplied retailer IDs did not bypass tenant isolation.
+- The committed environment example contains placeholders only.
+- The real `.env` remained ignored by Git.
 
-Vitest reported one passing test file and one passing test.
+### Fresh-clone reproduction
 
-AI-assisted browser inspection confirmed that the page displayed the backend response, clearly labelled it as synthetic and not Amazon, and showed price, currency, availability, source, observation time, and match uncertainty. No browser console warnings or errors were reported.
-
-### Failure state
-
-The frontend was started without the backend.
-
-Observed result:
-
-- Vite recorded a local `ECONNREFUSED` proxy error.
-- The browser displayed `Could not load the synthetic observation.`
-- A Retry button was available.
-- The raw connection error was not displayed to the user.
-- Retrying while the backend remained unavailable preserved the safe failure state.
-
-### Clean clone
-
-Source:
-
-- Branch: `RIV-5-reproducible-setup`
-- Integrated code commit: `710b4d9`
-- Separate clean directory
+A separate clean clone of commit `790bb3f` was verified on 19 October 2026.
 
 Observed results:
 
-1. The published branch cloned successfully.
-2. `npm ci` installed 117 packages and audited 118 packages.
-3. npm reported 0 known vulnerabilities for that run.
-4. `npm run typecheck` passed for the frontend and backend.
-5. `npm test` passed one Vitest endpoint test.
-6. `npm run dev` started Fastify on port 3000 and Vite on port 5173.
-7. AI-assisted browser inspection confirmed the connected synthetic observation rendered.
-8. No browser console warnings or errors were reported.
-9. The clean clone remained unchanged after installation and checks.
-
-### Second-member reproduction
-
-Dilsan reported testing [PR #6](https://github.com/st4rk-7/Riven/pull/6) from a separate clean clone of `RIV-5-reproducible-setup` at commit `de0fd16` on 4 October 2026.
-
-Environment:
-
-- Windows
-- Node.js v24.16.0
-- npm 11.13.0
-
-Reported results:
-
-- `npm.cmd ci` passed with 117 packages installed.
-- Frontend and backend TypeScript checks passed.
-- `npm.cmd test` passed one endpoint test.
+- `npm.cmd ci` installed 548 packages from the lockfile.
+- The clean working tree remained unchanged after installation.
+- A separate Docker network and PostgreSQL volume were created.
+- PostgreSQL became healthy on `127.0.0.1:5432`.
+- Both migrations applied from scratch.
+- `npm.cmd run db:check` passed.
+- `npm.cmd run db:seed` created two retailers, users, products and observations.
+- All frontend, backend and extension TypeScript checks passed.
+- The normal suite passed 49 tests.
+- Eleven database tests were skipped by the normal suite as expected.
+- Both integration files passed all 11 PostgreSQL tests.
 - `npm.cmd run dev` started the frontend and backend.
-- The browser displayed the synthetic observation.
-- `GET /api/v1/demo-observation` returned status 200.
-- The displayed price matched the endpoint response.
-- Direct backend and frontend-proxy requests returned matching synthetic responses.
-- The clean working folder remained unchanged.
+- The frontend returned HTTP 200.
+- The demo endpoint returned the expected explicitly synthetic observation.
+- The clean working tree remained unchanged.
 
-Dilsan reported that ChatGPT guided the steps, ran or verified TypeScript and direct HTTP checks, and helped interpret the results. Dilsan ran the installation, endpoint test and startup, and checked the browser flow.
+The visible sign-in inputs are currently intentionally disabled. Authentication
+and retailer isolation were verified through the real PostgreSQL integration
+tests, not through a completed browser sign-in flow.
 
-These reported results support the shared setup reproduction. They do not establish production readiness, completion of RIV-3, or live Amazon access.
+During dependency installation, npm reported four dependency vulnerabilities:
+two moderate and two critical. No automatic or forced audit fix was applied
+because dependency changes require separate review and testing.
 
-## Known limitations
+## Remaining verification
 
-- Reviewer approval is pending.
-- The branch has not been merged.
-- CI has not been configured or run.
-- A production build was not verified.
-- npm audit results describe individual runs only.
-- npm warned that the esbuild install script was not covered by `allowScripts`; no script was approved blindly.
-- Authentication, persistence, queues, deployment, and live Amazon collection were not tested.
+Before RIV-18 is complete:
+
+- Open a pull request and obtain the required review.
+- Merge only after acceptance and review.
+
+These checks do not prove production readiness, public deployment, a completed
+browser sign-in flow or live Amazon collection.
 
 ## AI assistance
 
-AI assistance was used to explain and plan RIV-5, review teammate branches, guide clean reproductions, propose the shared structure, supply code for Ilmam to enter and inspect, guide checks, and inspect the rendered pages and browser console.
+AI assistance was used to explain the Docker Compose, migration, authentication
+and seed workflow; propose code for Ilmam to enter and inspect; help diagnose
+configuration and command-line quoting errors; and guide the verification
+commands.
 
-
-Ilmam ran the Git, npm, type-check, test, development-server, HTTP, commit, and push commands and reviewed the observed results.
-
-No reviewer approval, CI success, merge, live-source acceptance, or completed ticket is claimed.
+Ilmam selected and approved the synthetic dataset, created and rotated the
+local secrets, entered and reviewed the changes, ran the verification commands
+and remains responsible for explaining and demonstrating the submitted work.
