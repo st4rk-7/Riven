@@ -350,6 +350,19 @@ The app reads its settings from the environment: `DATABASE_URL`,
 `RIVEN_EXTENSION_ORIGIN`, and optionally `HOST` and `PORT`. A hosting
 service sets these instead of a `.env` file.
 
+## Create a retailer account
+
+There is no public sign-up. Create a real retailer and its sign-in account on
+any database, including the deployed one, with:
+
+```powershell
+$env:RIVEN_ACCOUNT_PASSWORD = "<at least 12 characters>"
+npm run account:create -- --retailer "Shop name" --email owner@example.com
+```
+
+The script uses `DATABASE_URL`, refuses an email that already exists, and
+creates nothing if any step fails. The seed command stays local-only.
+
 ## Vitest decision
 
 Vitest is used because it supports the repository's TypeScript, ES modules,
