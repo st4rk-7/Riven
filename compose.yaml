@@ -19,5 +19,21 @@ services:
       retries: 15
       start_period: 5s
 
+  # Full stack for a local production-style check: docker compose --profile app up --build
+  app:
+    profiles: ["app"]
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/riven_dev
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?Set BETTER_AUTH_SECRET in .env}
+      BETTER_AUTH_URL: http://127.0.0.1:8080
+      WEB_ORIGIN: http://127.0.0.1:8080
+      RIVEN_EXTENSION_ORIGIN: ${RIVEN_EXTENSION_ORIGIN:-}
+    ports:
+      - "127.0.0.1:8080:3000"
+
 volumes:
   riven-postgres-data:

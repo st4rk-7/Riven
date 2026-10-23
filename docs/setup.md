@@ -325,6 +325,31 @@ docker compose down --volumes
 Removing volumes deletes the local PostgreSQL data and requires explicit
 intent.
 
+## Production-style check with Docker
+
+The `Dockerfile` builds one image that serves the website and the API on one
+address. On start it applies pending migrations, then starts the server.
+
+Run the whole stack locally (PostgreSQL plus the app):
+
+```powershell
+docker compose --env-file .env --profile app up -d --build --wait
+```
+
+Open `http://127.0.0.1:8080`. Create the synthetic accounts in this database
+with `npm run db:seed`.
+
+Stop it:
+
+```powershell
+docker compose --profile app stop
+```
+
+The app reads its settings from the environment: `DATABASE_URL`,
+`BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `WEB_ORIGIN`,
+`RIVEN_EXTENSION_ORIGIN`, and optionally `HOST` and `PORT`. A hosting
+service sets these instead of a `.env` file.
+
 ## Vitest decision
 
 Vitest is used because it supports the repository's TypeScript, ES modules,
