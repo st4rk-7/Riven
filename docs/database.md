@@ -89,9 +89,11 @@ WEB_ORIGIN=http://127.0.0.1:5173. Production requires HTTPS. Public sign-up is
 disabled; no credentials are written into source code or frontend storage.
 Do not mix localhost and 127.0.0.1 when signing in because cookies are host-bound.
 
-For the extension, load the unpacked build and copy its exact 32-character ID
-from chrome://extensions into RIVEN_EXTENSION_ORIGIN=chrome-extension://THE_ID.
-Rebuild the popup with `npm run build:extension`, then reload the unpacked extension.
+The manifest's public `key` gives the unpacked extension the same ID on every
+computer, so set
+RIVEN_EXTENSION_ORIGIN=chrome-extension://npehakhmjaahoopfplbjkknaaafcphko.
+Build the popup with `npm run build:extension` for the local server or
+`npm run build:extension:live` for https://riven.sbs, then reload the unpacked extension.
 Restart the server after changing that setting. Only this extension origin is
 allowed; a wildcard is deliberately not used. Requests include credentials and
 use the current profile's session cookie. Chrome's host-permission and cookie

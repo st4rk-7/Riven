@@ -1,7 +1,9 @@
 import { type AmazonOffer, parseAmazonProductPage } from "../../server/sources/amazon.js";
 
 const ALLOWED_HOSTS = ["www.amazon.co.uk", "amazon.co.uk"];
-const RIVEN_API = "http://127.0.0.1:3000/api/v1";
+// Set at build time: npm run build:extension (local) or build:extension:live (https://riven.sbs).
+declare const __RIVEN_API__: string;
+const RIVEN_API = __RIVEN_API__;
 
 const result = document.getElementById("result")!;
 
