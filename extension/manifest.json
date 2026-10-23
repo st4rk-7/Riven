@@ -2,6 +2,7 @@
   "manifest_version": 3,
   "name": "Riven",
   "version": "0.1.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm8sjFUz2Hk8QcWaJ7VK80EkYyG5VFxa+58z49qOj5tiIJ0sg7uyviwcLqPFGqDGTp0nQu28B+1mCesJBuX+H5PDYxDqp0V3N29lweLDw+fySgBVvLkYc4/CjmrbhNgZEwXOqjYIid5xmINjGXOHVO9X9ls89MgWGjDrO04SUd8xVTSYe/KbooLt5e8cCiupBMDYlZ8aKbvTii4EtJgd5U4Gy/a+gQP7AwX4lUz4H8nYnWWwsclEUPlkrk5Jiz9Zum0q7xLGAsRJhjDpA09I82c6ygUSbd92MpsG0SGBitVEtG/17l2BhcbS5PGtjQC81DXrItcZdioYQlYzrn/NKLwIDAQAB",
   "description": "Send the Amazon product you are viewing to Riven.",
   "action": {
     "default_title": "Riven",
@@ -12,6 +13,7 @@
     "scripting"
   ],
   "host_permissions": [
-    "http://127.0.0.1:3000/*"
+    "http://127.0.0.1:3000/*",
+    "https://riven.sbs/*"
   ]
 }

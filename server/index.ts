@@ -1,3 +1,6 @@
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import fastifyStatic from "@fastify/static";
 import { buildApp } from "./app.js";
 import pg from "pg";
 
@@ -13,10 +16,20 @@ const app = buildApp({ database, authentication: {
 } });
 app.addHook("onClose", async () => { await database.end(); });
 
+// Production: serve the built website from the same address as the API.
+const webDist = fileURLToPath(new URL("../web/dist", import.meta.url));
+if (existsSync(webDist)) {
+  await app.register(fastifyStatic, { root: webDist });
+  app.setNotFoundHandler((request, reply) =>
+    request.url.startsWith("/api/")
+      ? reply.code(404).send({ code: "NOT_FOUND", message: "Not found." })
+      : reply.sendFile("index.html"));
+}
+
 try {
   await app.listen({
-    host: "127.0.0.1",
-    port: 3000,
+    host: process.env.HOST ?? "127.0.0.1",
+    port: Number(process.env.PORT ?? 3000),
   });
 } catch (error) {
   app.log.error(error);

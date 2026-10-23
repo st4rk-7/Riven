@@ -1,0 +1,11 @@
+.git
+node_modules
+web/dist
+extension/dist
+coverage
+.env
+.env.*
+!.env.example
+local-reference
+docs/guides/build
+handouts

@@ -10,6 +10,7 @@
   "dependencies": {
     "@base-ui/react": "^1.9.0",
     "@fastify/cors": "11.3.1",
+    "@fastify/static": "^10.1.7",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
     "better-auth": "1.7.11",
@@ -52,12 +53,14 @@
     "typecheck:web": "tsc -p web/tsconfig.json",
     "typecheck:server": "tsc -p server/tsconfig.json",
     "build:web": "npm run typecheck:web && vite build",
-    "build:extension": "esbuild extension/src/popup.ts --bundle --platform=browser --format=iife --target=chrome120 --outfile=extension/dist/popup.js",
+    "build:extension": "node scripts/build-extension.mjs",
+    "build:extension:live": "node scripts/build-extension.mjs --live",
     "typecheck:extension": "tsc -p extension/tsconfig.json",
     "db:migrate": "node --env-file-if-exists=.env scripts/migrate.mjs",
     "db:check": "node --env-file-if-exists=.env --import tsx scripts/check-database.ts",
     "test:integration": "node --env-file-if-exists=.env scripts/run-integration.mjs",
     "auth:setup": "node scripts/configure-auth.mjs",
-    "db:seed": "node --env-file-if-exists=.env --import tsx server/data/run-seed.ts"
+    "db:seed": "node --env-file-if-exists=.env --import tsx server/data/run-seed.ts",
+    "account:create": "node --env-file-if-exists=.env --import tsx scripts/create-account.ts"
   }
 }
