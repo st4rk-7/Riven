@@ -10,6 +10,7 @@
   "dependencies": {
     "@base-ui/react": "^1.9.0",
     "@fastify/cors": "11.3.1",
+    "@fastify/static": "^10.1.7",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
     "better-auth": "1.7.11",
