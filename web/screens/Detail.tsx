@@ -90,8 +90,16 @@ export function Detail({
 
       {offer.matchStatus === "unverified" && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-subtle bg-default px-4 py-3 sm:px-6">
-          <p className="text-default text-sm">Is this the same product as yours?</p>
+          <div className="min-w-0 text-sm">
+            <p className="text-default">Is this the same product as yours?</p>
+            <p className="mt-1 break-words text-subtle">{offer.productName}</p>
+          </div>
           <div className="flex flex-wrap gap-2">
+            {offer.url && (
+              <Button color="secondary" EndIcon="external-link" href={offer.url} target="_blank" rel="noopener noreferrer">
+                View on {offer.source}
+              </Button>
+            )}
             <Button
               color="secondary"
               disabled={!onMatchDecision}

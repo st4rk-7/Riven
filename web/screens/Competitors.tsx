@@ -82,6 +82,7 @@ export function Competitors({
                   <div className="relative flex-1 overflow-hidden pr-4 text-sm">
                     <span className="break-words font-semibold text-default ltr:mr-1 rtl:ml-1">{o.seller}</span>
                     <small className="hidden font-normal text-subtle leading-4 sm:inline">/{o.source}</small>
+                    <p className="mt-1 line-clamp-2 break-words text-subtle">{o.productName}</p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       <Badge variant="gray" startIcon="tag">
                         {formatPrice(o.price, o.currency)}
@@ -97,6 +98,19 @@ export function Competitors({
                     </div>
                   </div>
                 </button>
+                {o.url && (
+                  <div className="mr-2 shrink-0 sm:mr-3">
+                    <Button
+                      color="secondary"
+                      variant="icon"
+                      StartIcon="external-link"
+                      href={o.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Open ${o.seller}'s listing on ${o.source}`}
+                    />
+                  </div>
+                )}
                 <div className="mr-4 hidden shrink-0 sm:flex sm:mr-6">
                   <Button
                     color="secondary"

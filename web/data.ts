@@ -9,6 +9,9 @@ export type PricePoint = { observedAt: string; price: number | null };
 export type Offer = {
   id: string;
   seller: string;
+  // The competitor's own listing title and page, so the retailer can judge the match.
+  productName: string;
+  url: string | null;
   source: string;
   price: string | null;
   currency: string | null;
@@ -28,6 +31,17 @@ export type Product = {
 
 export const UNLINKED_ID = "unlinked";
 
+const AMAZON_HOSTS: Record<string, string> = {
+  "Amazon UK": "www.amazon.co.uk",
+  "Amazon US": "www.amazon.com",
+  "Amazon SG": "www.amazon.sg",
+};
+
+export function offerUrl(source: string, asin: string): string | null {
+  const host = AMAZON_HOSTS[source];
+  return host && /^[A-Z0-9]{10}$/.test(asin) ? `https://${host}/dp/${asin}` : null;
+}
+
 // Observations arrive newest first; the first one per listing is its current offer.
 export function buildCatalog(products: ApiProduct[], observations: ApiObservation[]): Product[] {
   const offersByProduct = new Map<string, Map<string, Offer>>();
@@ -42,10 +56,11 @@ export function buildCatalog(products: ApiProduct[], observations: ApiObservatio
       existing.history.unshift(point);
       continue;
     }
-    const seller = o.seller ?? "Unknown seller";
     listings.set(listingKey, {
       id: o.id,
-      seller: o.productId === null ? `${seller} · ${o.productName}` : seller,
+      seller: o.seller ?? "Unknown seller",
+      productName: o.productName,
+      url: offerUrl(o.source, o.asin),
       source: o.source,
       price: o.price,
       currency: o.currency,
