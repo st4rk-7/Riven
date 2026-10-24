@@ -4,7 +4,17 @@ import { averagePrice, formatPrice, formatTime, lowestPrice, type Product } from
 import { MatchBadge, StockBadge } from "../status";
 
 // Same list structure as Cal.diy's Event Types / Bookings lists.
-export function Competitors({ product, onOpenOffer }: { product: Product; onOpenOffer: (offerId: string) => void }) {
+export function Competitors({
+  product,
+  onOpenOffer,
+  onDiscover,
+  isDiscovering,
+}: {
+  product: Product;
+  onOpenOffer: (offerId: string) => void;
+  onDiscover?: () => void;
+  isDiscovering?: boolean;
+}) {
   const inStock = product.offers.filter((o) => o.availability === "in_stock").length;
 
   const stats = [
@@ -25,14 +35,41 @@ export function Competitors({ product, onOpenOffer }: { product: Product; onOpen
         ))}
       </div>
 
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h2 className="text-base font-semibold text-emphasis">Competitor offers</h2>
+          <p className="text-sm text-subtle">Offers matched via extension or automated discovery.</p>
+        </div>
+        {onDiscover && (
+          <Button
+            color="primary"
+            disabled={isDiscovering}
+            onClick={onDiscover}
+          >
+            {isDiscovering ? "Searching Amazon..." : "Discover competitors"}
+          </Button>
+        )}
+      </div>
+
       <div className="flex flex-col overflow-hidden rounded-md border border-subtle bg-default">
         <ul className="w-full divide-y divide-subtle">
           {product.offers.length === 0 && (
             <li className="px-5 py-12 text-center" role="status">
               <p className="text-sm font-semibold text-emphasis">No competitor offers yet</p>
               <p className="mt-2 text-sm text-subtle">
-                Send a product page to Riven with the browser extension and its offer will appear here.
+                Click "Discover competitors" to automatically find matching listings, or send a page with the browser extension.
               </p>
+              {onDiscover && (
+                <div className="mt-4 flex justify-center">
+                  <Button
+                    color="primary"
+                    disabled={isDiscovering}
+                    onClick={onDiscover}
+                  >
+                    {isDiscovering ? "Searching Amazon..." : "Discover competitors"}
+                  </Button>
+                </div>
+              )}
             </li>
           )}
           {product.offers.map((o) => (
@@ -53,6 +90,9 @@ export function Competitors({ product, onOpenOffer }: { product: Product; onOpen
                       <MatchBadge value={o.matchStatus} />
                       <Badge variant="gray" startIcon="clock">
                         {formatTime(o.observedAt)}
+                      </Badge>
+                      <Badge variant={o.collectedVia === "crawler" ? "blue" : "gray"}>
+                        {o.collectedVia === "crawler" ? "Scheduled" : "Extension"}
                       </Badge>
                     </div>
                   </div>

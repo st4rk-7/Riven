@@ -55,7 +55,7 @@ export function Detail({
       <div className="rounded-md border border-subtle bg-default">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-subtle px-4 py-3 sm:px-6">
           <p className="text-emphasis text-sm font-semibold">Price history for this seller</p>
-          <span className="text-xs text-subtle">{offer.history.length} observations · {offer.source}</span>
+          <span className="text-xs text-subtle">{offer.history.length} observations · {offer.source} · {offer.collectedVia === "crawler" ? "Scheduled" : "Extension"}</span>
         </div>
         <div className="px-4 py-4 sm:px-6">
           {pricedPoints < 2 ? (

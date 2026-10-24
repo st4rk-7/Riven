@@ -7,7 +7,14 @@ export type CollectResult =
   | { status: "blocked"; reason: string; observedAt: string }
   | { status: "failed"; reason: string; observedAt: string };
 
-const DEFAULT_ALLOWED_HOSTS = ["www.amazon.co.uk", "amazon.co.uk"];
+const DEFAULT_ALLOWED_HOSTS = [
+  "www.amazon.co.uk",
+  "amazon.co.uk",
+  "www.amazon.sg",
+  "amazon.sg",
+  "www.amazon.com",
+  "amazon.com",
+];
 const BLOCK_STATUSES = new Set([403, 429, 503]);
 
 export function isCaptchaPage(html: string): boolean {
@@ -41,7 +48,7 @@ export async function collectAmazonOffer(
       additionalMimeTypes: ["text/html", "application/octet-stream"],
       preNavigationHooks: [
         (_ctx, gotOptions) => {
-          gotOptions.followRedirect = false;
+          gotOptions.followRedirect = true;
           gotOptions.headers = { ...gotOptions.headers, "User-Agent": "RivenBot/0.1 (EC5406 student project)" };
         },
       ],

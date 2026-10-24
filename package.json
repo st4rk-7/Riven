@@ -61,6 +61,7 @@
     "test:integration": "node --env-file-if-exists=.env scripts/run-integration.mjs",
     "auth:setup": "node scripts/configure-auth.mjs",
     "db:seed": "node --env-file-if-exists=.env --import tsx server/data/run-seed.ts",
-    "account:create": "node --env-file-if-exists=.env --import tsx scripts/create-account.ts"
+    "account:create": "node --env-file-if-exists=.env --import tsx scripts/create-account.ts",
+    "crawl": "node --env-file-if-exists=.env --import tsx scripts/run-crawler.ts"
   }
 }

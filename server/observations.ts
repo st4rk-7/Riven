@@ -11,12 +11,18 @@ import {
   ExtensionOfferSchema,
 } from "../shared/collected-observation.js";
 import { linkOffer, type RetailerProduct } from "./matching.js";
+import { crawlRetailerProducts } from "./crawler.js";
+import { discoverProductCompetitors } from "./discovery.js";
 
 export type LinkableProduct = RetailerProduct & { id: string };
 
 const SOURCES: Record<string, string> = {
   "www.amazon.co.uk": "Amazon UK",
   "amazon.co.uk": "Amazon UK",
+  "www.amazon.sg": "Amazon SG",
+  "amazon.sg": "Amazon SG",
+  "www.amazon.com": "Amazon US",
+  "amazon.com": "Amazon US",
 };
 
 function sourceOf(pageUrl: unknown): string | null {
@@ -72,7 +78,7 @@ export function registerObservationRoutes(app: FastifyInstance, database: Pool) 
       return reply.code(400).send({ code: "INVALID_OFFER", message });
     }
     if (!sourceOf(parsed.data.pageUrl)) {
-      return reply.code(400).send({ code: "UNSUPPORTED_SOURCE", message: "Only Amazon UK pages are accepted." });
+      return reply.code(400).send({ code: "UNSUPPORTED_SOURCE", message: "Only Amazon pages are accepted." });
     }
     const connection = await database.connect();
     try {
@@ -112,7 +118,7 @@ export function registerObservationRoutes(app: FastifyInstance, database: Pool) 
     }
     const source = sourceOf(parsed.data.pageUrl);
     if (!source) {
-      return reply.code(400).send({ code: "UNSUPPORTED_SOURCE", message: "Only Amazon UK pages are accepted." });
+      return reply.code(400).send({ code: "UNSUPPORTED_SOURCE", message: "Only Amazon pages are accepted." });
     }
     const attempt = await recordAttempt(request.identity!.retailer.id,
       { productId: null, source, status: parsed.data.status, reason: parsed.data.reason });
@@ -124,5 +130,40 @@ export function registerObservationRoutes(app: FastifyInstance, database: Pool) 
       attempted_at AS "attemptedAt" FROM attempts WHERE retailer_id = $1 ORDER BY attempted_at DESC, id`,
     [request.identity!.retailer.id]);
     return rows;
+  });
+
+  app.post("/api/v1/crawl", async (request, reply) => {
+    const retailerId = request.identity!.retailer.id;
+    queueMicrotask(() => {
+      crawlRetailerProducts(database, retailerId).catch((error) => {
+        app.log.error(error, "Background crawl failed");
+      });
+    });
+    return reply.code(202).send({ message: "Collection started." });
+  });
+
+  app.post("/api/v1/products/:id/discover", async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const retailerId = request.identity!.retailer.id;
+    const discovered = await discoverProductCompetitors(database, retailerId, id);
+    return reply.code(200).send({ discovered });
+  });
+
+  app.patch("/api/v1/observations/:id", async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const retailerId = request.identity!.retailer.id;
+    const { matchStatus } = (request.body as { matchStatus?: unknown }) ?? {};
+    if (matchStatus !== "confirmed" && matchStatus !== "mismatch") {
+      return reply.code(400).send({ code: "INVALID_STATUS", message: "matchStatus must be 'confirmed' or 'mismatch'." });
+    }
+    const { rows } = await database.query(
+      `UPDATE observations SET match_status = $1 WHERE id = $2 AND retailer_id = $3
+       RETURNING id, product_id AS "productId", asin, product_name AS "productName", price, currency, availability, seller, source, observed_at AS "observedAt", match_status AS "matchStatus", collected_via AS "collectedVia"`,
+      [matchStatus, id, retailerId],
+    );
+    if (rows.length === 0) {
+      return reply.code(404).send({ code: "NOT_FOUND", message: "Observation not found." });
+    }
+    return rows[0];
   });
 }

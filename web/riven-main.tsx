@@ -30,6 +30,22 @@ function RivenApp() {
   const [page, setPage] = useState<Page>({ name: "search" });
   const [catalog, setCatalog] = useState<CatalogState>({ status: "loading" });
   const [loadKey, setLoadKey] = useState(0);
+  const [isDiscovering, setIsDiscovering] = useState(false);
+
+  async function handleDiscover(productId: string) {
+    setIsDiscovering(true);
+    try {
+      await api.discoverCompetitors(productId);
+      setLoadKey((k) => k + 1);
+    } finally {
+      setIsDiscovering(false);
+    }
+  }
+
+  async function handleMatchDecision(observationId: string, decision: "confirmed" | "mismatch") {
+    await api.updateMatchStatus(observationId, decision);
+    setLoadKey((k) => k + 1);
+  }
 
   useEffect(() => {
     api.me().then(setSession, () => setSession(null));
@@ -175,6 +191,8 @@ function RivenApp() {
         <Competitors
           product={product}
           onOpenOffer={(offerId) => setPage({ name: "detail", productId: product.id, offerId })}
+          onDiscover={() => handleDiscover(product.id)}
+          isDiscovering={isDiscovering}
         />
       ) : page.name === "detail" && product && offer ? (
         <Suspense
@@ -184,7 +202,11 @@ function RivenApp() {
             </div>
           }
         >
-          <Detail product={product} offerId={offer.id} />
+          <Detail
+            product={product}
+            offerId={offer.id}
+            onMatchDecision={(decision) => handleMatchDecision(offer.id, decision)}
+          />
         </Suspense>
       ) : (
         <div role="alert" className="rounded-md border border-subtle p-6">

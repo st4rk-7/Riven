@@ -32,7 +32,7 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, method: "GET" | "POST" = "GET", body?: unknown): Promise<T> {
+async function request<T>(path: string, method: "GET" | "POST" | "PATCH" = "GET", body?: unknown): Promise<T> {
   const response = await fetch(`/api/v1${path}`, {
     method,
     credentials: "include",
@@ -54,4 +54,8 @@ export const api = {
   signOut: () => request<void>("/auth/sign-out", "POST"),
   products: () => request<{ products: ApiProduct[] }>("/products").then((r) => r.products),
   observations: () => request<ApiObservation[]>("/observations"),
+  discoverCompetitors: (productId: string) =>
+    request<{ discovered: number }>(`/products/${productId}/discover`, "POST"),
+  updateMatchStatus: (observationId: string, matchStatus: "confirmed" | "mismatch") =>
+    request<ApiObservation>(`/observations/${observationId}`, "PATCH", { matchStatus }),
 };
