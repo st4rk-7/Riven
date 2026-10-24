@@ -9,6 +9,7 @@ if (!process.env.TEST_DATABASE_URL) {
 const integrationTests = [
   "server/auth.integration.test.ts",
   "server/data/seed.integration.test.ts",
+  "server/crawler.test.ts",
 ];
 
 const child = spawn(

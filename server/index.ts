@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import fastifyStatic from "@fastify/static";
 import { buildApp } from "./app.js";
+import { startScheduledCrawler } from "./crawler.js";
 import pg from "pg";
 
 if (!process.env.DATABASE_URL || !process.env.BETTER_AUTH_SECRET) {
@@ -15,6 +16,12 @@ const app = buildApp({ database, authentication: {
   extensionOrigin: process.env.RIVEN_EXTENSION_ORIGIN || undefined,
 } });
 app.addHook("onClose", async () => { await database.end(); });
+
+const crawlerInterval = Number(process.env.CRAWLER_INTERVAL_MS ?? 0);
+if (crawlerInterval > 0) {
+  const stopCrawler = startScheduledCrawler(database, crawlerInterval);
+  app.addHook("onClose", async () => { stopCrawler(); });
+}
 
 // Production: serve the built website from the same address as the API.
 const webDist = fileURLToPath(new URL("../web/dist", import.meta.url));

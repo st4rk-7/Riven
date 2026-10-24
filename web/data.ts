@@ -15,6 +15,7 @@ export type Offer = {
   availability: Availability;
   matchStatus: MatchStatus;
   observedAt: string;
+  collectedVia: ApiObservation["collectedVia"];
   history: PricePoint[];
 };
 
@@ -51,6 +52,7 @@ export function buildCatalog(products: ApiProduct[], observations: ApiObservatio
       availability: o.availability,
       matchStatus: o.matchStatus,
       observedAt: o.observedAt,
+      collectedVia: o.collectedVia,
       history: [point],
     });
   }
