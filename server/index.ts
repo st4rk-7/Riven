@@ -8,7 +8,7 @@ if (!process.env.DATABASE_URL || !process.env.BETTER_AUTH_SECRET) {
   throw new Error("Set DATABASE_URL and BETTER_AUTH_SECRET in .env before starting the server.");
 }
 const database = new pg.Pool({ connectionString: process.env.DATABASE_URL });
-const app = buildApp({ database, authentication: {
+const app = buildApp({ database, trustProxy: process.env.TRUST_PROXY === "true", authentication: {
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL ?? "http://127.0.0.1:3000",
   webOrigin: process.env.WEB_ORIGIN ?? "http://127.0.0.1:5173",

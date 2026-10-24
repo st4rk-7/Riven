@@ -350,6 +350,23 @@ The app reads its settings from the environment: `DATABASE_URL`,
 `RIVEN_EXTENSION_ORIGIN`, and optionally `HOST` and `PORT`. A hosting
 service sets these instead of a `.env` file.
 
+## Live deployment
+
+`https://riven.sbs` runs on a London VPS (Ubuntu 24.04, Docker) from
+`deploy/compose.yaml`: the app image behind Caddy, which gets and renews the
+HTTPS certificate. The database is on Neon.
+
+On the server, `deploy/.env` holds only `DATABASE_URL` and
+`BETTER_AUTH_SECRET`; the compose file sets the rest. Deploy or update:
+
+```bash
+cd ~/Riven && git pull && cd deploy && docker compose up -d --build
+```
+
+The app applies pending migrations on start. `TRUST_PROXY=true` is only safe
+behind a proxy that replaces `X-Forwarded-For`, as Caddy does; otherwise
+clients can pick their own IP for the sign-in rate limit.
+
 ## Create a retailer account
 
 There is no public sign-up. Create a real retailer and its sign-in account on
