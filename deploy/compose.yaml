@@ -15,6 +15,8 @@ services:
       NODE_ENV: production
       # Caddy replaces any client-sent X-Forwarded-For, so the sign-in rate limit sees real client IPs.
       TRUST_PROXY: "true"
+      # Riven serves UK retailers; the code falls back to Amazon SG.
+      AMAZON_HOST: www.amazon.co.uk
 
   caddy:
     image: caddy:2.10-alpine

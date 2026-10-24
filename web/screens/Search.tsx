@@ -36,7 +36,7 @@ export function Search({ onOpen, items }: { onOpen: (productId: string) => void;
               <p className="mt-2 text-sm text-subtle">
                 {query.trim()
                   ? "Try searching for another product name or brand."
-                  : "Your products will appear here once they are added to your account."}
+                  : "Use Add product to add the first product you sell."}
               </p>
             </li>
           )}

@@ -144,6 +144,29 @@ asin may be null.
 
 Missing, invalid or expired sessions return 401 UNAUTHENTICATED.
 
+### POST /api/v1/products
+
+Requires a valid session. Adds a product the signed-in retailer sells.
+
+Send either an Amazon product link, whose page Riven reads for the name and
+ASIN (Amazon UK, US and SG hosts only):
+
+```json
+{ "url": "https://www.amazon.co.uk/dp/B00552K0GM" }
+```
+
+or the details typed by hand (brand and asin are optional):
+
+```json
+{ "name": "Wireless Mouse", "brand": "Logitech", "asin": "B00552K0GM" }
+```
+
+Success: 201 with the product, in the same shape as GET /api/v1/products.
+Earlier offers not linked to any product are linked to it when they match.
+
+Returns 400 INVALID_PRODUCT for a blank name, unknown fields, or a link
+Riven cannot read (another site, or Amazon blocked the request).
+
 ## Observations
 
 ### GET /api/v1/observations
