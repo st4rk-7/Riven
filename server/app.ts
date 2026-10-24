@@ -5,6 +5,7 @@ import type { Pool } from "pg";
 import type { DemoObservation } from "../shared/demo-observation.js";
 import { registerObservationRoutes } from "./observations.js";
 import { collectBookObservation } from "./sources/books-toscrape.js";
+import { registerProductRoutes } from "./products.js";
 import { createAuth, registerAuthRoutes, type AuthConfiguration } from "./auth.js";
 
 type BuildAppOptions = {
@@ -72,10 +73,7 @@ export function buildApp(
         request.identity = await services.identityOf(request);
         if (!request.identity) return reply.code(401).send({ code: "UNAUTHENTICATED", message: "Please sign in." });
       });
-      secured.get("/api/v1/products", async (request) => {
-        const { rows } = await database.query("SELECT id, name, brand, asin FROM products WHERE retailer_id = $1 ORDER BY created_at, id", [request.identity!.retailer.id]);
-        return { products: rows };
-      });
+      registerProductRoutes(secured, database);
       registerObservationRoutes(secured, database);
     });
   } else if (database || authentication) {

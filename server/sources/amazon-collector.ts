@@ -1,5 +1,3 @@
-import { CheerioCrawler, Configuration } from "crawlee";
-
 import { type AmazonOffer, parseAmazonProductPage } from "./amazon.js";
 
 export type CollectResult =
@@ -22,60 +20,50 @@ export function isCaptchaPage(html: string): boolean {
 }
 
 // Collects one product page: one request, no retries, stop on any block.
+// Plain fetch: crawlee's browser-imitating headers made Amazon answer with a non-HTML body.
 export async function collectAmazonOffer(
   url: string,
   { allowedHosts = DEFAULT_ALLOWED_HOSTS, timeoutSecs = 15 } = {},
 ): Promise<CollectResult> {
   const observedAt = new Date().toISOString();
-  const target = new URL(url);
-  if (!allowedHosts.includes(target.hostname)) {
-    return { status: "failed", reason: `Host not allowed: ${target.hostname}`, observedAt };
-  }
-
-  let result: CollectResult = { status: "failed", reason: "No response", observedAt };
-
-  const crawler = new CheerioCrawler(
-    {
-      maxRequestsPerCrawl: 1,
-      maxConcurrency: 1,
-      maxRequestRetries: 0,
-      useSessionPool: false,
-      navigationTimeoutSecs: timeoutSecs,
-      requestHandlerTimeoutSecs: timeoutSecs,
-      additionalHttpErrorStatusCodes: [],
-      ignoreHttpErrorStatusCodes: [...BLOCK_STATUSES],
-      // Amazon may answer bots with a non-HTML body; let it through so it is recorded as blocked.
-      additionalMimeTypes: ["text/html", "application/octet-stream"],
-      preNavigationHooks: [
-        (_ctx, gotOptions) => {
-          gotOptions.followRedirect = true;
-          gotOptions.headers = { ...gotOptions.headers, "User-Agent": "RivenBot/0.1 (EC5406 student project)" };
+  let target = new URL(url);
+  try {
+    // Follow redirects by hand so every hop stays on an allowed host.
+    for (let hop = 0; hop < 5; hop++) {
+      if (!allowedHosts.includes(target.hostname)) {
+        return { status: "failed", reason: `Host not allowed: ${target.hostname}`, observedAt };
+      }
+      const response = await fetch(target, {
+        redirect: "manual",
+        signal: AbortSignal.timeout(timeoutSecs * 1000),
+        headers: {
+          "User-Agent": "RivenBot/0.1 (EC5406 student project)",
+          Accept: "text/html,application/xhtml+xml",
+          "Accept-Language": "en-GB,en;q=0.9",
         },
-      ],
-      async requestHandler({ response, body, contentType }) {
-        const html = body.toString();
-        if (BLOCK_STATUSES.has(response.statusCode ?? 0) || isCaptchaPage(html)) {
-          result = { status: "blocked", reason: `Blocked (HTTP ${response.statusCode})`, observedAt };
-          return;
-        }
-        if (contentType.type !== "text/html") {
-          result = { status: "blocked", reason: `Blocked (non-HTML response: ${contentType.type})`, observedAt };
-          return;
-        }
-        try {
-          result = { status: "ok", offer: parseAmazonProductPage(html), observedAt };
-        } catch (error) {
-          result = { status: "failed", reason: (error as Error).message, observedAt };
-        }
-      },
-      failedRequestHandler({ request }) {
-        const message = request.errorMessages.at(-1) ?? "Request failed";
-        result = { status: "failed", reason: message.split("\n")[0], observedAt };
-      },
-    },
-    new Configuration({ persistStorage: false }),
-  );
-
-  await crawler.run([url]);
-  return result;
+      });
+      const location = response.headers.get("location");
+      if (response.status >= 300 && response.status < 400 && location) {
+        target = new URL(location, target);
+        continue;
+      }
+      const html = await response.text();
+      if (BLOCK_STATUSES.has(response.status) || isCaptchaPage(html)) {
+        return { status: "blocked", reason: `Blocked (HTTP ${response.status})`, observedAt };
+      }
+      if (!response.ok) return { status: "failed", reason: `HTTP ${response.status}`, observedAt };
+      const type = response.headers.get("content-type")?.split(";")[0].trim() || "none";
+      if (type !== "text/html") {
+        return { status: "blocked", reason: `Blocked (non-HTML response: ${type})`, observedAt };
+      }
+      try {
+        return { status: "ok", offer: parseAmazonProductPage(html), observedAt };
+      } catch (error) {
+        return { status: "failed", reason: (error as Error).message, observedAt };
+      }
+    }
+    return { status: "failed", reason: "Too many redirects", observedAt };
+  } catch (error) {
+    return { status: "failed", reason: (error as Error).message.split("\n")[0], observedAt };
+  }
 }

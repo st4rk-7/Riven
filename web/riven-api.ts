@@ -7,6 +7,8 @@ export type Session = {
 
 export type ApiProduct = { id: string; name: string; brand: string; asin: string | null };
 
+export type NewProductInput = { url: string } | { name: string; brand: string };
+
 export type ApiObservation = {
   id: string;
   productId: string | null;
@@ -53,6 +55,7 @@ export const api = {
   signIn: (email: string, password: string) => request<Session>("/auth/sign-in", "POST", { email, password }),
   signOut: () => request<void>("/auth/sign-out", "POST"),
   products: () => request<{ products: ApiProduct[] }>("/products").then((r) => r.products),
+  createProduct: (input: NewProductInput) => request<ApiProduct>("/products", "POST", input),
   observations: () => request<ApiObservation[]>("/observations"),
   discoverCompetitors: (productId: string) =>
     request<{ discovered: number }>(`/products/${productId}/discover`, "POST"),
