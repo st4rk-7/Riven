@@ -1,0 +1,34 @@
+# Live server for https://riven.sbs: the app behind Caddy, which handles HTTPS.
+# Run from this folder: docker compose up -d --build
+name: riven-live
+
+services:
+  app:
+    build: ..
+    restart: unless-stopped
+    # Secrets (DATABASE_URL, BETTER_AUTH_SECRET) live in deploy/.env on the server only.
+    env_file: .env
+    environment:
+      BETTER_AUTH_URL: https://riven.sbs
+      WEB_ORIGIN: https://riven.sbs
+      RIVEN_EXTENSION_ORIGIN: chrome-extension://npehakhmjaahoopfplbjkknaaafcphko
+      NODE_ENV: production
+      # Caddy replaces any client-sent X-Forwarded-For, so the sign-in rate limit sees real client IPs.
+      TRUST_PROXY: "true"
+
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    depends_on: [app]
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  caddy-data:
+  caddy-config:

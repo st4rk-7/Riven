@@ -9,6 +9,8 @@ import { createAuth, registerAuthRoutes, type AuthConfiguration } from "./auth.j
 
 type BuildAppOptions = {
   logger?: boolean;
+  // Only behind a proxy that overwrites X-Forwarded-For (Vercel does); otherwise clients could spoof their IP.
+  trustProxy?: boolean;
   database?: Pool;
   authentication?: AuthConfiguration;
 };
@@ -25,9 +27,9 @@ const demoObservation = {
 } satisfies DemoObservation;
 
 export function buildApp(
-  { logger = true, database, authentication }: BuildAppOptions = {},
+  { logger = true, trustProxy = false, database, authentication }: BuildAppOptions = {},
 ): FastifyInstance {
-  const app = Fastify({ logger });
+  const app = Fastify({ logger, trustProxy });
   app.setErrorHandler<FastifyError>((error, request, reply) => {
     const status = error.statusCode && error.statusCode >= 400 && error.statusCode < 500 ? error.statusCode : 500;
     request.log.error({ status }, "Request failed");

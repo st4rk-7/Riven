@@ -1,0 +1,7 @@
+riven.sbs {
+	reverse_proxy app:3000
+}
+
+www.riven.sbs {
+	redir https://riven.sbs{uri} permanent
+}
