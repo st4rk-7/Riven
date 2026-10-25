@@ -84,7 +84,8 @@ The browser displays data; it does not fetch competitor pages or decide which te
 ### Proposed working layout (create folders when used)
 
 ```text
-web/                  React screens and API calls
+web/                  React screens and API calls (the app, served at /app)
+web/landing/          Public landing page, served at /
 server/               HTTP endpoints and application rules
 server/collection/    Adapter contract, validation, worker entry point
 server/data/          Database access and reviewed migrations
