@@ -2,7 +2,7 @@
 
 A four-student software project helping retailers monitor selected competitors' prices and availability.
 
-**Current state:** a documentation-only working start. Proposal submission is reported by the team; requirements and technical recommendations need review. No application, passed implementation tests, live Amazon connector, or actual Jira assignment is claimed here.
+**Current state:** a working web app and Chrome extension, deployed at https://riven.sbs. The site root shows the public landing page; the app (sign-in and retailer screens) is at https://riven.sbs/app. What is delivered and what is still planned is in [PRODUCT.md](PRODUCT.md); running and deploying it is in [setup](docs/setup.md). Acceptance evidence and Jira status are not claimed here.
 
 ## Start with your next task, not every document
 
@@ -12,6 +12,8 @@ A four-student software project helping retailers monitor selected competitors' 
 
 ## Reference shelf
 
+- [Product brief](PRODUCT.md): what Riven is, delivered and planned scope, honest-data principles, and the visual direction.
+- [Setup and deployment](docs/setup.md): local development, live deployment and retailer accounts.
 - [Proposal reference](docs/proposal.md): original intent and unresolved wording.
 - [Working SRS](docs/requirements.md): scope, functional requirements (FR), non-functional requirements (NFR), and acceptance evidence.
 - [Core manual](docs/manual.md): architecture, proposed technology decisions, shared data meanings, principles, quality, and team workflow.
@@ -28,4 +30,4 @@ TypeScript, four members, six sprints, and Amazon as the first intended source a
 
 Earlier code, full planning material, private reference PDFs, and old Git history are preserved separately by the coordinator. They are not completed work in this start. Original proposal/module copies are also available locally under the ignored `local-reference/` directory, pending publication review.
 
-There is no app to install yet. Add runnable setup and test commands only after verification. To rebuild the guide PDFs, see [guide build instructions](docs/guides/README.md). No software license has been selected.
+To run the app locally, follow [setup](docs/setup.md). To rebuild the guide PDFs, see [guide build instructions](docs/guides/README.md). No software license has been selected.

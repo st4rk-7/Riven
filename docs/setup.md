@@ -261,8 +261,12 @@ This starts:
 Open:
 
 ```text
-http://127.0.0.1:5173
+http://127.0.0.1:5173        public landing page
+http://127.0.0.1:5173/app    the app: sign-in, then the retailer screens
 ```
+
+Every path other than `/` loads the app; the landing page's Sign in links go
+to `/app`.
 
 Stop both development processes with `Ctrl+C`.
 
@@ -275,9 +279,8 @@ npm.cmd run dev:web
 
 Use `npm.cmd run dev` for the normal connected application.
 
-The current visible sign-in inputs are intentionally disabled. Authentication
-and retailer isolation are verified through PostgreSQL integration tests, not
-through a completed browser sign-in flow.
+Sign in at `/app` with an account made by `npm run account:create` (see
+"Create a retailer account" below). There is no public sign-up.
 
 ## Development request path
 
@@ -355,6 +358,10 @@ service sets these instead of a `.env` file.
 `https://riven.sbs` runs on a London VPS (Ubuntu 24.04, Docker) from
 `deploy/compose.yaml`: the app image behind Caddy, which gets and renews the
 HTTPS certificate. The database is on Neon.
+
+`https://riven.sbs` shows the public landing page (`web/landing/`, RIV-27).
+The app is at `https://riven.sbs/app`; share that address with retailers and
+demo users. The extension talks to the API, so it is unaffected.
 
 On the server, `deploy/.env` holds only `DATABASE_URL` and
 `BETTER_AUTH_SECRET`; the compose file sets the rest. Deploy or update:
