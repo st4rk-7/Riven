@@ -34,7 +34,7 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, method: "GET" | "POST" | "PATCH" = "GET", body?: unknown): Promise<T> {
+async function request<T>(path: string, method: "GET" | "POST" | "PATCH" | "DELETE" = "GET", body?: unknown): Promise<T> {
   const response = await fetch(`/api/v1${path}`, {
     method,
     credentials: "include",
@@ -61,4 +61,6 @@ export const api = {
     request<{ discovered: number }>(`/products/${productId}/discover`, "POST"),
   updateMatchStatus: (observationId: string, matchStatus: "confirmed" | "mismatch") =>
     request<ApiObservation>(`/observations/${observationId}`, "PATCH", { matchStatus }),
+  removeProduct: (productId: string) => request<void>(`/products/${productId}`, "DELETE"),
+  removeListing: (observationId: string) => request<void>(`/observations/${observationId}/listing`, "DELETE"),
 };

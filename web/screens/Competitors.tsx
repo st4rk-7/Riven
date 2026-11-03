@@ -2,6 +2,7 @@ import { Badge } from "../calui/Badge";
 import { Button } from "../calui/Button";
 import { averagePrice, formatPrice, formatTime, lowestPrice, type Product } from "../data";
 import { MatchBadge, StockBadge } from "../status";
+import { RemoveButton } from "../RemoveButton";
 
 // Same list structure as Cal.diy's Event Types / Bookings lists.
 export function Competitors({
@@ -9,11 +10,13 @@ export function Competitors({
   onOpenOffer,
   onDiscover,
   isDiscovering,
+  onRemove,
 }: {
   product: Product;
   onOpenOffer: (offerId: string) => void;
   onDiscover?: () => void;
   isDiscovering?: boolean;
+  onRemove?: () => Promise<void>;
 }) {
   const inStock = product.offers.filter((o) => o.availability === "in_stock").length;
 
@@ -40,15 +43,18 @@ export function Competitors({
           <h2 className="text-base font-semibold text-emphasis">Competitor offers</h2>
           <p className="text-sm text-subtle">Offers matched via extension or automated discovery.</p>
         </div>
-        {onDiscover && (
-          <Button
-            color="primary"
-            disabled={isDiscovering}
-            onClick={onDiscover}
-          >
-            {isDiscovering ? "Searching Amazon..." : "Discover competitors"}
-          </Button>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {onRemove && <RemoveButton label="Remove product" onRemove={onRemove} />}
+          {onDiscover && (
+            <Button
+              color="primary"
+              disabled={isDiscovering}
+              onClick={onDiscover}
+            >
+              {isDiscovering ? "Searching Amazon..." : "Discover competitors"}
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-col overflow-hidden rounded-[20px] border border-black/10 bg-white">

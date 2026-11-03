@@ -56,12 +56,12 @@ export function buildApp(
   if (database && authentication) {
     const services = createAuth(database, authentication);
     app.register(cors, { origin: services.origins, credentials: true,
-      methods: ["GET", "POST", "OPTIONS"], allowedHeaders: ["Content-Type", "X-Riven-Client"] });
+      methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"], allowedHeaders: ["Content-Type", "X-Riven-Client"] });
     app.addHook("onRequest", async (request, reply) => {
       if (!request.url.startsWith("/api/v1/")) return;
       const origin = request.headers.origin;
       if ((origin && !services.origins.includes(origin)) ||
-          (request.method === "POST" && !origin && request.headers["x-riven-client"] !== "riven")) {
+          (request.method !== "GET" && !origin && request.headers["x-riven-client"] !== "riven")) {
         return reply.code(403).send({ code: "FORBIDDEN_ORIGIN", message: "Request origin is not allowed." });
       }
       reply.header("cache-control", "no-store");
