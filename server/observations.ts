@@ -86,6 +86,13 @@ export function registerObservationRoutes(app: FastifyInstance, database: Pool) 
       const { rows: products } = await connection.query<LinkableProduct>(
         "SELECT id, name, brand, asin FROM products WHERE retailer_id = $1 ORDER BY id", [retailerId]);
       const observation = toObservation(parsed.data, new Date(), products)!;
+      // A listing Riven already tracks keeps its product and the retailer's match decision.
+      const { rows: [tracked] } = await connection.query<{ productId: string; matchStatus: CollectedObservation["matchStatus"] }>(
+        `SELECT product_id AS "productId", match_status AS "matchStatus" FROM observations
+          WHERE retailer_id = $1 AND source = $2 AND asin = $3 AND product_id IS NOT NULL
+          ORDER BY observed_at DESC, id LIMIT 1`,
+        [retailerId, observation.source, observation.asin]);
+      if (tracked) Object.assign(observation, tracked);
       await connection.query(`INSERT INTO observations
         (id, retailer_id, product_id, asin, product_name, price, currency, availability, seller, source, observed_at, match_status, collected_via)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,

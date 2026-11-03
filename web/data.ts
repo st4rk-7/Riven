@@ -43,11 +43,12 @@ export function offerUrl(source: string, asin: string): string | null {
 }
 
 // Observations arrive newest first; the first one per listing is its current offer.
+// A listing is one Amazon page (source + ASIN); its seller can change between observations.
 export function buildCatalog(products: ApiProduct[], observations: ApiObservation[]): Product[] {
   const offersByProduct = new Map<string, Map<string, Offer>>();
   for (const o of observations) {
     const productKey = o.productId ?? UNLINKED_ID;
-    const listingKey = `${o.source}|${o.seller ?? ""}|${o.asin}`;
+    const listingKey = `${o.source}|${o.asin}`;
     const listings = offersByProduct.get(productKey) ?? new Map<string, Offer>();
     offersByProduct.set(productKey, listings);
     const point = { observedAt: o.observedAt, price: o.price === null ? null : Number(o.price) };

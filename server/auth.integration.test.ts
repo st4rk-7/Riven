@@ -125,6 +125,19 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("real PostgreSQL authentication 
     const otherAttempts = (await app.inject({ url: "/api/v1/attempts", headers: headers(other) })).json();
     expect(otherAttempts.some((v: { id: string }) => v.id === reported.json().id)).toBe(false);
   });
+  test("adds an extension send to the discovered listing it updates", async () => {
+    const cookie = await login();
+    const asin = "B0COMPET01";
+    // A discovered competitor the retailer has already confirmed; its ASIN differs from the product's own.
+    await database.query(`INSERT INTO observations (id, retailer_id, product_id, asin, product_name, source, availability, match_status, collected_via)
+      VALUES ($1, $2, $3, $4, 'Billion-Dollar Ransom hardback', 'Amazon UK', 'unknown', 'confirmed', 'crawler')`,
+    [randomUUID(), a.retailer, a.product, asin]);
+    const sent = await app.inject({ method: "POST", url: "/api/v1/observations", headers: headers(cookie),
+      payload: { ...offer, pageUrl: `https://www.amazon.co.uk/dp/${asin}`, asin, seller: "Book Shop Ltd" } });
+    expect(sent.statusCode).toBe(201);
+    expect(sent.json()).toMatchObject({ productId: a.product, matchStatus: "confirmed", seller: "Book Shop Ltd", price: "18.01" });
+  });
+
   test("rolls back the observation when its success-attempt write fails", async () => {
     const cookie = await login();
     const before = (await app.inject({ url: "/api/v1/observations", headers: headers(cookie) })).json();
