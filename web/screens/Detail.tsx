@@ -29,31 +29,31 @@ export function Detail({
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <div className="rounded-md border border-subtle bg-default px-4 py-3">
+        <div className="rounded-[20px] border border-black/10 bg-white px-4 py-3">
           <p className="text-subtle text-sm">Current price</p>
           <p className="text-emphasis mt-1 break-words text-base font-semibold tabular-nums sm:text-xl">{formatPrice(offer.price, offer.currency)}</p>
           <p className="text-muted mt-1 text-xs">As of {formatTime(offer.observedAt)}</p>
         </div>
-        <div className="rounded-md border border-subtle bg-default px-4 py-3">
+        <div className="rounded-[20px] border border-black/10 bg-white px-4 py-3">
           <p className="text-subtle text-sm">Stock</p>
           <div className="mt-2">
             <StockBadge value={offer.availability} />
           </div>
         </div>
-        <div className="rounded-md border border-subtle bg-default px-4 py-3">
+        <div className="rounded-[20px] border border-black/10 bg-white px-4 py-3">
           <p className="text-subtle text-sm">Match</p>
           <div className="mt-2">
             <MatchBadge value={offer.matchStatus} />
           </div>
         </div>
-        <div className="rounded-md border border-subtle bg-default px-4 py-3">
+        <div className="rounded-[20px] border border-black/10 bg-white px-4 py-3">
           <p className="text-subtle text-sm">Currency</p>
           <p className="text-emphasis mt-1 text-xl font-semibold">{offer.currency ?? "Unknown"}</p>
         </div>
       </div>
 
-      <div className="rounded-md border border-subtle bg-default">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-subtle px-4 py-3 sm:px-6">
+      <div className="rounded-[20px] border border-black/10 bg-white">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-black/10 px-4 py-3 sm:px-6">
           <p className="text-emphasis text-sm font-semibold">Price history for this seller</p>
           <span className="text-xs text-subtle">{offer.history.length} observations · {offer.source} · {offer.collectedVia === "crawler" ? "Scheduled" : "Extension"}</span>
         </div>

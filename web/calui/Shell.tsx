@@ -77,7 +77,7 @@ function SideBar({
       <aside
         style={{ maxHeight: "calc(100vh - 0px)", top: "0px" }}
         className={classNames(
-          "fixed left-0 hidden h-full w-14 flex-col overflow-y-auto overflow-x-hidden border-muted border-r bg-cal-muted md:sticky md:flex lg:w-56 lg:px-3",
+          "fixed left-0 hidden h-full w-14 flex-col overflow-y-auto overflow-x-hidden border-black/10 border-r bg-[var(--riven-blue-mist)] md:sticky md:flex lg:w-56 lg:px-3",
           "max-h-screen"
         )}>
         <div className="flex h-full flex-col justify-between py-3 lg:pt-4">
@@ -108,7 +108,7 @@ function SideBar({
               aria-label={item.name}
               className={classNames(
                 "text-left",
-                "justify-right group flex items-center rounded-md px-2 py-1.5 font-medium text-default text-sm transition [&[aria-current='page']]:bg-emphasis",
+                "justify-right group flex items-center rounded-xl px-2 py-1.5 font-medium text-default text-sm transition [&[aria-current='page']]:bg-emphasis",
                 "mt-0.5 w-full text-sm [&[aria-current='page']]:text-emphasis",
                 "hover:bg-subtle hover:text-emphasis",
                 index === 0 && "mt-3"
@@ -148,7 +148,7 @@ function ShellMain(props: ShellProps) {
         <div className="bg-default sticky top-0 z-10 mb-4 md:mb-6 lg:mb-8">
           <header className="flex w-full min-w-0 flex-wrap items-center justify-between gap-2 sm:flex-nowrap">
             <div className="min-w-0 flex-1">
-              <h1 className="font-cal text-emphasis break-words text-xl font-semibold tracking-wide">
+              <h1 className="font-sans text-[var(--riven-black)] break-words text-2xl font-semibold tracking-[-0.05em]">
                 {props.heading}
               </h1>
               {props.subtitle && <p className="text-default text-sm">{props.subtitle}</p>}

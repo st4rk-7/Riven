@@ -13,13 +13,13 @@ export function SignIn({ onSignIn }: { onSignIn: (email: string, password: strin
   const [busy, setBusy] = useState(false);
 
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted/40 px-4">
-      <div className="flex items-center gap-2 font-heading font-semibold text-xl">
-        <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">R</span>
+    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-[var(--riven-blue-mist)] px-4">
+      <div className="flex items-center gap-2 font-sans font-semibold text-xl tracking-[-0.05em]">
+        <span className="flex size-8 items-center justify-center rounded-xl bg-[var(--riven-blue)] text-white">R</span>
         Riven
       </div>
 
-      <Card className="w-full max-w-sm">
+      <Card className="w-full max-w-md rounded-[24px] border border-black/10 bg-white shadow-none">
         <CardHeader>
           <CardTitle>Welcome back</CardTitle>
           <CardDescription>Sign in to see your competitor offers.</CardDescription>
@@ -40,12 +40,20 @@ export function SignIn({ onSignIn }: { onSignIn: (email: string, password: strin
           >
             <Field>
               <FieldLabel>Email</FieldLabel>
-              <Input type="email" autoComplete="username" required value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input 
+                type="email" 
+                size="lg" 
+                className="rounded-xl border-black/10 bg-white shadow-none" 
+                autoComplete="username" 
+                required value={email} 
+                onChange={(e) => setEmail(e.target.value)} />
             </Field>
             <Field>
               <FieldLabel>Password</FieldLabel>
               <Input
                 type="password"
+                size="lg"
+                className="rounded-xl border-black/10 bg-white shadow-none"
                 autoComplete="current-password"
                 required
                 value={password}
@@ -57,7 +65,11 @@ export function SignIn({ onSignIn }: { onSignIn: (email: string, password: strin
                 {error}
               </p>
             )}
-            <Button type="submit" className="w-full" disabled={busy}>
+            <Button
+              type="submit"
+              className="h-11 w-full rounded-xl font-semibold tracking-[-0.03em] shadow-none transition-colors"
+              disabled={busy}
+            >
               {busy ? "Signing in…" : "Sign in"}
             </Button>
           </form>
