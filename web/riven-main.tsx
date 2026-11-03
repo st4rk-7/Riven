@@ -59,6 +59,18 @@ function RivenApp() {
     }
   }
 
+  async function handleRemoveProduct(productId: string) {
+    await api.removeProduct(productId);
+    setPage({ name: "search" });
+    setLoadKey((k) => k + 1);
+  }
+
+  async function handleRemoveListing(productId: string, observationId: string) {
+    await api.removeListing(observationId);
+    setPage({ name: "competitors", productId });
+    setLoadKey((k) => k + 1);
+  }
+
   async function handleMatchDecision(observationId: string, decision: "confirmed" | "mismatch") {
     await api.updateMatchStatus(observationId, decision);
     setLoadKey((k) => k + 1);
@@ -221,6 +233,7 @@ function RivenApp() {
           onOpenOffer={(offerId) => setPage({ name: "detail", productId: product.id, offerId })}
           onDiscover={() => handleDiscover(product.id)}
           isDiscovering={isDiscovering}
+          onRemove={() => handleRemoveProduct(product.id)}
         />
       ) : page.name === "detail" && product && offer ? (
         <Suspense
@@ -234,6 +247,7 @@ function RivenApp() {
             product={product}
             offerId={offer.id}
             onMatchDecision={(decision) => handleMatchDecision(offer.id, decision)}
+            onRemove={() => handleRemoveListing(product.id, offer.id)}
           />
         </Suspense>
       ) : (

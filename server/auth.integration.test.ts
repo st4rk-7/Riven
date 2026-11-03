@@ -175,6 +175,33 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("real PostgreSQL authentication 
     expect(allowed.headers["access-control-allow-origin"]).toBe(config.extensionOrigin);
     expect(allowed.headers["access-control-allow-credentials"]).toBe("true");
   });
+  test("removes a listing or a whole product only for its own retailer", async () => {
+    const [cookie, other] = [await login(), await login(b)];
+    const product = randomUUID();
+    await database.query("INSERT INTO products (id, retailer_id, name) VALUES ($1, $2, 'Kettle')", [product, a.retailer]);
+    const rows = [["B0KETTLE01", 1], ["B0KETTLE01", 2], ["B0KETTLE02", 1]] as const;
+    const ids = rows.map(() => randomUUID());
+    for (const [i, [asin]] of rows.entries()) {
+      await database.query(`INSERT INTO observations (id, retailer_id, product_id, asin, product_name, source, availability, collected_via)
+        VALUES ($1, $2, $3, $4, 'Kettle', 'Amazon UK', 'unknown', 'extension')`, [ids[i], a.retailer, product, asin]);
+    }
+    const remaining = async () => (await database.query("SELECT id FROM observations WHERE product_id = $1 ORDER BY id", [product])).rows.map((r) => r.id);
+    const del = (url: string, cookieHeader: string, origin: string | null = config.webOrigin) =>
+      app.inject({ method: "DELETE", url, headers: { cookie: cookieHeader, ...(origin ? { origin } : {}) } });
+
+    expect((await del(`/api/v1/products/${product}`, other)).statusCode).toBe(404);
+    expect((await del(`/api/v1/observations/${ids[0]}/listing`, other)).statusCode).toBe(404);
+    expect((await del(`/api/v1/products/${product}`, cookie, null)).statusCode).toBe(403);
+    expect(await remaining()).toHaveLength(3);
+
+    expect((await del(`/api/v1/observations/${ids[0]}/listing`, cookie)).statusCode).toBe(204);
+    expect(await remaining()).toEqual([ids[2]]);
+
+    expect((await del(`/api/v1/products/${product}`, cookie)).statusCode).toBe(204);
+    expect(await remaining()).toEqual([]);
+    expect((await database.query("SELECT 1 FROM products WHERE id = $1", [product])).rowCount).toBe(0);
+  });
+
   test("rate-limits sign-ins even when a client spoofs forwarding headers", async () => {
     const responses = [];
     for (let i = 0; i < 6; i++) responses.push(await app.inject({ method: "POST", url: "/api/v1/auth/sign-in",

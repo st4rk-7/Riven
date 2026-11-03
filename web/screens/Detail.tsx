@@ -3,15 +3,18 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 import { Button } from "../calui/Button";
 import { formatPrice, formatTime, type Product } from "../data";
 import { MatchBadge, StockBadge } from "../status";
+import { RemoveButton } from "../RemoveButton";
 
 export function Detail({
   product,
   offerId,
   onMatchDecision,
+  onRemove,
 }: {
   product: Product;
   offerId: string;
   onMatchDecision?: (decision: "confirmed" | "mismatch") => void;
+  onRemove?: () => Promise<void>;
 }) {
   const offer = product.offers.find((o) => o.id === offerId);
 
@@ -115,6 +118,11 @@ export function Detail({
               Confirm match
             </Button>
           </div>
+        </div>
+      )}
+      {onRemove && (
+        <div className="flex justify-end">
+          <RemoveButton label="Remove offer" onRemove={onRemove} />
         </div>
       )}
       {offer.matchStatus === "unverified" && !onMatchDecision && (
