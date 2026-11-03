@@ -2,8 +2,11 @@ import { randomUUID } from "node:crypto";
 import * as cheerio from "cheerio";
 import type { Pool } from "pg";
 import { defaultAmazonHost, sourceNameForHost } from "./crawler.js";
-import { linkOffer } from "./matching.js";
+import { matchOffer } from "./matching.js";
 import { parsePrice } from "./sources/amazon.js";
+
+// Competitor listings kept per product, so repeated discovery cannot flood the offer list.
+const MAX_LISTINGS_PER_PRODUCT = 5;
 
 export type SearchCandidate = {
   asin: string;
@@ -29,36 +32,36 @@ export async function searchAmazonCandidates(
   });
 
   if (!response.ok) return [];
-  const html = await response.text();
+  return parseSearchResults(await response.text());
+}
+
+// Reads search result cards in page order, one per ASIN.
+export function parseSearchResults(html: string): SearchCandidate[] {
   const $ = cheerio.load(html);
-  const candidates: SearchCandidate[] = [];
+  const candidates = new Map<string, SearchCandidate>();
 
   $("[data-asin]").each((_, el) => {
     const asin = $(el).attr("data-asin")?.trim();
-    if (!asin || asin.length !== 10) return;
-    const title = $(el).find("h2 span, h2 a span, .a-size-medium, .a-size-base-plus").first().text().trim();
-    if (!title || title.length < 3) return;
-    const priceText = $(el).find(".a-price .a-offscreen").first().text().trim();
-    const { price, currency } = parsePrice(priceText);
-    candidates.push({
+    if (!asin || asin.length !== 10 || candidates.has(asin)) return;
+    const headings = $(el).find("h2");
+    // Amazon UK cards put the brand in one heading and the full title in another's aria-label.
+    const title = (headings.filter("[aria-label]").first().attr("aria-label") ?? headings.last().text()).trim();
+    if (title.length < 3) return;
+    const brand = headings.length > 1 ? headings.first().text().trim() : "";
+    const productName = brand && !title.toLowerCase().startsWith(brand.toLowerCase()) ? `${brand} ${title}` : title;
+    const { price, currency } = parsePrice($(el).find(".a-price .a-offscreen").first().text().trim());
+    candidates.set(asin, {
       asin,
-      productName: title,
+      productName,
       price,
       currency,
       availability: price !== null ? "in_stock" : "unknown",
-      seller: "Amazon Competitor",
+      // Result cards do not name the seller; the product page or extension does.
+      seller: null,
     });
   });
 
-  // Unique by ASIN, up to top 5 candidates
-  const seen = new Set<string>();
-  return candidates
-    .filter((c) => {
-      if (seen.has(c.asin)) return false;
-      seen.add(c.asin);
-      return true;
-    })
-    .slice(0, 5);
+  return [...candidates.values()];
 }
 
 // Discovers competitors for a retailer product and adds candidate observations.
@@ -86,16 +89,22 @@ export async function discoverProductCompetitors(
   const connection = await database.connect();
   try {
     await connection.query("BEGIN");
+    // Locking the product serialises concurrent discovery so the cap holds.
+    await connection.query("SELECT 1 FROM products WHERE id = $1 FOR UPDATE", [target.id]);
+    const { rows: listed } = await connection.query<{ asin: string }>(
+      "SELECT DISTINCT asin FROM observations WHERE retailer_id = $1 AND product_id = $2",
+      [retailerId, target.id],
+    );
+    const known = new Set(listed.map((row) => row.asin));
     for (const candidate of candidates) {
-      // Check if we already have an observation for this ASIN and product
-      const { rows: existing } = await connection.query(
-        "SELECT 1 FROM observations WHERE retailer_id = $1 AND product_id = $2 AND asin = $3",
-        [retailerId, target.id, candidate.asin],
-      );
-      if (existing.length > 0) continue;
+      if (known.size >= MAX_LISTINGS_PER_PRODUCT) break;
+      if (known.has(candidate.asin)) continue;
 
-      const link = linkOffer([target], candidate);
-      const matchStatus = link?.status ?? (target.asin === candidate.asin ? "confirmed" : "unverified");
+      // A different ASIN can still be the same product, so judge it by title, model and pack size.
+      const sameAsin = target.asin === candidate.asin;
+      if (!sameAsin && matchOffer(target, { productName: candidate.productName }) === "mismatch") continue;
+      const matchStatus = sameAsin ? "confirmed" : "unverified";
+      known.add(candidate.asin);
       const id = randomUUID();
 
       await connection.query(
