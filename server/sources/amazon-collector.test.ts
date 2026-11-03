@@ -23,6 +23,8 @@ beforeAll(async () => {
       res.writeHead(503, { "content-type": "text/html" }).end("<html>Service Unavailable</html>");
     } else if (req.url === "/binary") {
       res.writeHead(200, { "content-type": "application/octet-stream" }).end("\u0000\u0001");
+    } else if (req.url === "/no-price") {
+      res.writeHead(200, { "content-type": "text/html" }).end('<span id="productTitle">Kettle</span>');
     } else if (req.url === "/captcha") {
       res.writeHead(200, { "content-type": "text/html" }).end('<form action="/errors/validateCaptcha"></form>');
     } else {
@@ -36,6 +38,10 @@ beforeAll(async () => {
 afterAll(() => new Promise<void>((resolve) => server.close(() => resolve())));
 
 describe("collectAmazonOffer", () => {
+  test("treats a page without a price as a failed check, not an offer", async () => {
+    expect(await collectAmazonOffer(`${base}/no-price`, options)).toMatchObject({ status: "failed", reason: "Page showed no price" });
+  });
+
   test("collects and parses a product page", async () => {
     const result = await collectAmazonOffer(`${base}/product`, options);
 

@@ -57,7 +57,10 @@ export async function collectAmazonOffer(
         return { status: "blocked", reason: `Blocked (non-HTML response: ${type})`, observedAt };
       }
       try {
-        return { status: "ok", offer: parseAmazonProductPage(html), observedAt };
+        const offer = parseAmazonProductPage(html);
+        // Amazon leaves the buy box out for unrecognised visitors; such a page is not an observation.
+        if (offer.price === null) return { status: "failed", reason: "Page showed no price", observedAt };
+        return { status: "ok", offer, observedAt };
       } catch (error) {
         return { status: "failed", reason: (error as Error).message, observedAt };
       }
