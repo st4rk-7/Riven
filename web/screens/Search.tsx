@@ -13,7 +13,7 @@ export function Search({ onOpen, items }: { onOpen: (productId: string) => void;
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
-        <label className="border-default bg-default flex h-9 w-full max-w-sm flex-1 items-center gap-2 rounded-[10px] border px-3 text-sm focus-within:shadow-outline-gray-focused">
+        <label className="flex h-11 w-full max-w-md flex-1 items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 text-sm focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--riven-blue-deep)]">
           <SearchIcon className="h-4 w-4 text-subtle" />
           <span className="sr-only">Search products</span>
           <input
@@ -26,7 +26,7 @@ export function Search({ onOpen, items }: { onOpen: (productId: string) => void;
         </label>
       </div>
 
-      <div className="flex flex-col overflow-hidden rounded-md border border-subtle bg-default">
+      <div className="flex flex-col overflow-hidden rounded-[20px] border border-black/10 bg-white">
         <ul className="w-full divide-y divide-subtle">
           {shown.length === 0 && (
             <li className="px-5 py-12 text-center" role="status">
@@ -44,11 +44,11 @@ export function Search({ onOpen, items }: { onOpen: (productId: string) => void;
             const unverified = p.offers.filter((o) => o.matchStatus === "unverified").length;
             return (
               <li key={p.id}>
-                <div className="flex w-full items-center justify-between transition hover:bg-cal-muted">
+                <div className="flex w-full items-center justify-between transition-colors duration-150 hover:bg-[var(--riven-blue-mist)] motion-reduce:transition-none">
                   <button
                     type="button"
                     onClick={() => onOpen(p.id)}
-                    className="group flex w-full max-w-full items-center justify-between overflow-hidden px-4 py-4 text-left sm:px-6">
+                    className="group flex w-full max-w-full items-center justify-between overflow-hidden px-5 py-5 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--riven-blue-deep)] sm:px-6">
                     <div className="relative flex-1 overflow-hidden pr-4 text-sm">
                       <span className="break-words font-semibold text-default ltr:mr-1 rtl:ml-1">{p.name}</span>
                       {p.brand && <small className="hidden font-normal text-subtle leading-4 sm:inline">/{p.brand.toLowerCase()}</small>}

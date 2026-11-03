@@ -2,6 +2,8 @@
 @import "tailwindcss";
 @import "./cal/tokens.css";
 @import "./coss/styles/globals.css";
+@import "./landing/landing.css";
+
 
 @source "./coss";
 @source "./screens";
@@ -18,13 +20,21 @@
 
 :root {
   --font-sans: "Inter", system-ui, sans-serif;
-  --font-cal: "Cal Sans", "Inter", system-ui, sans-serif;
+  --font-cal: "Inter", system-ui, sans-serif;
   --font-heading: var(--font-cal);
-  --riven-accent: #146ef5;
+  --riven-accent: #0b75fe;
+  --primary: var(--riven-blue-deep);
+  --primary-foreground: var(--riven-white);
+  --ring: var(--riven-blue-deep);
+  --cal-brand: var(--riven-blue-deep);
+  --cal-brand-emphasis: var(--riven-black);
+  --cal-brand-text: var(--riven-white);
 }
 
 body {
   font-family: var(--font-sans);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  font-weight: 500;
+  letter-spacing: -0.03em;
 }

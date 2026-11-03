@@ -7,32 +7,37 @@ import classNames from "./classNames";
 import { Icon } from "./Icon";
 import type { IconName } from "./Icon";
 
-export const badgeStyles = cva("font-medium inline-flex items-center justify-center rounded-[4px] gap-x-1", {
-  variants: {
-    variant: {
-      default: "bg-attention text-attention",
-      warning: "bg-attention text-attention",
-      orange: "bg-attention text-attention",
-      success: "bg-cal-success text-success",
-      green: "bg-cal-success text-success",
-      gray: "bg-emphasis text-emphasis",
-      blue: "bg-cal-info text-info",
-      red: "bg-error text-error",
-      error: "bg-error text-error",
-      grayWithoutHover: "bg-gray-100 text-gray-800 dark:bg-darkgray-200 dark:text-darkgray-800",
-      purple: "bg-purple-50 text-purple-800",
+
+export const badgeStyles = cva(
+  "font-medium inline-flex items-center justify-center rounded-full gap-x-1 border border-current/15",
+  {
+    variants: {
+      variant: {
+        default: "border-black/10 bg-[var(--riven-blue-mist)] text-[var(--riven-black)]",
+        warning: "border-dashed border-[var(--riven-blue-deep)] bg-[var(--riven-blue-faded)] text-[var(--riven-black)]",
+        orange: "border-dashed border-[var(--riven-blue-deep)] bg-[var(--riven-blue-faded)] text-[var(--riven-black)]",
+        success: "border-black/10 bg-[var(--riven-blue-mist)] text-[var(--riven-blue-deep)]",
+        green: "border-black/10 bg-[var(--riven-blue-mist)] text-[var(--riven-blue-deep)]",
+        gray: "border-dashed border-black/20 bg-[var(--riven-white)] text-[var(--riven-black)]",
+        blue: "border-transparent bg-[var(--riven-blue-deep)] text-[var(--riven-white)]",
+        red: "border-transparent bg-[var(--riven-black)] text-[var(--riven-white)]",
+        error: "border-dashed border-[var(--riven-black)] bg-[var(--riven-white)] text-[var(--riven-black)]",
+        grayWithoutHover: "border-black/10 bg-[var(--riven-white)] text-[var(--riven-black)]",
+        purple: "border-black/10 bg-[var(--riven-blue-mist)] text-[var(--riven-black)]",
+      },
+      size: {
+        sm: "px-2.5 py-1 text-[10px] leading-none",
+        md: "px-3 py-1.5 text-xs leading-none",
+        lg: "px-4 py-2 text-sm leading-none rounded-full",
+      },
     },
-    size: {
-      sm: "px-1 py-1 text-[10px] leading-none",
-      md: "py-1 px-1.5 text-xs leading-none",
-      lg: "py-1 px-1.5 text-sm leading-none rounded-lg",
+    defaultVariants: {
+      variant: "default",
+      size: "md",
     },
-  },
-  defaultVariants: {
-    variant: "default",
-    size: "md",
-  },
-});
+  }
+);
+
 
 type InferredBadgeStyles = VariantProps<typeof badgeStyles>;
 

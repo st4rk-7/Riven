@@ -28,7 +28,7 @@ export function Competitors({
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className="rounded-md border border-subtle bg-default px-4 py-3">
+          <div key={s.label} className="rounded-[20px] border border-black/10 bg-white px-5 py-5">
             <p className="text-subtle text-sm">{s.label}</p>
             <p className="text-emphasis mt-1 text-xl font-semibold tabular-nums">{s.value}</p>
           </div>
@@ -51,7 +51,7 @@ export function Competitors({
         )}
       </div>
 
-      <div className="flex flex-col overflow-hidden rounded-md border border-subtle bg-default">
+      <div className="flex flex-col overflow-hidden rounded-[20px] border border-black/10 bg-white">
         <ul className="w-full divide-y divide-subtle">
           {product.offers.length === 0 && (
             <li className="px-5 py-12 text-center" role="status">
@@ -74,7 +74,7 @@ export function Competitors({
           )}
           {product.offers.map((o) => (
             <li key={o.id}>
-              <div className="flex w-full items-center justify-between transition hover:bg-cal-muted">
+              <div className="flex w-full items-center justify-between transition hover:bg-[var(--riven-blue-mist)] motion-reduce:transition-none">
                 <button
                   type="button"
                   onClick={() => onOpenOffer(o.id)}
