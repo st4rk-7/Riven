@@ -10,6 +10,7 @@ const integrationTests = [
   "server/auth.integration.test.ts",
   "server/data/seed.integration.test.ts",
   "server/crawler.test.ts",
+  "server/discovery.test.ts",
 ];
 
 const child = spawn(
