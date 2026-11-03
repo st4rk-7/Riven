@@ -246,12 +246,6 @@ function RivenApp() {
           </Button>
         </div>
       )}
-
-      <footer className="mt-8 border-t border-subtle pt-4">
-        <a href="/?view=observation-demo" className="text-sm text-default underline">
-          Open the original RIV-3 observation demo
-        </a>
-      </footer>
     </Shell>
   );
 }
