@@ -5,7 +5,8 @@ import { randomUUID } from "node:crypto";
 import pg from "pg";
 import { log } from "crawlee";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { crawlProduct, crawlRetailerProducts, startScheduledCrawler } from "./crawler.js";
+import { crawlListing, crawlRetailerProducts, startScheduledCrawler } from "./crawler.js";
+import { saveObservation } from "./save-observation.js";
 import { searchAmazonCandidates } from "./discovery.js";
 // @ts-expect-error The standalone migration runner is JavaScript.
 import { migrate } from "../scripts/migrate.mjs";
@@ -62,15 +63,9 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("scheduled crawler (Channel B)",
   });
 
   it("crawls an Amazon offer, stores observation as crawler-sourced, and records ok attempt", async () => {
-    const res = await crawlProduct(
+    const res = await crawlListing(
       database,
-      {
-        id: productA,
-        retailerId: retailerA,
-        name: "Billion-Dollar Ransom",
-        brand: "",
-        asin: "1529922607",
-      },
+      { retailerId: retailerA, productId: productA, source: "Amazon UK", asin: "1529922607" },
       {
         baseUrl: `http://127.0.0.1:${mockPort}/dp`,
         allowedHosts: ["127.0.0.1"],
@@ -110,15 +105,9 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("scheduled crawler (Channel B)",
     );
 
     // 2. Run crawler against the product that returns 503
-    const res = await crawlProduct(
+    const res = await crawlListing(
       database,
-      {
-        id: productB,
-        retailerId: retailerB,
-        name: "Blocked Book",
-        brand: "",
-        asin: "B000000002",
-      },
+      { retailerId: retailerB, productId: productB, source: "Amazon UK", asin: "B000000002" },
       {
         baseUrl: `http://127.0.0.1:${mockPort}/dp`,
         allowedHosts: ["127.0.0.1"],
@@ -149,6 +138,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("scheduled crawler (Channel B)",
 
   it("crawlRetailerProducts isolates crawls to the target retailer", async () => {
     const summary = await crawlRetailerProducts(database, retailerA, {
+      host: "www.amazon.co.uk",
       baseUrl: `http://127.0.0.1:${mockPort}/dp`,
       allowedHosts: ["127.0.0.1"],
       timeoutSecs: 5,
@@ -156,6 +146,39 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("scheduled crawler (Channel B)",
     // Store A has 1 product
     expect(summary.total).toBe(1);
     expect(summary.ok).toBe(1);
+  });
+
+  it("updates a discovered listing from both channels onto one product", async () => {
+    const retailer = randomUUID();
+    const product = randomUUID();
+    await database.query("INSERT INTO retailers (id, name) VALUES ($1, 'Both Channels')", [retailer]);
+    // The product's own title shares nothing with the listing, so only the tracked-listing rule can link them.
+    await database.query("INSERT INTO products (id, retailer_id, name) VALUES ($1, $2, 'Thriller paperback')", [product, retailer]);
+    await database.query(
+      `INSERT INTO observations (id, retailer_id, product_id, asin, product_name, source, availability, match_status, collected_via)
+        VALUES ($1, $2, $3, '1529922607', 'Billion-Dollar Ransom', 'Amazon UK', 'unknown', 'confirmed', 'crawler')`,
+      [randomUUID(), retailer, product],
+    );
+    try {
+      const summary = await crawlRetailerProducts(database, retailer, {
+        host: "www.amazon.co.uk", baseUrl: `http://127.0.0.1:${mockPort}/dp`, allowedHosts: ["127.0.0.1"], timeoutSecs: 5,
+      });
+      expect(summary).toMatchObject({ total: 1, ok: 1 });
+
+      const connection = await database.connect();
+      try {
+        await saveObservation(connection, retailer, { asin: "1529922607", productName: "Billion-Dollar Ransom",
+          price: "17.50", currency: "GBP", availability: "in_stock", seller: "Book Shop Ltd" }, "Amazon UK", "extension");
+      } finally { connection.release(); }
+
+      const { rows } = await database.query(
+        "SELECT product_id, match_status, collected_via, price FROM observations WHERE retailer_id = $1 ORDER BY observed_at", [retailer]);
+      expect(rows.map((r) => r.collected_via)).toEqual(["crawler", "crawler", "extension"]);
+      expect(rows.every((r) => r.product_id === product && r.match_status === "confirmed")).toBe(true);
+      expect(rows.map((r) => r.price)).toEqual([null, "18.01", "17.50"]);
+    } finally {
+      await database.query("DELETE FROM retailers WHERE id = $1", [retailer]);
+    }
   });
 
   it("can start and stop scheduled crawler without throwing", () => {

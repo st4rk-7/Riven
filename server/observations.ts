@@ -5,55 +5,12 @@ import type { Pool, PoolClient } from "pg";
 
 import {
   AttemptReportSchema,
-  type CollectedObservation,
   type CollectionAttempt,
-  type ExtensionOffer,
   ExtensionOfferSchema,
 } from "../shared/collected-observation.js";
-import { linkOffer, type RetailerProduct } from "./matching.js";
+import { saveObservation, sourceOf } from "./save-observation.js";
 import { crawlRetailerProducts } from "./crawler.js";
 import { discoverProductCompetitors } from "./discovery.js";
-
-export type LinkableProduct = RetailerProduct & { id: string };
-
-const SOURCES: Record<string, string> = {
-  "www.amazon.co.uk": "Amazon UK",
-  "amazon.co.uk": "Amazon UK",
-  "www.amazon.sg": "Amazon SG",
-  "amazon.sg": "Amazon SG",
-  "www.amazon.com": "Amazon US",
-  "amazon.com": "Amazon US",
-};
-
-function sourceOf(pageUrl: unknown): string | null {
-  if (typeof pageUrl !== "string" || !URL.canParse(pageUrl)) return null;
-  return SOURCES[new URL(pageUrl).hostname] ?? null;
-}
-
-export function toObservation(
-  offer: ExtensionOffer,
-  now: Date,
-  products: LinkableProduct[] = [],
-): CollectedObservation | null {
-  const source = sourceOf(offer.pageUrl);
-  if (!source) return null;
-  const link = linkOffer(products, offer);
-  return {
-    id: randomUUID(),
-    productId: link?.product.id ?? null,
-    asin: offer.asin,
-    productName: offer.productName,
-    price: offer.price,
-    currency: offer.currency,
-    availability: offer.availability,
-    seller: offer.seller,
-    source,
-    observedAt: now.toISOString(),
-    // An offer linked to no product stays unverified until the retailer decides.
-    matchStatus: link?.status ?? "unverified",
-    collectedVia: "extension",
-  };
-}
 
 export function registerObservationRoutes(app: FastifyInstance, database: Pool) {
   async function recordAttempt(
@@ -83,22 +40,8 @@ export function registerObservationRoutes(app: FastifyInstance, database: Pool) 
     const connection = await database.connect();
     try {
       await connection.query("BEGIN");
-      const { rows: products } = await connection.query<LinkableProduct>(
-        "SELECT id, name, brand, asin FROM products WHERE retailer_id = $1 ORDER BY id", [retailerId]);
-      const observation = toObservation(parsed.data, new Date(), products)!;
-      // A listing Riven already tracks keeps its product and the retailer's match decision.
-      const { rows: [tracked] } = await connection.query<{ productId: string; matchStatus: CollectedObservation["matchStatus"] }>(
-        `SELECT product_id AS "productId", match_status AS "matchStatus" FROM observations
-          WHERE retailer_id = $1 AND source = $2 AND asin = $3 AND product_id IS NOT NULL
-          ORDER BY observed_at DESC, id LIMIT 1`,
-        [retailerId, observation.source, observation.asin]);
-      if (tracked) Object.assign(observation, tracked);
-      await connection.query(`INSERT INTO observations
-        (id, retailer_id, product_id, asin, product_name, price, currency, availability, seller, source, observed_at, match_status, collected_via)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
-      [observation.id, retailerId, observation.productId, observation.asin, observation.productName,
-        observation.price, observation.currency, observation.availability, observation.seller,
-        observation.source, observation.observedAt, observation.matchStatus, observation.collectedVia]);
+      const { pageUrl, ...offer } = parsed.data;
+      const observation = await saveObservation(connection, retailerId, offer, sourceOf(pageUrl)!, "extension");
       await recordAttempt(retailerId, { productId: observation.productId, source: observation.source, status: "ok", reason: null }, connection);
       await connection.query("COMMIT");
       return reply.code(201).send(observation);
