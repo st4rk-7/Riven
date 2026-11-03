@@ -4,7 +4,7 @@ import { createRoot } from "react-dom/client";
 import Shell from "./calui/Shell";
 import { Button } from "./calui/Button";
 import { api, ApiError, type NewProductInput, type Session } from "./riven-api";
-import { buildCatalog, type Product } from "./data";
+import { buildCatalog, UNLINKED_ID, type Product } from "./data";
 import { SignIn } from "./screens/SignIn";
 import { Search } from "./screens/Search";
 import { Competitors } from "./screens/Competitors";
@@ -440,7 +440,8 @@ function RivenApp() {
           }
           onDiscover={() => handleDiscover(product.id)}
           isDiscovering={isDiscovering}
-          onRemove={() => handleRemoveProduct(product.id)}
+          onRemove={product.id === UNLINKED_ID ? undefined : () => handleRemoveProduct(product.id)}
+          onRemoveOffer={(offerId) => handleRemoveListing(product.id, offerId)}
         />
       ) : page.name === "detail" && product && offer ? (
         <Suspense

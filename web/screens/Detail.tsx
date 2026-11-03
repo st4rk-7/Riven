@@ -122,7 +122,7 @@ export function Detail({
       )}
       {onRemove && (
         <div className="flex justify-end">
-          <RemoveButton label="Remove offer" onRemove={onRemove} />
+          <RemoveButton label="Remove offer" warning="Remove this offer and its price history?" onRemove={onRemove} />
         </div>
       )}
       {offer.matchStatus === "unverified" && !onMatchDecision && (
