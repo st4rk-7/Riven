@@ -1,33 +1,54 @@
 # Riven
 
-A four-student software project helping retailers monitor selected competitors' prices and availability.
+Riven helps small online retailers watch competitor prices and stock for the products they sell. A retailer adds a product, Riven finds competitor offers, and every price shows where it came from and when it was collected.
 
-**Current state:** a working web app and Chrome extension, deployed at https://riven.sbs. The site root shows the public landing page; the app (sign-in and retailer screens) is at https://riven.sbs/app. What is delivered and what is still planned is in [PRODUCT.md](PRODUCT.md); running and deploying it is in [setup](docs/setup.md). Acceptance evidence and Jira status are not claimed here.
+**Live:** https://riven.sbs (public page) · https://riven.sbs/app (the app)
 
-## Start with your next task, not every document
+## What it does today
 
-1. Read [Sprint 1](docs/sprint-1.md) for the shared goal.
-2. Read sections 2–5 of the [core manual](docs/manual.md) for the product, responsibilities, and basic data flow.
-3. Open your [member guide](docs/guides/README.md). Follow one working slice at a time; explain and check your work.
+- Retailer sign-in, with each retailer's data kept private
+- Add and remove products; Riven finds up to 5 competitor offers on Amazon
+- Matching marks each offer `confirmed`, `unverified` or `mismatch`; the retailer decides unverified ones
+- A Chrome extension sends Amazon pages the retailer views; a server crawler can re-check offers on a timer
+- Price history per offer; every attempt is recorded, including failures
 
-## Reference shelf
+Planned work is listed in the [SRS](docs/requirements.md).
 
-- [Product brief](PRODUCT.md): what Riven is, delivered and planned scope, honest-data principles, and the visual direction.
-- [Setup and deployment](docs/setup.md): local development, live deployment and retailer accounts.
-- [Proposal reference](docs/proposal.md): original intent and unresolved wording.
-- [Working SRS](docs/requirements.md): scope, functional requirements (FR), non-functional requirements (NFR), and acceptance evidence.
-- [Core manual](docs/manual.md): architecture, proposed technology decisions, shared data meanings, principles, quality, and team workflow.
-- [Product backlog](docs/backlog.md): PB-01–12 whole-product deliverables; not a duplicate live board.
-- [Sprint 1](docs/sprint-1.md): current outcome and integration checkpoints.
-- [Member guides](docs/guides/README.md): editable LaTeX and generated PDFs.
-- [Jira working guide](docs/guides/pdf/jira-working-guide.pdf): coordinator setup, task updates, PR links, blockers, review, and sprint closure.
+## Documents
 
-**GitHub owns versioned guidance, code, and review. Jira owns actual assignments, status, blockers, and progress.** Keeping documentation beside code is intentional; nobody needs to read the whole reference shelf before every change.
+| Need | Document |
+| --- | --- |
+| What Riven must do | [Software requirements specification](docs/requirements.md) |
+| How Riven is built | [Software design document](docs/design.md) |
+| How Riven is tested | [Test plan](docs/test-plan.md) |
+| How to use Riven | [User guide](docs/user-guide.md) |
+| Run, test and deploy | [Setup](docs/setup.md) · [Database](docs/database.md) · [API](docs/api.md) |
+| Product brief and visual direction | [PRODUCT.md](PRODUCT.md) |
+| Team workflow | [Team handbook](docs/manual.md) · [Product backlog](docs/backlog.md) |
+| Sprints | [Sprint 1](docs/sprints/sprint-1.md) |
+| Where data comes from | [Source access decision](docs/source-access-decision.md) |
+| Original intent | [Proposal reference](docs/proposal.md) |
 
-## What is fixed, and what is not
+Jira holds live tasks and status; this repository holds code, documents and review.
 
-TypeScript, four members, six sprints, and Amazon as the first intended source are user decisions. The remaining stack is a recommendation to verify. Suitable Amazon access/use/retention is unproven. Synthetic fixtures support learning but cannot pass live-source acceptance.
+## Quick start
 
-Earlier code, full planning material, private reference PDFs, and old Git history are preserved separately by the coordinator. They are not completed work in this start. Original proposal/module copies are also available locally under the ignored `local-reference/` directory, pending publication review.
+Requires Node.js 24, npm 11 and Docker. Full steps, including the database: [setup](docs/setup.md).
 
-To run the app locally, follow [setup](docs/setup.md). To rebuild the guide PDFs, see [guide build instructions](docs/guides/README.md). No software license has been selected.
+```bash
+npm ci
+```
+
+```bash
+npm run dev
+```
+
+```bash
+npm test
+```
+
+## Tech stack
+
+TypeScript · React + Vite · Fastify · PostgreSQL · Better Auth · Vitest · Chrome extension (Manifest V3) · Docker + Caddy on a VPS
+
+No software licence has been chosen yet.

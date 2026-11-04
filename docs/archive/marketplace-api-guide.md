@@ -3,7 +3,7 @@
 **Created:** 2 October 2026 · **Owner:** Shewon  
 **Purpose:** Track application status and requirements for each marketplace's official API or data-access route.
 
-> **Historical record (superseded 3 October 2026).** eBay rejected the developer account on 3 October 2026, so eBay is no longer a Sprint 1 candidate. The Sprint 1 source is books.toscrape.com. The current decision and statuses are in [source-access-decision.md](source-access-decision.md); where this guide disagrees, that document wins.
+> **Historical record (superseded 3 October 2026).** eBay rejected the developer account on 3 October 2026, so eBay is no longer a Sprint 1 candidate. The Sprint 1 source is books.toscrape.com. The current decision and statuses are in [source-access-decision.md](../source-access-decision.md); where this guide disagrees, that document wins.
 
 ---
 
@@ -15,7 +15,7 @@
 | **Walmart** | Solution Provider program | Business entity, application form, Zoom demo | 3–5 weeks | Free after approval | ⚠️ Seller-tool oriented; Riven must justify use | 🔴 Not started |
 | **AliExpress** | Open Platform API | AliExpress seller account, business licence, app approval | 1–2 days for review | Free (seller-authorized) | ⚠️ Requires seller account; seller authorization needed for data | 🔴 Not started |
 | **Temu** | Partner Platform / Research API | ISV registration, app key approval | Unknown (limited public info) | Unknown | ⚠️ Seller-oriented; Research API exists but access unclear | 🔴 Not started |
-| **Amazon** | No suitable route found | See [source-access-decision.md](source-access-decision.md) | N/A | N/A | ❌ Blocked for Riven's current scope | 🔴 Blocked |
+| **Amazon** | No suitable route found | See [source-access-decision.md](../source-access-decision.md) | N/A | N/A | ❌ Blocked for Riven's current scope | 🔴 Blocked |
 | **Oxylabs** | E-Commerce Scraper API (provider) | Account registration | Immediate (free trial) | Free: 2,000 results; paid: from $0.50/1K | ⚠️ Backup provider; downstream licence must be confirmed | 🔴 Not started |
 
 ---
@@ -249,7 +249,7 @@ Temu's Partner Platform provides API access for ISVs and developers building too
 
 ## 5. Amazon — blocked
 
-See [source-access-decision.md](source-access-decision.md) for the full assessment.
+See [source-access-decision.md](../source-access-decision.md) for the full assessment.
 
 **Summary:**
 - **Page scraping:** prohibited by UK Conditions of Use without express written consent

@@ -8,5 +8,4 @@ coverage/
 *.sqlite
 *.sqlite-*
 .DS_Store
-docs/guides/build/
 handouts/

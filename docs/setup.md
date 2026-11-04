@@ -466,13 +466,9 @@ because dependency changes require separate review and testing.
 
 ## Remaining verification
 
-Before RIV-18 is complete:
-
-- Open a pull request and obtain the required review.
-- Merge only after acceptance and review.
-
-These checks do not prove production readiness, public deployment, a completed
-browser sign-in flow or live Amazon collection.
+RIV-18 was merged in pull request #16. The checks recorded above do not prove
+production readiness or live Amazon collection. Ongoing checks are in the
+[test plan](test-plan.md).
 
 ## AI assistance
 
