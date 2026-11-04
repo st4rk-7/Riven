@@ -1,11 +1,11 @@
 # Software requirements specification (SRS)
 
-**Riven** · Version 1.0 draft · 4 November 2026 · Owner: Shewon · Status: for team and client review
+**Riven** · Version 1.0 · 4 November 2026 · Owner: Shewon · Status: approved by the client, 4 Nov 2026
 
 | Version | Date | Change |
 | --- | --- | --- |
 | 0.1 | 30 Sep 2026 | Working draft from the proposal. |
-| 1.0 draft | 4 Nov 2026 | Rewritten for the current product: client decisions of 10 Oct, extension route of 12 Oct, one collection pipeline and competitor-practice review of 4 Nov. Requirement IDs kept from 0.1. |
+| 1.0 | 4 Nov 2026 | Rewritten for the current product: client decisions of 10 Oct, extension route of 12 Oct, one collection pipeline and competitor-practice review of 4 Nov. Requirement IDs kept from 0.1. Approved by the client at the 4 Nov demo. |
 
 ## 1. Introduction
 
@@ -73,7 +73,7 @@ A web app in current desktop and mobile browsers, a Chrome extension, and a serv
 
 ## 3. Functional requirements
 
-Priority uses MoSCoW (Must, Should, Could), proposed by the team lead and open to client review. Status describes code on `main` at commit `05d6100`; **Built** means the code exists, not that it passed acceptance.
+Priority uses MoSCoW (Must, Should, Could), approved by the client on 4 Nov 2026. Status describes code on `main` at commit `05d6100`; **Built** means the code exists, not that it passed acceptance.
 
 ### FR-01 Accounts · Must · Built (retailer), Planned (administrator)
 
@@ -115,7 +115,7 @@ As a retailer, I want competitor offers checked again over time, so that I see c
 
 - One collection pipeline with two fetchers, the server crawler and the extension, using the same parsing and saving rules. *(Built: one save path; the extension still parses pages itself)*
 - The server crawler checks offers on sites that allow server requests, at a set interval. *(Built: one interval for all products, off by default)*
-- Each product can have its own check interval or be paused. *(Planned; needs client agreement)*
+- Each product can have its own check interval or be paused. *(Planned; approved by the client, 4 Nov 2026)*
 - The extension sends the page the retailer is viewing on a site that blocks servers, and the server parses it. *(Planned; today the extension parses)*
 - The screen says how each platform is updated, for example "Amazon: updated when you view it". *(Planned)*
 
@@ -196,7 +196,7 @@ Each delivered feature is checked against its FR acceptance criteria and relevan
 
 | Decision | Needed for | Decides |
 | --- | --- | --- |
-| Per-product check interval and default schedule | FR-05, FR-09 | Client |
+| Default check interval (per-product intervals approved 4 Nov) | FR-05, FR-09 | Team, then client |
 | Alert conditions and channel | FR-08 | Client |
 | Stale threshold | FR-11, NFR-04 | Team with client |
 | Tier limits and prices | FR-09 | Client |

@@ -51,14 +51,12 @@ Merged pull requests, grouped by owner (from GitHub).
 
 ## 3. Sprint review
 
-To be filled in by the team after the client demo and the sprint evaluation.
-
 | Item | Record |
 | --- | --- |
-| Client demo date | |
-| What was shown | |
-| Client feedback | |
-| Evidence of the client presentation | |
+| Client demo date | 4 Nov 2026 |
+| What was shown | The live app at https://riven.sbs/app, and the new documents: SRS v1.0, SDD, test plan, user guide |
+| Client feedback | Approved the demo and the documents, including the SRS items that needed client agreement: per-product check intervals and the MoSCoW priorities |
+| Evidence of the client presentation | None recorded yet. To add: a written confirmation from the client |
 | Evaluation date and feedback | |
 
 ## 4. Retrospective
@@ -74,5 +72,6 @@ To be filled in by the team together.
 ## 5. Actions before Sprint 2
 
 - Close "RIV Sprint 1" in Jira and move unfinished tickets to Sprint 2.
-- Fill in sections 3 and 4.
+- Get a written confirmation of the 4 Nov approval from the client and record it in section 3.
+- Fill in the evaluation row and section 4.
 - Start `sprint-2.md` in this folder from the same headings.

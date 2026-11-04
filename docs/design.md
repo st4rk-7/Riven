@@ -1,10 +1,10 @@
 # Software design document (SDD)
 
-**Riven** · Version 1.0 draft · 4 November 2026 · Status: for team review
+**Riven** · Version 1.0 · 4 November 2026 · Status: approved by the client, 4 Nov 2026
 
 | Version | Date | Change |
 | --- | --- | --- |
-| 1.0 draft | 4 Nov 2026 | First SDD. Collects the design from the core manual, `api.md`, `database.md` and the code on `main` at `05d6100`, and adds the 4 Nov collection decisions. |
+| 1.0 | 4 Nov 2026 | First SDD. Collects the design from the core manual, `api.md`, `database.md` and the code on `main` at `05d6100`, and adds the 4 Nov collection decisions. Approved by the client at the 4 Nov demo. |
 
 ## 1. Purpose and scope
 
@@ -176,5 +176,6 @@ Format: date · decision · why · trade-off.
 | 4 Nov 2026 | Site rules as data, fetch escalation, per-product schedule, validation guards | A common pattern in price trackers; adding a site needs no code change | More upfront work than one parser per site |
 | 4 Nov 2026 | Collection code is written by the team; no third-party tracker code is copied | Keeps Riven free of other projects' licence terms | Riven writes its own implementation |
 | 4 Nov 2026 | AI-assisted page reading and regional proxies are optional, off by default | Useful for awkward pages and regional prices | Paid services need client agreement |
+| 4 Nov 2026 | Client approved SRS v1.0 at the demo, including per-product check intervals and the MoSCoW priorities | Client review of the live app and documents | Default interval value still to set |
 
 A decision is revisited when a test, the client or a site's behaviour shows it no longer works.

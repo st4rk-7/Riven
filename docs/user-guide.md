@@ -1,6 +1,6 @@
 # User guide
 
-**Riven** · Version 1.0 draft · 4 November 2026 · For retailers using https://riven.sbs/app
+**Riven** · Version 1.0 · 4 November 2026 · Approved by the client, 4 Nov 2026 · For retailers using https://riven.sbs/app
 
 Riven shows what your competitors charge for the products you sell, and whether they have them in stock. Every price shows where it came from and when it was collected.
 

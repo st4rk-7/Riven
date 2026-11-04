@@ -1,10 +1,10 @@
 # Test plan
 
-**Riven** · Version 1.0 draft · 4 November 2026 · Status: for team review
+**Riven** · Version 1.0 · 4 November 2026 · Status: approved by the client, 4 Nov 2026
 
 | Version | Date | Change |
 | --- | --- | --- |
-| 1.0 draft | 4 Nov 2026 | First test plan, written from the tests and CI on `main` at `05d6100`. |
+| 1.0 | 4 Nov 2026 | First test plan, written from the tests and CI on `main` at `05d6100`. Approved by the client at the 4 Nov demo. |
 
 ## 1. Purpose and scope
 
