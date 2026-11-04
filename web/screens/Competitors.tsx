@@ -11,12 +11,14 @@ export function Competitors({
   onDiscover,
   isDiscovering,
   onRemove,
+  onRemoveOffer,
 }: {
   product: Product;
   onOpenOffer: (offerId: string) => void;
   onDiscover?: () => void;
   isDiscovering?: boolean;
   onRemove?: () => Promise<void>;
+  onRemoveOffer?: (offerId: string) => Promise<void>;
 }) {
   const inStock = product.offers.filter((o) => o.availability === "in_stock").length;
 
@@ -44,7 +46,6 @@ export function Competitors({
           <p className="text-sm text-subtle">Offers matched via extension or automated discovery.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          {onRemove && <RemoveButton label="Remove product" onRemove={onRemove} />}
           {onDiscover && (
             <Button
               color="primary"
@@ -117,6 +118,15 @@ export function Competitors({
                     />
                   </div>
                 )}
+                {onRemoveOffer && (
+                  <div className="mr-2 shrink-0 sm:mr-3">
+                    <RemoveButton
+                      label="Remove"
+                      warning={`Remove ${o.seller}'s offer and its history?`}
+                      onRemove={() => onRemoveOffer(o.id)}
+                    />
+                  </div>
+                )}
                 <div className="mr-4 hidden shrink-0 sm:flex sm:mr-6">
                   <Button
                     color="secondary"
@@ -132,6 +142,17 @@ export function Competitors({
         </ul>
       </div>
       <p className="text-subtle text-sm">Only confirmed matches are used for the lowest-price and average comparisons. Your own price is not yet connected.</p>
+
+      {onRemove && (
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-subtle pt-6">
+          <p className="text-sm text-subtle">Deleting this product also deletes all {product.offers.length} of its competitor offers.</p>
+          <RemoveButton
+            label="Delete product"
+            warning={`Delete this product and all ${product.offers.length} offers? This cannot be undone.`}
+            onRemove={onRemove}
+          />
+        </div>
+      )}
     </div>
   );
 }

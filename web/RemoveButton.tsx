@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Button } from "./calui/Button";
 
 // Removal cannot be undone, so the first click only asks; the second click removes.
-export function RemoveButton({ label, onRemove }: { label: string; onRemove: () => Promise<void> }) {
+// `warning` says exactly what will be deleted, shown next to the confirm button.
+export function RemoveButton({ label, warning, onRemove }: { label: string; warning: string; onRemove: () => Promise<void> }) {
   const [state, setState] = useState<"idle" | "confirm" | "removing" | "failed">("idle");
 
   if (state === "idle" || state === "failed") {
@@ -15,7 +16,8 @@ export function RemoveButton({ label, onRemove }: { label: string; onRemove: () 
     );
   }
   return (
-    <span className="flex items-center gap-2">
+    <span className="flex flex-wrap items-center gap-2">
+      <span role="alert" className="text-sm text-emphasis">{warning}</span>
       <Button color="secondary" disabled={state === "removing"} onClick={() => setState("idle")}>Cancel</Button>
       <Button
         color="destructive"
@@ -25,7 +27,7 @@ export function RemoveButton({ label, onRemove }: { label: string; onRemove: () 
           onRemove().catch(() => setState("failed"));
         }}
       >
-        {state === "removing" ? "Removing…" : `Yes, ${label.toLowerCase()}`}
+        {state === "removing" ? "Removing…" : "Yes, delete"}
       </Button>
     </span>
   );
