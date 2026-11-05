@@ -20,6 +20,8 @@ export type Offer = {
   observedAt: string;
   collectedVia: ApiObservation["collectedVia"];
   history: PricePoint[];
+  // Every observation of this listing; `id` is the newest, so an open page can still find its offer after a new send.
+  observationIds: string[];
 };
 
 export type Product = {
@@ -57,6 +59,7 @@ export function buildCatalog(products: ApiProduct[], observations: ApiObservatio
     const existing = listings.get(listingKey);
     if (existing) {
       existing.history.unshift(point);
+      existing.observationIds.push(o.id);
       continue;
     }
     listings.set(listingKey, {
@@ -72,6 +75,7 @@ export function buildCatalog(products: ApiProduct[], observations: ApiObservatio
       observedAt: o.observedAt,
       collectedVia: o.collectedVia,
       history: [point],
+      observationIds: [o.id],
     });
   }
 
