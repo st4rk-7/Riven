@@ -11,7 +11,7 @@
 
 ### 1.1 Purpose
 
-This SRS states what Riven must do and how well. How it is built is in the [core manual](manual.md). Live task status is in Jira, not here.
+This SRS states what Riven must do and how well. How it is built is in the [design document](design.md). Live task status is in Jira, not here.
 
 ### 1.2 Product scope
 

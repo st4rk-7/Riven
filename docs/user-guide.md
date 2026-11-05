@@ -78,7 +78,7 @@ Amazon pages reach Riven through the extension, from pages you open yourself.
 
 ## 8. How often prices update
 
-- **Amazon:** when you send a page with the extension.
-- **Other sites:** Riven can re-check offers on a schedule when the team turns this on.
+- **Amazon:** when you send a page with the extension (marked "Extension"), or when Riven's scheduled check reads it (marked "Scheduled").
+- **Other sites:** not supported yet.
 
 Check the time shown next to each price to see how recent it is.

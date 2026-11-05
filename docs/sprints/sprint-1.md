@@ -54,9 +54,9 @@ Merged pull requests, grouped by owner (from GitHub).
 | Item | Record |
 | --- | --- |
 | Client demo date | 4 Nov 2026 |
-| What was shown | The live app at https://riven.sbs/app, and the new documents: SRS v1.0, SDD, test plan, user guide |
-| Client feedback | Approved the demo and the documents, including the SRS items that needed client agreement: per-product check intervals and the MoSCoW priorities |
-| Evidence of the client presentation | None recorded yet. To add: a written confirmation from the client |
+| What was shown | The live app at https://riven.sbs, SRS v1.0, SDD, test plan, architecture and the working prototype |
+| Client feedback | Confirmed in writing: the live app demo, all documents shown and the MoSCoW priorities. Per-product check intervals were agreed verbally at the demo; the written confirmation does not mention them |
+| Evidence of the client presentation | Email reply from Sathursan S, 5 Nov 2026, 10:59, to the team's confirmation request: "Confirmed. I am satisfied with the work of your team and the Sprint 1 MVP was good. Please proceed with the suggestions and start working on the next features for the upcoming sprint." The email is kept by Shewon |
 | Evaluation date and feedback | |
 
 ## 4. Retrospective

@@ -75,7 +75,7 @@ Run on the live site (https://riven.sbs/app) or locally before a demo or release
 | FR-01 Accounts | `auth.integration`: signed-out access refused; wrong passwords; session ends on sign-out; tampered cookies; sign-in rate limit | M1 | Administrator role not built |
 | FR-02 Products | `products.test`: name, link and invalid input; `auth.integration`: remove only own product | M2 | Edit not built |
 | FR-03 Discovery | `discovery.test`: one candidate per ASIN, no invented seller or price, stops at 5, no match adds nothing | M3 | — |
-| FR-04 Matching | `matching.test`: same ASIN, different ASIN, model number, pack size, title stays unverified; `crawler.test`: retailer decision updates status | M4 | Price-gap guard not built |
+| FR-04 Matching | `matching.test`: same ASIN, different ASIN, model number, pack size, title stays unverified; `crawler.test`: a direct database update stores the retailer's decision (the API route is not called) | M4 | Price-gap guard not built; no automated test of the match-decision API route (`PATCH /api/v1/observations/:id`) |
 | FR-05 Collection | `amazon-collector.test`: parse, 503 and non-HTML and CAPTCHA pages recorded as blocked, no retry, allowed hosts only; `crawler.test`: crawl, blocked, one retailer only, both fetchers update one offer | M5 | Per-product schedule, extension sending pages, site rules not built |
 | FR-06 History | `auth.integration`: failed attempts keep observations, rollback when the attempt write fails; `crawler.test`: blocked does not erase | M6 | Skip-unchanged rule not built |
 | FR-07 Comparison | — | M6 | Own price not built; no automated UI test |
