@@ -61,6 +61,8 @@ export const api = {
     request<{ discovered: number }>(`/products/${productId}/discover`, "POST"),
   updateMatchStatus: (observationId: string, matchStatus: "confirmed" | "mismatch") =>
     request<ApiObservation>(`/observations/${observationId}`, "PATCH", { matchStatus }),
+  updateProduct: (productId: string, input: { name: string; brand: string }) =>
+    request<ApiProduct>(`/products/${productId}`, "PATCH", input),
   removeProduct: (productId: string) => request<void>(`/products/${productId}`, "DELETE"),
   removeListing: (observationId: string) => request<void>(`/observations/${observationId}/listing`, "DELETE"),
 };

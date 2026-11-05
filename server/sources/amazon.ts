@@ -20,12 +20,13 @@ const CURRENCY_SYMBOLS: [string, string][] = [
 
 export function parsePrice(text: string): { price: string | null; currency: string | null } {
   const trimmed = text.replace(/\s+/g, "").trim();
-  const symbol = CURRENCY_SYMBOLS.find(([s]) => trimmed.startsWith(s));
+  // Amazon shows other countries' visitors a converted price led by an ISO code, e.g. "LKR143,394.48".
+  const currency = CURRENCY_SYMBOLS.find(([s]) => trimmed.startsWith(s))?.[1] ?? /^([A-Z]{3})\d/.exec(trimmed)?.[1] ?? null;
   const amount = /^\D*(\d{1,3}(?:,\d{3})*|\d+)\.(\d{2})$/.exec(trimmed);
-  if (!symbol || !amount) {
-    return { price: null, currency: symbol ? symbol[1] : null };
+  if (!currency || !amount) {
+    return { price: null, currency };
   }
-  return { price: `${amount[1].replace(/,/g, "")}.${amount[2]}`, currency: symbol[1] };
+  return { price: `${amount[1].replace(/,/g, "")}.${amount[2]}`, currency };
 }
 
 export function parseAvailability(text: string): AmazonOffer["availability"] {
