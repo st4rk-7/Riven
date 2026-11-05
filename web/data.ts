@@ -26,6 +26,8 @@ export type Product = {
   id: string;
   brand: string;
   name: string;
+  ownPrice: string | null;
+  ownCurrency: string | null;
   offers: Offer[];
 };
 
@@ -77,10 +79,12 @@ export function buildCatalog(products: ApiProduct[], observations: ApiObservatio
     id: p.id,
     brand: p.brand,
     name: p.name,
+    ownPrice: p.ownPrice,
+    ownCurrency: p.ownCurrency,
     offers: [...(offersByProduct.get(p.id)?.values() ?? [])],
   }));
   const unlinked = offersByProduct.get(UNLINKED_ID);
-  if (unlinked) catalog.push({ id: UNLINKED_ID, brand: "", name: "Offers not linked to a product", offers: [...unlinked.values()] });
+  if (unlinked) catalog.push({ id: UNLINKED_ID, brand: "", name: "Offers not linked to a product", ownPrice: null, ownCurrency: null, offers: [...unlinked.values()] });
   return catalog;
 }
 
@@ -88,17 +92,6 @@ export function formatPrice(price: string | null, currency: string | null): stri
   if (price === null) return "Price unavailable";
   return currency === "GBP" ? `£${price}` : `${price} ${currency ?? ""}`.trim();
 }
-
-// shortcut: one sample "Your price" for the demo account only, shown as sample on every product;
-// replace with the retailer's own price per product when FR-07 is built (Sprint 2).
-const SAMPLE_OWN_PRICE = { shop: "retailer1", price: "1049.00", currency: "GBP" };
-
-export function sampleOwnPrice(shopName: string): string | null {
-  return shopName.toLowerCase().replace(/\s+/g, "") === SAMPLE_OWN_PRICE.shop
-    ? formatPrice(SAMPLE_OWN_PRICE.price, SAMPLE_OWN_PRICE.currency)
-    : null;
-}
-
 export function formatTime(iso: string): string {
   return new Date(iso).toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 }

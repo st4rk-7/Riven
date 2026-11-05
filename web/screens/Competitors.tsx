@@ -6,6 +6,7 @@ import { Input } from "@coss/ui/components/input";
 import { Badge } from "../calui/Badge";
 import { Button } from "../calui/Button";
 import { averagePrice, formatPrice, formatTime, lowestPrice, type Product } from "../data";
+import type { ProductEditInput } from "../riven-api";
 import { MatchBadge, StockBadge } from "../status";
 import { RemoveButton } from "../RemoveButton";
 
@@ -17,8 +18,8 @@ export function Competitors({
   isDiscovering,
   onRemove,
   onEdit,
-  sampleOwnPrice,
   onRemoveOffer,
+  onFetchOffer,
 }: {
   product: Product;
   onOpenOffer: (offerId: string) => void;
@@ -26,15 +27,27 @@ export function Competitors({
   isDiscovering?: boolean;
   onRemove?: () => Promise<void>;
   // Resolves to an error message, or null once saved.
-  onEdit?: (input: { name: string; brand: string }) => Promise<string | null>;
-  sampleOwnPrice?: string | null;
+  onEdit?: (input: ProductEditInput) => Promise<string | null>;
   onRemoveOffer?: (offerId: string) => Promise<void>;
+  // Resolves to a message for the retailer, or null when a price was saved.
+  onFetchOffer?: (url: string) => Promise<string | null>;
 }) {
   const inStock = product.offers.filter((o) => o.availability === "in_stock").length;
   const [editing, setEditing] = useState(false);
+  const [fetchingId, setFetchingId] = useState<string | null>(null);
+  const [fetchNotice, setFetchNotice] = useState<string | null>(null);
+
+  async function fetchOffer(offerId: string, url: string) {
+    if (!onFetchOffer) return;
+    setFetchingId(offerId);
+    setFetchNotice(null);
+    const message = await onFetchOffer(url);
+    setFetchingId(null);
+    setFetchNotice(message ?? "Price updated from Amazon.");
+  }
 
   const stats = [
-    { label: sampleOwnPrice ? "Your price · sample" : "Your price", value: sampleOwnPrice ?? "Not connected" },
+    { label: "Your price", value: product.ownPrice ? formatPrice(product.ownPrice, product.ownCurrency) : "Not set" },
     { label: "Lowest confirmed offer", value: lowestPrice(product.offers) },
     { label: "Average (confirmed)", value: averagePrice(product.offers) },
     { label: "In stock", value: `${inStock} of ${product.offers.length}` },
@@ -76,6 +89,12 @@ export function Competitors({
 
       {onEdit && editing && (
         <EditProductForm product={product} onSave={onEdit} onClose={() => setEditing(false)} />
+      )}
+
+      {fetchNotice && (
+        <p role="status" className="text-sm text-subtle">
+          {fetchNotice}
+        </p>
       )}
 
       <div className="flex flex-col overflow-hidden rounded-[20px] border border-black/10 bg-white">
@@ -125,6 +144,19 @@ export function Competitors({
                     </div>
                   </div>
                 </button>
+                {o.url && onFetchOffer && (
+                  <div className="mr-2 shrink-0 sm:mr-3">
+                    <Button
+                      color="secondary"
+                      loading={fetchingId === o.id}
+                      disabled={fetchingId !== null}
+                      onClick={() => fetchOffer(o.id, o.url!)}
+                      aria-label={`Fetch the current price from ${o.seller}'s listing`}
+                    >
+                      Fetch
+                    </Button>
+                  </div>
+                )}
                 {o.url && (
                   <div className="mr-2 shrink-0 sm:mr-3">
                     <Button
@@ -163,7 +195,7 @@ export function Competitors({
       </div>
       <p className="text-subtle text-sm">
         Only confirmed matches are used for the lowest-price and average comparisons.{" "}
-        {sampleOwnPrice ? "Your price is a sample value for this demo account." : "Your own price is not yet connected."}
+        {product.ownPrice ? "Your price is the one you entered under Edit product." : "Set your own price under Edit product."}
       </p>
 
       {onRemove && (
@@ -186,11 +218,15 @@ function EditProductForm({
   onClose,
 }: {
   product: Product;
-  onSave: (input: { name: string; brand: string }) => Promise<string | null>;
+  onSave: (input: ProductEditInput) => Promise<string | null>;
   onClose: () => void;
 }) {
   const [name, setName] = useState(product.name);
   const [brand, setBrand] = useState(product.brand);
+  const [ownPrice, setOwnPrice] = useState(product.ownPrice ?? "");
+  // Default to the currency competitors are shown in, so the numbers are comparable.
+  const [ownCurrency, setOwnCurrency] = useState(
+    product.ownCurrency ?? product.offers.find((o) => o.currency)?.currency ?? "GBP");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -202,7 +238,7 @@ function EditProductForm({
         e.preventDefault();
         setBusy(true);
         setError(null);
-        const message = await onSave({ name: name.trim(), brand: brand.trim() });
+        const message = await onSave({ name: name.trim(), brand: brand.trim(), ownPrice: ownPrice.trim(), ownCurrency: ownCurrency.trim() });
         setBusy(false);
         if (message) setError(message);
         else onClose();
@@ -216,6 +252,14 @@ function EditProductForm({
         <Field>
           <FieldLabel>Brand (optional)</FieldLabel>
           <Input id="edit-product-brand" value={brand} maxLength={200} onChange={(e) => setBrand(e.target.value)} />
+        </Field>
+        <Field>
+          <FieldLabel>Your price (optional)</FieldLabel>
+          <Input id="edit-product-own-price" value={ownPrice} inputMode="decimal" placeholder="1049.00" maxLength={20} onChange={(e) => setOwnPrice(e.target.value)} />
+        </Field>
+        <Field>
+          <FieldLabel>Currency</FieldLabel>
+          <Input id="edit-product-own-currency" value={ownCurrency} maxLength={3} placeholder="GBP" onChange={(e) => setOwnCurrency(e.target.value.toUpperCase())} />
         </Field>
       </div>
       {error && (

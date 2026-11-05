@@ -18,15 +18,25 @@ const NewProductSchema = z.union([
 export type NewProduct = { name: string; brand: string; asin: string | null };
 
 // Renaming keeps the ASIN: it identifies the product for matching, so it is not editable here.
+// The own price is optional: blank clears it; "1,049" is stored as "1049.00", like observation prices.
 const ProductEditSchema = z.object({
   name: z.string().trim().min(1).max(500),
   brand: z.string().trim().max(200).default(""),
-}).strict();
+  ownPrice: z.string().trim().regex(/^$|^(\d{1,3}(,\d{3})+|\d+)(\.\d{1,2})?$/).nullable().default(null)
+    .transform((v) => (v ? Number(v.replace(/,/g, "")).toFixed(2) : null)),
+  ownCurrency: z.string().trim().toUpperCase().regex(/^[A-Z]{3}$/).nullable().default(null),
+}).strict().refine((e) => e.ownPrice === null || e.ownCurrency !== null, { message: "A price needs a currency." });
 
-export function parseProductEdit(body: unknown): { name: string; brand: string } | null {
+export type ProductEdit = { name: string; brand: string; ownPrice: string | null; ownCurrency: string | null };
+
+export function parseProductEdit(body: unknown): ProductEdit | null {
   const parsed = ProductEditSchema.safeParse(body);
-  return parsed.success ? parsed.data : null;
+  if (!parsed.success) return null;
+  const { ownPrice, ownCurrency } = parsed.data;
+  return { ...parsed.data, ownCurrency: ownPrice === null ? null : ownCurrency };
 }
+
+const PRODUCT_COLUMNS = `id, name, brand, asin, own_price AS "ownPrice", own_currency AS "ownCurrency"`;
 
 // Turns the request body into a product, reading the page when given a link.
 // The collector only fetches allowed Amazon hosts, so a link can't reach internal addresses.
@@ -63,7 +73,7 @@ async function inTransaction<T>(database: Pool, work: (connection: PoolClient) =
 
 export function registerProductRoutes(app: FastifyInstance, database: Pool) {
   app.get("/api/v1/products", async (request) => {
-    const { rows } = await database.query("SELECT id, name, brand, asin FROM products WHERE retailer_id = $1 ORDER BY created_at, id", [request.identity!.retailer.id]);
+    const { rows } = await database.query(`SELECT ${PRODUCT_COLUMNS} FROM products WHERE retailer_id = $1 ORDER BY created_at, id`, [request.identity!.retailer.id]);
     return { products: rows };
   });
 
@@ -75,7 +85,7 @@ export function registerProductRoutes(app: FastifyInstance, database: Pool) {
 
     const product = await inTransaction(database, async (connection) => {
       const { rows: [created] } = await connection.query(
-        `INSERT INTO products (retailer_id, name, brand, asin) VALUES ($1, $2, $3, $4) RETURNING id, name, brand, asin`,
+        `INSERT INTO products (retailer_id, name, brand, asin) VALUES ($1, $2, $3, $4) RETURNING ${PRODUCT_COLUMNS}`,
         [retailerId, name, brand, asin]);
       // Offers sent before this product existed: link the ones that match it.
       const { rows: unlinked } = await connection.query<{ id: string; productName: string; asin: string }>(
@@ -90,14 +100,14 @@ export function registerProductRoutes(app: FastifyInstance, database: Pool) {
     return reply.code(201).send(product);
   });
 
-  // Changes a product's name and brand; only the signed-in retailer's own products match.
+  // Changes a product's name, brand and own price; only the signed-in retailer's own products match.
   app.patch("/api/v1/products/:id", async (request, reply) => {
     const edit = parseProductEdit(request.body);
-    if (!edit) return reply.code(400).send({ code: "INVALID_PRODUCT", message: "Enter a product name." });
+    if (!edit) return reply.code(400).send({ code: "INVALID_PRODUCT", message: "Enter a product name, and a price like 1049.00 with a currency." });
     const { id } = request.params as { id: string };
     const { rows: [updated] } = await database.query(
-      "UPDATE products SET name = $1, brand = $2 WHERE retailer_id = $3 AND id = $4 RETURNING id, name, brand, asin",
-      [edit.name, edit.brand, request.identity!.retailer.id, id]);
+      `UPDATE products SET name = $1, brand = $2, own_price = $3, own_currency = $4 WHERE retailer_id = $5 AND id = $6 RETURNING ${PRODUCT_COLUMNS}`,
+      [edit.name, edit.brand, edit.ownPrice, edit.ownCurrency, request.identity!.retailer.id, id]);
     if (!updated) return reply.code(404).send({ code: "NOT_FOUND", message: "Product not found." });
     return updated;
   });

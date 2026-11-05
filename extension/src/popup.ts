@@ -1,16 +1,5 @@
 import { type AmazonOffer, parseAmazonProductPage } from "../../server/sources/amazon.js";
-
-const ALLOWED_HOSTS = [
-  "www.amazon.co.uk",
-  "amazon.co.uk",
-  "www.amazon.sg",
-  "amazon.sg",
-  "www.amazon.com",
-  "amazon.com",
-];
-// Set at build time: npm run build:extension (local) or build:extension:live (https://riven.sbs).
-declare const __RIVEN_API__: string;
-const RIVEN_API = __RIVEN_API__;
+import { isAllowedPage, recordFailedAttempt, sendOffer } from "./send.js";
 
 const result = document.getElementById("result")!;
 
@@ -44,17 +33,9 @@ function render(offer: AmazonOffer, pageUrl: string) {
     status.className = "muted";
     status.textContent = "Sending…";
     try {
-      const response = await fetch(`${RIVEN_API}/observations`, {
-        credentials: "include",
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ pageUrl, ...offer }),
-      });
-      const body = await response.json();
-      if (response.status === 401) throw new Error("Sign in to Riven in this Chrome profile first");
-      if (!response.ok) throw new Error(body.message ?? `HTTP ${response.status}`);
+      const observedAt = await sendOffer(offer, pageUrl);
       status.className = "ok";
-      status.textContent = `Saved to Riven at ${new Date(body.observedAt).toLocaleTimeString()}`;
+      status.textContent = `Saved to Riven at ${new Date(observedAt).toLocaleTimeString()}`;
     } catch (error) {
       button.disabled = false;
       status.className = "error";
@@ -65,8 +46,7 @@ function render(offer: AmazonOffer, pageUrl: string) {
 
 async function main() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  const host = tab?.url ? new URL(tab.url).hostname : "";
-  if (!tab?.id || !ALLOWED_HOSTS.includes(host)) {
+  if (!tab?.id || !isAllowedPage(tab.url)) {
     show('<p class="muted">Open an Amazon.co.uk product page, then click Riven again.</p>');
     return;
   }
@@ -81,19 +61,7 @@ async function main() {
   } catch (error) {
     const reason = (error as Error).message;
     show(`<p class="error">${escape(reason)}</p><p id="status" class="muted">Recording the failed attempt…</p>`);
-    const status = document.getElementById("status")!;
-    try {
-      const response = await fetch(`${RIVEN_API}/attempts`, {
-        credentials: "include",
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ pageUrl: tab.url, status: "failed", reason: reason.slice(0, 300) }),
-      });
-      status.textContent = response.status === 401 ? "Sign in to Riven in this Chrome profile first; attempt not recorded."
-        : response.ok ? "Failed attempt recorded in Riven." : "Riven did not record the attempt.";
-    } catch {
-      status.textContent = "Riven server not reachable; attempt not recorded.";
-    }
+    document.getElementById("status")!.textContent = await recordFailedAttempt(tab.url!, reason);
   }
 }
 

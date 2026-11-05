@@ -5,7 +5,9 @@ export type Session = {
   retailer: { id: string; name: string };
 };
 
-export type ApiProduct = { id: string; name: string; brand: string; asin: string | null };
+export type ApiProduct = { id: string; name: string; brand: string; asin: string | null; ownPrice: string | null; ownCurrency: string | null };
+
+export type ProductEditInput = { name: string; brand: string; ownPrice: string; ownCurrency: string };
 
 export type NewProductInput = { url: string } | { name: string; brand: string };
 
@@ -61,7 +63,7 @@ export const api = {
     request<{ discovered: number }>(`/products/${productId}/discover`, "POST"),
   updateMatchStatus: (observationId: string, matchStatus: "confirmed" | "mismatch") =>
     request<ApiObservation>(`/observations/${observationId}`, "PATCH", { matchStatus }),
-  updateProduct: (productId: string, input: { name: string; brand: string }) =>
+  updateProduct: (productId: string, input: ProductEditInput) =>
     request<ApiProduct>(`/products/${productId}`, "PATCH", input),
   removeProduct: (productId: string) => request<void>(`/products/${productId}`, "DELETE"),
   removeListing: (observationId: string) => request<void>(`/observations/${observationId}/listing`, "DELETE"),

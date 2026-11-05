@@ -34,12 +34,20 @@ describe("resolveNewProduct", () => {
 
 describe("parseProductEdit", () => {
   test("trims the new name and brand", () => {
-    expect(parseProductEdit({ name: " iPhone 16 Pro Max ", brand: " Apple " })).toEqual({ name: "iPhone 16 Pro Max", brand: "Apple" });
-    expect(parseProductEdit({ name: "Desk lamp" })).toEqual({ name: "Desk lamp", brand: "" });
+    expect(parseProductEdit({ name: " iPhone 16 Pro Max ", brand: " Apple " })).toEqual({ name: "iPhone 16 Pro Max", brand: "Apple", ownPrice: null, ownCurrency: null });
+    expect(parseProductEdit({ name: "Desk lamp" })).toEqual({ name: "Desk lamp", brand: "", ownPrice: null, ownCurrency: null });
   });
 
-  test("rejects a blank name and fields that must not change here", () => {
-    for (const body of [undefined, {}, { name: "  " }, { name: "Lamp", asin: "B0LAMP0001" }, { name: "Lamp", retailerId: "other" }]) {
+  test("stores the own price with two decimals, and blank clears it", () => {
+    expect(parseProductEdit({ name: "Lamp", ownPrice: "1,049", ownCurrency: "gbp" })).toMatchObject({ ownPrice: "1049.00", ownCurrency: "GBP" });
+    expect(parseProductEdit({ name: "Lamp", ownPrice: "302539.9", ownCurrency: "LKR" })).toMatchObject({ ownPrice: "302539.90", ownCurrency: "LKR" });
+    expect(parseProductEdit({ name: "Lamp", ownPrice: "", ownCurrency: "GBP" })).toMatchObject({ ownPrice: null, ownCurrency: null });
+  });
+
+  test("rejects a blank name, a bad price, a price without currency and fields that must not change here", () => {
+    for (const body of [undefined, {}, { name: "  " }, { name: "Lamp", asin: "B0LAMP0001" }, { name: "Lamp", retailerId: "other" },
+      { name: "Lamp", ownPrice: "-5", ownCurrency: "GBP" }, { name: "Lamp", ownPrice: "12.345", ownCurrency: "GBP" },
+      { name: "Lamp", ownPrice: "abc", ownCurrency: "GBP" }, { name: "Lamp", ownPrice: "10.00" }]) {
       expect(parseProductEdit(body)).toBeNull();
     }
   });

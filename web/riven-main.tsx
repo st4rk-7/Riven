@@ -3,8 +3,9 @@ import { createRoot } from "react-dom/client";
 
 import Shell from "./calui/Shell";
 import { Button } from "./calui/Button";
-import { api, ApiError, type NewProductInput, type Session } from "./riven-api";
-import { buildCatalog, sampleOwnPrice, UNLINKED_ID, type Product } from "./data";
+import { api, ApiError, type NewProductInput, type ProductEditInput, type Session } from "./riven-api";
+import { buildCatalog, UNLINKED_ID, type Product } from "./data";
+import { fetchWithExtension } from "./extension-bridge";
 import { SignIn } from "./screens/SignIn";
 import { Search } from "./screens/Search";
 import { Competitors } from "./screens/Competitors";
@@ -187,7 +188,7 @@ function RivenApp() {
   }
 
   // Returns an error message, or null once the new name is saved.
-  async function handleEditProduct(productId: string, input: { name: string; brand: string }): Promise<string | null> {
+  async function handleEditProduct(productId: string, input: ProductEditInput): Promise<string | null> {
     try {
       await api.updateProduct(productId, input);
       setLoadKey((key) => key + 1);
@@ -217,6 +218,13 @@ function RivenApp() {
       "replace",
     );
     setLoadKey((key) => key + 1);
+  }
+
+  // The extension reads the offer's page; reload either way, since even a failed read is recorded.
+  async function handleFetchOffer(url: string): Promise<string | null> {
+    const message = await fetchWithExtension(url);
+    setLoadKey((key) => key + 1);
+    return message;
   }
 
   async function handleMatchDecision(
@@ -454,8 +462,8 @@ function RivenApp() {
           isDiscovering={isDiscovering}
           onRemove={product.id === UNLINKED_ID ? undefined : () => handleRemoveProduct(product.id)}
           onEdit={product.id === UNLINKED_ID ? undefined : (input) => handleEditProduct(product.id, input)}
-          sampleOwnPrice={sampleOwnPrice(session.retailer.name)}
           onRemoveOffer={(offerId) => handleRemoveListing(product.id, offerId)}
+          onFetchOffer={handleFetchOffer}
         />
       ) : page.name === "detail" && product && offer ? (
         <Suspense
