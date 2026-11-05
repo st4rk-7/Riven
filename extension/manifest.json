@@ -8,12 +8,21 @@
     "default_title": "Riven",
     "default_popup": "popup.html"
   },
+  "background": {
+    "service_worker": "dist/background.js"
+  },
+  "externally_connectable": {
+    "matches": ["https://riven.sbs/*", "http://127.0.0.1:5173/*"]
+  },
   "permissions": [
     "activeTab",
     "scripting"
   ],
   "host_permissions": [
     "http://127.0.0.1:3000/*",
-    "https://riven.sbs/*"
+    "https://riven.sbs/*",
+    "https://www.amazon.co.uk/*",
+    "https://www.amazon.sg/*",
+    "https://www.amazon.com/*"
   ]
 }
