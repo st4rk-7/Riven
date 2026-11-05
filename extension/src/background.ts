@@ -5,32 +5,36 @@ import { isAllowedPage, recordFailedAttempt, sendOffer } from "./send.js";
 // popup does, send it to Riven, then close the tab. Only Riven's own pages can ask (externally_connectable).
 export type FetchReply = { ok: true; price: string | null; currency: string | null } | { ok: false; error: string };
 
-const LOAD_TIMEOUT_MS = 30_000;
+const READ_TIMEOUT_MS = 30_000;
+const POLL_MS = 800;
 
-function waitForLoad(tabId: number): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => { chrome.tabs.onUpdated.removeListener(listener); reject(new Error("The page took too long to load.")); }, LOAD_TIMEOUT_MS);
-    function listener(id: number, info: { status?: string }) {
-      if (id !== tabId || info.status !== "complete") return;
-      clearTimeout(timer);
-      chrome.tabs.onUpdated.removeListener(listener);
-      resolve();
+// Amazon pages keep loading ads and trackers long after the product is on screen, so the tab may never
+// report "complete". Read the page as soon as the product title exists and the HTML has been parsed.
+async function readWhenReady(tabId: number): Promise<string> {
+  const deadline = Date.now() + READ_TIMEOUT_MS;
+  while (Date.now() < deadline) {
+    try {
+      const [injection] = await chrome.scripting.executeScript({
+        target: { tabId },
+        func: () => (document.readyState !== "loading" && document.querySelector("#productTitle") ? document.documentElement.outerHTML : null),
+      });
+      if (typeof injection?.result === "string") return injection.result;
+    } catch {
+      // The new page has not committed yet; try again shortly.
     }
-    chrome.tabs.onUpdated.addListener(listener);
-    // The page may have finished before the listener was attached.
-    void chrome.tabs.get(tabId).then((tab) => { if (tab.status === "complete") listener(tabId, { status: "complete" }); }, () => undefined);
-  });
+    await new Promise((resolve) => setTimeout(resolve, POLL_MS));
+  }
+  throw new Error("The Amazon page did not show a product within 30 seconds.");
 }
 
 async function fetchOffer(url: string): Promise<FetchReply> {
   if (!isAllowedPage(url)) return { ok: false, error: "Riven can only fetch Amazon product pages." };
   const tab = await chrome.tabs.create({ url, active: false });
   try {
-    await waitForLoad(tab.id!);
-    const [injection] = await chrome.scripting.executeScript({ target: { tabId: tab.id! }, func: () => document.documentElement.outerHTML });
+    const html = await readWhenReady(tab.id!);
     let offer;
     try {
-      offer = parseAmazonProductPage(String(injection?.result ?? ""));
+      offer = parseAmazonProductPage(html);
     } catch (error) {
       const reason = (error as Error).message;
       await recordFailedAttempt(url, reason);
