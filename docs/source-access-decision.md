@@ -1,8 +1,21 @@
 # Source access decision — RIV-2
 
-**Recorded:** 2 October 2026 · **Updated:** 10 October 2026 · **Status:** active · **Owner:** Shewon
+**Recorded:** 2 October 2026 · **Updated:** 4 November 2026 · **Status:** active · **Owner:** Shewon
 
-## Current decision (10 October 2026): Amazon test phase
+## Current state (4 November 2026)
+
+| Platform | Route | Status |
+| --- | --- | --- |
+| Amazon | Riven extension sends pages the retailer views; server discovery searches Amazon for candidates | Active, for testing during the project. Amazon's Conditions of Use forbid automated collection; the team accepted this risk on 10 Oct. Production needs a legal route |
+| Second platform | — | Not chosen |
+| books.toscrape.com | Server fetch | Retired after the Sprint 1 checkpoint |
+
+- **12 Oct 2026:** server requests to Amazon were refused in the live check, so Amazon product pages come through the extension.
+- **4 Nov 2026:** one collection pipeline with two fetchers, the server crawler and the extension. Design: [SDD section 3](design.md#3-collection-pipeline).
+
+The sections below are the earlier decisions, kept as history.
+
+## Decision of 10 October 2026: Amazon test phase
 
 After the proposal evaluation, the client and the team agreed a new direction:
 
@@ -11,7 +24,7 @@ After the proposal evaluation, the client and the team agreed a new direction:
 - **books.toscrape.com is retired** after serving as the Sprint 1 checkpoint source (RIV-6).
 - **MVP flow:** the retailer picks or searches a product and Riven lists competitor offers automatically; no manual competitor selection.
 
-See [manual sections 6 and 9](manual.md#6-technology-decisions-recommended-starting-baseline) for the collection tool, pipeline and test-phase rules. The sections below are the earlier investigation (2–5 October 2026), kept as history.
+See [SDD decision log](design.md#9-decision-log) for later collection decisions.
 
 ## Original decision (2 October 2026)
 
@@ -50,7 +63,7 @@ An official API, licensed feed, client-authorized data or expressly permitted HT
 
 **What it proves:** the adapter pattern works, the scraping code is real, and the observation contract flows end-to-end. It is not a real marketplace — that comes later.
 
-**What it does not claim:** live competitor monitoring. Observations use `mode: "practice"` and `source: "books.toscrape.com (practice site)"`, served from `GET /api/v1/practice-observation`. `"synthetic"` stays reserved for fixture values from `GET /api/v1/demo-observation`, so a practice observation never implies fabricated values and never claims live monitoring. See [manual section 7](manual.md#7-shared-data-meanings-and-first-interface).
+**What it does not claim:** live competitor monitoring. Observations use `mode: "practice"` and `source: "books.toscrape.com (practice site)"`, served from `GET /api/v1/practice-observation`. `"synthetic"` stays reserved for fixture values from `GET /api/v1/demo-observation`, so a practice observation never implies fabricated values and never claims live monitoring. See [SDD section 7](design.md#7-design-rules).
 
 ### Sprint 1 collection limits
 
@@ -83,5 +96,5 @@ The 1,000-product catalogue is **not** collected; one page is enough to prove th
 
 - Dilsan (`RIV-3`) and Hirukshanan (`RIV-4`) keep the agreed `GET /api/v1/demo-observation` **synthetic** contract; Ilmam (`RIV-5`) verifies the connected flow. None is a live-source claim.
 - Shewon (`RIV-2`) owns the access investigation and escalates any source substitution to the client. Do not open five adapter tasks or add a source-policy database now.
-- Once a route passes the gate and the client agrees the source, select **one** small follow-up Jira task with an owner, sample/checks and reviewer. Keep price as a decimal string or `null`, currency explicit, availability distinct from unknown, and match uncertainty visible as described in [manual section 7](manual.md#7-shared-data-meanings-and-first-interface).
+- Once a route passes the gate and the client agrees the source, select **one** small follow-up Jira task with an owner, sample/checks and reviewer. Keep price as a decimal string or `null`, currency explicit, availability distinct from unknown, and match uncertainty visible as described in [SDD section 7](design.md#7-design-rules).
 - A reviewed blocked verdict can complete an access investigation, **not** a live collector or the full Sprint 1 journey. Record actual approvals, checks and dates in Jira/PRs; this note is a decision record, not evidence of completed implementation.
