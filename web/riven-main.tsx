@@ -4,7 +4,7 @@ import { createRoot } from "react-dom/client";
 import Shell from "./calui/Shell";
 import { Button } from "./calui/Button";
 import { api, ApiError, type NewProductInput, type Session } from "./riven-api";
-import { buildCatalog, UNLINKED_ID, type Product } from "./data";
+import { buildCatalog, sampleOwnPrice, UNLINKED_ID, type Product } from "./data";
 import { SignIn } from "./screens/SignIn";
 import { Search } from "./screens/Search";
 import { Competitors } from "./screens/Competitors";
@@ -183,6 +183,18 @@ function RivenApp() {
       return error instanceof ApiError && error.status === 400
         ? error.message
         : "Could not add the product. Try again.";
+    }
+  }
+
+  // Returns an error message, or null once the new name is saved.
+  async function handleEditProduct(productId: string, input: { name: string; brand: string }): Promise<string | null> {
+    try {
+      await api.updateProduct(productId, input);
+      setLoadKey((key) => key + 1);
+      return null;
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) setSession(null);
+      return error instanceof ApiError && error.status === 400 ? error.message : "Could not save the product. Try again.";
     }
   }
 
@@ -441,6 +453,8 @@ function RivenApp() {
           onDiscover={() => handleDiscover(product.id)}
           isDiscovering={isDiscovering}
           onRemove={product.id === UNLINKED_ID ? undefined : () => handleRemoveProduct(product.id)}
+          onEdit={product.id === UNLINKED_ID ? undefined : (input) => handleEditProduct(product.id, input)}
+          sampleOwnPrice={sampleOwnPrice(session.retailer.name)}
           onRemoveOffer={(offerId) => handleRemoveListing(product.id, offerId)}
         />
       ) : page.name === "detail" && product && offer ? (

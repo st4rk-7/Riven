@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { resolveNewProduct } from "./products.js";
+import { parseProductEdit, resolveNewProduct } from "./products.js";
 import type { CollectResult } from "./sources/amazon-collector.js";
 
 const observedAt = "2026-10-24T00:00:00Z";
@@ -28,6 +28,19 @@ describe("resolveNewProduct", () => {
   test("rejects an empty body, a blank name and unknown fields", async () => {
     for (const body of [undefined, {}, { name: "  " }, { name: "Lamp", retailerId: "other" }]) {
       expect(await resolveNewProduct(body)).toHaveProperty("error");
+    }
+  });
+});
+
+describe("parseProductEdit", () => {
+  test("trims the new name and brand", () => {
+    expect(parseProductEdit({ name: " iPhone 16 Pro Max ", brand: " Apple " })).toEqual({ name: "iPhone 16 Pro Max", brand: "Apple" });
+    expect(parseProductEdit({ name: "Desk lamp" })).toEqual({ name: "Desk lamp", brand: "" });
+  });
+
+  test("rejects a blank name and fields that must not change here", () => {
+    for (const body of [undefined, {}, { name: "  " }, { name: "Lamp", asin: "B0LAMP0001" }, { name: "Lamp", retailerId: "other" }]) {
+      expect(parseProductEdit(body)).toBeNull();
     }
   });
 });

@@ -47,6 +47,8 @@ describe("parsePrice", () => {
     ["£18.01", "18.01", "GBP"],
     ["S$20.12", "20.12", "SGD"],
     ["£1,299.00", "1299.00", "GBP"],
+    ["LKR143,394.48", "143394.48", "LKR"],
+    ["INR 2,499.00", "2499.00", "INR"],
   ])("reads %s", (text, price, currency) => {
     expect(parsePrice(text)).toEqual({ price, currency });
   });

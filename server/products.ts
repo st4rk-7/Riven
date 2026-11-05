@@ -17,6 +17,17 @@ const NewProductSchema = z.union([
 
 export type NewProduct = { name: string; brand: string; asin: string | null };
 
+// Renaming keeps the ASIN: it identifies the product for matching, so it is not editable here.
+const ProductEditSchema = z.object({
+  name: z.string().trim().min(1).max(500),
+  brand: z.string().trim().max(200).default(""),
+}).strict();
+
+export function parseProductEdit(body: unknown): { name: string; brand: string } | null {
+  const parsed = ProductEditSchema.safeParse(body);
+  return parsed.success ? parsed.data : null;
+}
+
 // Turns the request body into a product, reading the page when given a link.
 // The collector only fetches allowed Amazon hosts, so a link can't reach internal addresses.
 export async function resolveNewProduct(
@@ -77,6 +88,18 @@ export function registerProductRoutes(app: FastifyInstance, database: Pool) {
       return created;
     });
     return reply.code(201).send(product);
+  });
+
+  // Changes a product's name and brand; only the signed-in retailer's own products match.
+  app.patch("/api/v1/products/:id", async (request, reply) => {
+    const edit = parseProductEdit(request.body);
+    if (!edit) return reply.code(400).send({ code: "INVALID_PRODUCT", message: "Enter a product name." });
+    const { id } = request.params as { id: string };
+    const { rows: [updated] } = await database.query(
+      "UPDATE products SET name = $1, brand = $2 WHERE retailer_id = $3 AND id = $4 RETURNING id, name, brand, asin",
+      [edit.name, edit.brand, request.identity!.retailer.id, id]);
+    if (!updated) return reply.code(404).send({ code: "NOT_FOUND", message: "Product not found." });
+    return updated;
   });
 
   // Removes a product with its offer history and collection attempts.

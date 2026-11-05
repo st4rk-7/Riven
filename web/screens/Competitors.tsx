@@ -1,3 +1,8 @@
+import { useState } from "react";
+
+import { Field, FieldLabel } from "@coss/ui/components/field";
+import { Input } from "@coss/ui/components/input";
+
 import { Badge } from "../calui/Badge";
 import { Button } from "../calui/Button";
 import { averagePrice, formatPrice, formatTime, lowestPrice, type Product } from "../data";
@@ -11,6 +16,8 @@ export function Competitors({
   onDiscover,
   isDiscovering,
   onRemove,
+  onEdit,
+  sampleOwnPrice,
   onRemoveOffer,
 }: {
   product: Product;
@@ -18,12 +25,16 @@ export function Competitors({
   onDiscover?: () => void;
   isDiscovering?: boolean;
   onRemove?: () => Promise<void>;
+  // Resolves to an error message, or null once saved.
+  onEdit?: (input: { name: string; brand: string }) => Promise<string | null>;
+  sampleOwnPrice?: string | null;
   onRemoveOffer?: (offerId: string) => Promise<void>;
 }) {
   const inStock = product.offers.filter((o) => o.availability === "in_stock").length;
+  const [editing, setEditing] = useState(false);
 
   const stats = [
-    { label: "Your price", value: "Not connected" },
+    { label: sampleOwnPrice ? "Your price · sample" : "Your price", value: sampleOwnPrice ?? "Not connected" },
     { label: "Lowest confirmed offer", value: lowestPrice(product.offers) },
     { label: "Average (confirmed)", value: averagePrice(product.offers) },
     { label: "In stock", value: `${inStock} of ${product.offers.length}` },
@@ -46,6 +57,11 @@ export function Competitors({
           <p className="text-sm text-subtle">Offers matched via extension or automated discovery.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          {onEdit && !editing && (
+            <Button color="secondary" onClick={() => setEditing(true)}>
+              Edit product
+            </Button>
+          )}
           {onDiscover && (
             <Button
               color="primary"
@@ -57,6 +73,10 @@ export function Competitors({
           )}
         </div>
       </div>
+
+      {onEdit && editing && (
+        <EditProductForm product={product} onSave={onEdit} onClose={() => setEditing(false)} />
+      )}
 
       <div className="flex flex-col overflow-hidden rounded-[20px] border border-black/10 bg-white">
         <ul className="w-full divide-y divide-subtle">
@@ -141,7 +161,10 @@ export function Competitors({
           ))}
         </ul>
       </div>
-      <p className="text-subtle text-sm">Only confirmed matches are used for the lowest-price and average comparisons. Your own price is not yet connected.</p>
+      <p className="text-subtle text-sm">
+        Only confirmed matches are used for the lowest-price and average comparisons.{" "}
+        {sampleOwnPrice ? "Your price is a sample value for this demo account." : "Your own price is not yet connected."}
+      </p>
 
       {onRemove && (
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-subtle pt-6">
@@ -154,5 +177,60 @@ export function Competitors({
         </div>
       )}
     </div>
+  );
+}
+
+function EditProductForm({
+  product,
+  onSave,
+  onClose,
+}: {
+  product: Product;
+  onSave: (input: { name: string; brand: string }) => Promise<string | null>;
+  onClose: () => void;
+}) {
+  const [name, setName] = useState(product.name);
+  const [brand, setBrand] = useState(product.brand);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  return (
+    <form
+      aria-label="Edit product"
+      className="flex flex-col gap-4 rounded-[20px] border border-black/10 bg-white px-5 py-5"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        setBusy(true);
+        setError(null);
+        const message = await onSave({ name: name.trim(), brand: brand.trim() });
+        setBusy(false);
+        if (message) setError(message);
+        else onClose();
+      }}
+    >
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field>
+          <FieldLabel>Product name</FieldLabel>
+          <Input id="edit-product-name" value={name} required maxLength={500} autoFocus onChange={(e) => setName(e.target.value)} />
+        </Field>
+        <Field>
+          <FieldLabel>Brand (optional)</FieldLabel>
+          <Input id="edit-product-brand" value={brand} maxLength={200} onChange={(e) => setBrand(e.target.value)} />
+        </Field>
+      </div>
+      {error && (
+        <p role="alert" className="text-sm text-destructive-foreground">
+          {error}
+        </p>
+      )}
+      <div className="flex flex-wrap gap-2">
+        <Button type="submit" loading={busy}>
+          Save
+        </Button>
+        <Button color="secondary" disabled={busy} onClick={onClose}>
+          Cancel
+        </Button>
+      </div>
+    </form>
   );
 }
