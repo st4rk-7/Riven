@@ -61,9 +61,9 @@ export function Detail({
           <span className="text-xs text-subtle">{offer.history.length} observations · {offer.source} · {offer.collectedVia === "crawler" ? "Scheduled" : "Extension"}</span>
         </div>
         <div className="px-4 py-4 sm:px-6">
-          {pricedPoints < 2 ? (
+          {pricedPoints === 0 ? (
             <p role="status" className="py-12 text-center text-sm text-subtle">
-              Not enough history yet. Each time this page is sent to Riven, a new point is added.
+              No price yet. Fetch this offer, or send its page with the extension, to add the first point.
             </p>
           ) : (
             <div className="h-72" role="img" aria-label={`Line chart of ${offer.seller}'s price over ${offer.history.length} observations`}>
@@ -78,11 +78,11 @@ export function Detail({
                     tickLine={false}
                     axisLine={false}
                     fontSize={12}
-                    width={64}
+                    width={96}
                     stroke="var(--cal-text-subtle)"
                   />
                   <Tooltip formatter={(v) => formatPrice(Number(v).toFixed(2), offer.currency)} />
-                  <Line type="monotone" dataKey="price" name="Price" stroke="var(--riven-accent)" strokeWidth={2} dot={false} isAnimationActive={false} />
+                  <Line type="monotone" dataKey="price" name="Price" stroke="var(--riven-accent)" strokeWidth={2} dot={{ r: 3, fill: "var(--riven-accent)" }} isAnimationActive={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>

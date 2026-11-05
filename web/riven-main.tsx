@@ -285,7 +285,7 @@ function RivenApp() {
     page.name === "detail"
       ? product?.offers.find(
           (availableOffer) =>
-            availableOffer.id === page.offerId,
+            availableOffer.observationIds.includes(page.offerId),
         )
       : undefined;
 
