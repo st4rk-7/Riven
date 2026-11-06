@@ -21,6 +21,16 @@ describe("parseSearchResults", () => {
     expect(candidates[0]).toMatchObject({ seller: null, price: null, currency: null, availability: "unknown" });
   });
 
+  it("keeps stock unknown when a search card shows a price but no stock evidence", () => {
+    const [candidate] = parseSearchResults(`
+      <div data-asin="B000000001">
+        <h2>Example wired mouse</h2>
+        <span class="a-price"><span class="a-offscreen">£19.99</span></span>
+      </div>
+    `);
+    expect(candidate).toMatchObject({ price: "19.99", currency: "GBP", availability: "unknown" });
+  });
+
   it("gives the matcher real titles, so unrelated results can be dropped", () => {
     const relevant = (product: { brand: string; name: string }) =>
       candidates.filter((c) => matchOffer(product, { productName: c.productName }) !== "mismatch").length;
