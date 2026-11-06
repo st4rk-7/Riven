@@ -44,12 +44,15 @@ Errors use this shape:
 | Status | Code | Meaning |
 | --- | --- | --- |
 | 400 | INVALID_REQUEST | Invalid authentication request |
+| 400 | INVALID_PRODUCT | Invalid product details or unreadable product page |
+| 400 | INVALID_STATUS | Unsupported or missing match status |
 | 400 | INVALID_OFFER | Invalid observation request |
 | 400 | INVALID_ATTEMPT | Invalid attempt request |
 | 400 | UNSUPPORTED_SOURCE | Source is not supported |
 | 401 | INVALID_CREDENTIALS | Email or password is incorrect |
 | 401 | UNAUTHENTICATED | Missing, invalid or expired session |
 | 403 | FORBIDDEN_ORIGIN | Request origin is not allowed |
+| 404 | NOT_FOUND | Requested product or observation is missing or not owned by the retailer |
 | 429 | RATE_LIMITED | Too many sign-in attempts; see Retry-After |
 | 500 | INTERNAL_ERROR | Unexpected server failure |
 
@@ -133,14 +136,17 @@ Success: 200.
       "id": "product-1",
       "name": "Wireless Mouse",
       "brand": "Logitech",
-      "asin": null
+      "asin": null,
+      "ownPrice": null,
+      "ownCurrency": null
     }
   ]
 }
 ```
 
 Returns {"products": []} when the retailer has no products.
-asin may be null.
+asin may be null. ownPrice is a decimal string or null; ownCurrency is a
+three-letter code or null.
 
 Missing, invalid or expired sessions return 401 UNAUTHENTICATED.
 
@@ -166,6 +172,56 @@ Earlier offers not linked to any product are linked to it when they match.
 
 Returns 400 INVALID_PRODUCT for a blank name, unknown fields, or a link
 Riven cannot read (another site, or Amazon blocked the request).
+
+### PATCH /api/v1/products/:id
+
+Requires a valid session and a trusted write origin. `id` is a product ID.
+
+```json
+{ "name": "Wireless Mouse", "brand": "Logitech", "ownPrice": "24.99", "ownCurrency": "GBP" }
+```
+
+`name` is required (1–500 characters after trimming). Omitting `brand`
+clears it. Omit `ownPrice`, or send null or an empty string, to clear the
+price and currency. A supplied price needs a three-letter currency code.
+The ASIN cannot be changed here.
+
+Success: 200 with the updated product in the same shape as an item in the
+GET products response. Returns 400 INVALID_PRODUCT for invalid input or
+404 NOT_FOUND if the product is missing or belongs to another retailer.
+
+### POST /api/v1/products/:id/discover
+
+Requires a valid session and a trusted write origin (see Authentication and
+ownership). `id` is a product ID. No request body is required.
+
+Searches Amazon using the signed-in retailer's product name and brand. Saves
+eligible new candidates as crawler observations and records successful
+collection attempts. Discovery stops adding candidates once the product has
+five distinct listing ASINs.
+
+Success: 200.
+
+```json
+{ "discovered": 2 }
+```
+
+`discovered` counts newly saved candidates. A missing product, a product
+owned by another retailer, or no new candidates returns
+`200 { "discovered": 0 }`. A non-success response from Amazon also produces
+zero; a thrown search or database error returns 500 INTERNAL_ERROR.
+
+### DELETE /api/v1/products/:id
+
+Requires a valid session and a trusted write origin. `id` is a product ID.
+No request body is required.
+
+Deletes the signed-in retailer's product, its linked observation history, and
+its linked collection attempts in one transaction. Other retailers' records
+and unlinked records are unaffected.
+
+Success: 204 with no body. Returns 404 NOT_FOUND if the product is missing
+or belongs to another retailer.
 
 ## Observations
 
@@ -234,7 +290,8 @@ Request:
 
 Validation:
 - pageUrl must be a valid URL from a supported source.
-- Current accepted hostnames are amazon.co.uk and www.amazon.co.uk.
+- Accepted hostnames are amazon.co.uk, amazon.com and amazon.sg, including
+  their www variants.
 - asin must contain exactly 10 uppercase letters or digits.
 - productName must contain 1–500 characters after trimming.
 - price must be a decimal string with two decimal places, or null.
@@ -260,6 +317,36 @@ Errors:
 Invalid offers from a supported source record a failed attempt after
 authentication. An invalid offer does not create an observation.
 Unsupported sources are rejected.
+
+### PATCH /api/v1/observations/:id
+
+Requires a valid session and a trusted write origin. `id` is an observation ID.
+
+Request:
+
+```json
+{ "matchStatus": "confirmed" }
+```
+
+Use `confirmed` to accept the match or `mismatch` to reject it.
+This changes the selected observation's match status only.
+
+Success: 200 with the updated observation in the GET observation shape.
+Returns 400 INVALID_STATUS for any other or missing status, or 404 NOT_FOUND
+if the observation is missing or belongs to another retailer.
+
+### DELETE /api/v1/observations/:id/listing
+
+Requires a valid session and a trusted write origin. `id` identifies an
+observation of the listing. No request body is required.
+
+Deletes the signed-in retailer's observation history for the same product,
+source and ASIN as the selected observation. If the selected observation is
+unlinked, only matching unlinked observations are removed. The product and
+collection attempts are retained.
+
+Success: 204 with no body. Returns 404 NOT_FOUND if the selected observation
+is missing or belongs to another retailer.
 
 ## Attempts
 
@@ -313,7 +400,8 @@ Request:
 
 Validation:
 - pageUrl must be a valid URL from a supported source.
-- Current accepted hostnames are amazon.co.uk and www.amazon.co.uk.
+- Accepted hostnames are amazon.co.uk, amazon.com and amazon.sg, including
+  their www variants.
 - status must be failed or blocked.
 - reason must contain 1–300 characters after trimming.
 - reason must not contain credentials or private page content.
@@ -330,6 +418,27 @@ Errors:
 - 400 INVALID_ATTEMPT for invalid fields.
 - 400 UNSUPPORTED_SOURCE for an unsupported source.
 - 401 UNAUTHENTICATED for a missing, invalid or expired session.
+
+## Collection
+
+### POST /api/v1/crawl
+
+Requires a valid session and a trusted write origin. No request body is
+required.
+
+Starts a background collection run scoped to the signed-in retailer. It
+checks eligible tracked listings and products with an ASIN, records collection
+attempts, and stores observations from successful checks.
+
+Success: 202.
+
+```json
+{ "message": "Collection started." }
+```
+
+202 acknowledges the start of background work; it does not report collection
+success or return a job ID. Read the observations and attempts endpoints for
+recorded results.
 
 ## Implementation checks
 
