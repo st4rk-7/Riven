@@ -148,7 +148,7 @@ Visual direction (colours, type, components) is in [PRODUCT.md](../PRODUCT.md#br
 
 1. The retailer always comes from the verified session, never from the request body (NFR-01).
 2. Every collection try writes an attempt; an observation only when it validates (FR-06).
-3. Money is a decimal string plus a currency; never a floating-point number. Missing price is NULL, not zero (NFR-05).
+3. Money is a decimal string plus a currency; never a floating-point number. Missing price is NULL, not zero (NFR-05). Discovery records stock as unknown because search-card prices do not establish availability.
 4. Matching order: identifier, then conflicting details, then title. A title alone never confirms (FR-04).
 5. Parsers only parse. They do not write the database or know about the UI (NFR-07).
 6. The web app reads the database through the API and never contacts a competitor site.

@@ -55,7 +55,7 @@ export function parseSearchResults(html: string): SearchCandidate[] {
       productName,
       price,
       currency,
-      availability: price !== null ? "in_stock" : "unknown",
+      availability: "unknown", // Search-card prices do not establish stock.
       // Result cards do not name the seller; the product page or extension does.
       seller: null,
     });
