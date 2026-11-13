@@ -136,7 +136,8 @@ As a retailer, I want to compare offers and see price history, so that I can dec
 
 - Each value shows source, currency and collection time. *(Built)*
 - The product detail screen shows price history. *(Built)*
-- The retailer's own price and position against competitors. *(Planned; in progress on a branch)*
+- The retailer's own price per product. *(Built, PR #33)*
+- The retailer's position against competitors: cheapest, in the middle or most expensive. *(Planned, Sprint 2)*
 
 ### FR-08 Alerts · Should · Planned
 

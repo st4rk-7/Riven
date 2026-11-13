@@ -32,7 +32,7 @@ Each step is finished, reviewed and merged before the next starts. Owners are se
 | 4 | eBay added as a site: generic item ID instead of the Amazon-only `asin` column, eBay rules, fixtures; shipping cost, condition (new or used) and seller stored per offer | An eBay item page parses to price, currency, stock, seller, shipping and condition; Amazon still works | FR-03, FR-05 | |
 | 5 | Freshness: "last checked" time, "check failing" after repeated failures, stale after 12 h with no successful check; failed or stale values never feed charts or alerts | Test in the test plan passes | FR-11, NFR-04 | |
 | 6 | Skip an observation identical to the previous one within 6 h; the attempt is still stored | Test shows one observation and two attempts | FR-06 | |
-| 7 | Carried over: own price position on screen; `api.md` for the 5 new routes | Merged to `main` | FR-07 | |
+| 7 | Carried over: own price position on screen (own price per product is already on `main`, PR #33); `api.md` for the 5 new routes | Each product shows whether the retailer is cheapest, in the middle or most expensive among its confirmed offers; `api.md` lists the 5 routes | FR-07 | |
 | 8 | Public sign-up: a retailer creates their own account and workspace | Sign-up works on the live site; a new account sees only its own data | FR-01, NFR-01 | |
 
 **Open before step 4:** how eBay pages are collected (extension or server crawler). eBay's User Agreement forbids automated collection without permission; the eBay Browse API account was rejected on 3 Oct. Record the decision in the [source access decision](../source-access-decision.md).
