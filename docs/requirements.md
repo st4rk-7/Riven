@@ -183,7 +183,7 @@ As a retailer, I want failures and old data marked clearly, so that I never act 
 | NFR-09 | **Capacity:** bounded queries and collection concurrency for an agreed pilot workload, measured on synthetic data. External sites are never load-tested. | Planned |
 | NFR-10 | **Extensibility:** adding a platform means adding its site rules and tests, with no change to accounts, matching or dashboard code. | Planned |
 | NFR-11 | **Diagnosability:** each failed attempt records a safe reason. A page that could not be parsed is kept as a test fixture, with personal data removed. | Partial |
-| NFR-12 | **Privacy:** pages sent by the extension are parsed and then discarded. Only offer fields are stored. Personal data on a page (name, address) is never stored. | Planned |
+| NFR-12 | **Privacy:** the extension sends only the product part of a page: its JSON-LD blocks, the product section chosen by the site rule, and the page URL. The header and account area are never sent. The server parses what it receives and then discards it; only offer fields are stored. Personal data on a page (name, address) is never sent or stored. | Planned |
 
 ## 5. Acceptance and evidence
 
@@ -198,11 +198,9 @@ Each delivered feature is checked against its FR acceptance criteria and relevan
 
 ## 7. Open decisions
 
-Settled on 12 Nov 2026 (team proposal of 11 Nov, agreed by the client): default check interval 6 h (FR-05), alert conditions and channel (FR-08), tier limits and prices (FR-09), stale threshold 12 h (FR-11), eBay as second platform (FR-03). eBay route, 13 Nov: collected by the extension in the retailer's browser, on request and on schedule (FR-05).
+Settled on 12 Nov 2026 (team proposal of 11 Nov, agreed by the client): default check interval 6 h (FR-05), alert conditions and channel (FR-08), tier limits and prices (FR-09), stale threshold 12 h (FR-11), eBay as second platform (FR-03). eBay route, 13 Nov: collected by the extension in the retailer's browser, on request and on schedule (FR-05). Extension capture, 13 Nov: the extension sends only the product part of a page, never the whole page (NFR-12).
 
-| Decision | Needed for | Decides |
-| --- | --- | --- |
-| Whether the extension sends the whole page or only the offer fields | FR-05, NFR-12 | Team |
+No decisions are open.
 
 ## 8. Traceability
 
