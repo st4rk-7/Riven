@@ -177,5 +177,8 @@ Format: date · decision · why · trade-off.
 | 4 Nov 2026 | Collection code is written by the team; no third-party tracker code is copied | Keeps Riven free of other projects' licence terms | Riven writes its own implementation |
 | 4 Nov 2026 | AI-assisted page reading and regional proxies are optional, off by default | Useful for awkward pages and regional prices | Paid services need client agreement |
 | 4 Nov 2026 | Client approved SRS v1.0 at the demo, including per-product check intervals and the MoSCoW priorities | Client review of the live app and documents | Default interval value still to set |
+| 11 Nov 2026 | Scheduled checks are claimed from PostgreSQL by a few background workers (`FOR UPDATE SKIP LOCKED`), not by one fixed interval | Per-product intervals without adding a queue service | Workers and retries are Riven's own code |
+| 11 Nov 2026 | Offers use a generic item ID instead of the Amazon-only `asin` | eBay item IDs do not fit the ASIN format | One migration across observations and products |
+| 11 Nov 2026 | Team set the open values: 6 h default interval and 12 h stale threshold (client changed them from 24 h and 48 h on 12 Nov), alert conditions, tiers; eBay as second platform ([Sprint 2 record](sprints/sprint-2.md)) | Unblocks Sprint 2 | eBay collection method still open |
 
 A decision is revisited when a test, the client or a site's behaviour shows it no longer works.

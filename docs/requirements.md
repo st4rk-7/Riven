@@ -1,11 +1,12 @@
 # Software requirements specification (SRS)
 
-**Riven** · Version 1.0 · 4 November 2026 · Owner: Shewon · Status: approved by the client, 4 Nov 2026
+**Riven** · Version 1.1 · 13 November 2026 · Owner: Shewon · Status: approved by the client, 4 Nov 2026; values in 1.1 agreed by the client, 12 Nov 2026
 
 | Version | Date | Change |
 | --- | --- | --- |
 | 0.1 | 30 Sep 2026 | Working draft from the proposal. |
 | 1.0 | 4 Nov 2026 | Rewritten for the current product: client decisions of 10 Oct, extension route of 12 Oct, one collection pipeline and competitor-practice review of 4 Nov. Requirement IDs kept from 0.1. Approved by the client at the 4 Nov demo. |
+| 1.1 | 13 Nov 2026 | Open decisions settled (section 7): check interval, stale threshold, alerts, tiers, eBay as second platform. Public sign-up added to FR-01. Agreed by the client with the Sprint 2 plan, 12 Nov. |
 
 ## 1. Introduction
 
@@ -69,7 +70,7 @@ A web app in current desktop and mobile browsers, a Chrome extension, and a serv
 ### 2.5 Assumptions and dependencies
 
 - **Amazon:** Amazon's Conditions of Use forbid automated collection. The team decided on 10 Oct 2026 to collect from Amazon for testing only during the academic project, as a risk it accepts, not a permitted use. Server requests to Amazon were refused in the 12 Oct live check, so Amazon pages come through the extension. Production use needs a legal route. Details: [source access decision](source-access-decision.md).
-- **Second platform:** not yet chosen.
+- **Second platform: eBay** (chosen 11 Nov 2026). eBay's User Agreement forbids automated collection without permission, and the eBay Browse API account was rejected on 3 Oct 2026, so the collection route is still open (section 7).
 
 ## 3. Functional requirements
 
@@ -81,6 +82,7 @@ As a retailer, I want to sign in and out of my own workspace, so that my data st
 
 - A signed-out user cannot read or change any retailer data.
 - Signing out ends the session.
+- A retailer can sign up without help from the team. *(Planned, Sprint 2; today accounts are created by the team)*
 - An administrator role exists, separate from retailers. *(Planned)*
 
 ### FR-02 Products · Must · Partial
@@ -115,7 +117,7 @@ As a retailer, I want competitor offers checked again over time, so that I see c
 
 - One collection pipeline with two fetchers, the server crawler and the extension, using the same parsing and saving rules. *(Built: one save path; the extension still parses pages itself)*
 - The server crawler checks offers on sites that allow server requests, at a set interval. *(Built: one interval for all products, off by default)*
-- Each product can have its own check interval or be paused. *(Planned; approved by the client, 4 Nov 2026)*
+- Each product is checked every 6 hours by default and can be set to 6 h, 12 h or 24 h, or paused. *(Planned; per-product intervals approved 4 Nov, 6 h default agreed 12 Nov 2026)*
 - The extension sends the page the retailer is viewing on a site that blocks servers, and the server parses it. *(Planned; today the extension parses)*
 - The screen says how each platform is updated, for example "Amazon: updated when you view it". *(Planned)*
 
@@ -140,14 +142,16 @@ As a retailer, I want to compare offers and see price history, so that I can dec
 
 As a retailer, I want to be told when a competitor's price or stock changes in a way I care about, so that I do not have to keep checking.
 
-- Conditions and channel are agreed with the client (for example, price below my price, back in stock).
+- Conditions: a competitor price falls below my price; a competitor price changes by 5% or more; stock changes (in or out of stock).
+- Channel: in-app first, then email.
 - The same event does not alert twice.
 
 ### FR-09 Tiers and limits · Should · Planned
 
 As a retailer, I want a plan that fits my shop, so that I pay for what I use.
 
-- Tiers set product limits and check frequency. Billing is mocked.
+- Tiers set product limits and the shortest check interval. Billing is mocked.
+- Free: 10 products, 6 h. Pro: $19/month, 100 products, 6 h. Business: $49/month, 500 products, 3 h.
 
 ### FR-10 Administration · Should · Planned
 
@@ -161,7 +165,7 @@ As an administrator, I want to manage retailers and see collection health, so th
 As a retailer, I want failures and old data marked clearly, so that I never act on a wrong value.
 
 - Missing price, unknown stock, unverified match, failed attempt and stale data each look different. *(Partly built)*
-- A stale threshold is agreed (for example, no successful check for 48 hours). *(Planned)*
+- An offer with no successful check for 12 hours is marked stale. *(Planned; agreed 12 Nov 2026)*
 
 ## 4. Non-functional requirements
 
@@ -190,17 +194,15 @@ Each delivered feature is checked against its FR acceptance criteria and relevan
 | --- | --- | --- |
 | Shoppers track favourite products' prices | Client mentioned "B2C" later phases (10 Oct) | Client decision; separate account type and tiers |
 | Retailer adds a competitor manually from the extension | Proposal evaluation feedback (9 Oct) | Client decision; fits FR-03 |
-| Second platform | Proposal: two platforms | Platform chosen and access checked |
 
 ## 7. Open decisions
 
+Settled on 12 Nov 2026 (team proposal of 11 Nov, agreed by the client): default check interval 6 h (FR-05), alert conditions and channel (FR-08), tier limits and prices (FR-09), stale threshold 12 h (FR-11), eBay as second platform (FR-03).
+
 | Decision | Needed for | Decides |
 | --- | --- | --- |
-| Default check interval (per-product intervals approved 4 Nov) | FR-05, FR-09 | Team, then client |
-| Alert conditions and channel | FR-08 | Client |
-| Stale threshold | FR-11, NFR-04 | Team with client |
-| Tier limits and prices | FR-09 | Client |
-| Second platform | FR-03, FR-05 | Client after access check |
+| How eBay pages are collected: extension or server crawler | FR-03, FR-05 | Team, then client; recorded in the [source access decision](source-access-decision.md) |
+| Whether the extension sends the whole page or only the offer fields | FR-05, NFR-12 | Team |
 
 ## 8. Traceability
 

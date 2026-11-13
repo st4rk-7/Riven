@@ -1,17 +1,18 @@
 # Source access decision — RIV-2
 
-**Recorded:** 2 October 2026 · **Updated:** 4 November 2026 · **Status:** active · **Owner:** Shewon
+**Recorded:** 2 October 2026 · **Updated:** 13 November 2026 · **Status:** active · **Owner:** Shewon
 
-## Current state (4 November 2026)
+## Current state (13 November 2026)
 
 | Platform | Route | Status |
 | --- | --- | --- |
 | Amazon | Riven extension sends pages the retailer views; server discovery searches Amazon for candidates | Active, for testing during the project. Amazon's Conditions of Use forbid automated collection; the team accepted this risk on 10 Oct. Production needs a legal route |
-| Second platform | — | Not chosen |
+| eBay (second platform, chosen 11 Nov) | Not decided: extension or server crawler | eBay's User Agreement forbids automated collection without permission; the eBay Browse API account was rejected on 3 Oct |
 | books.toscrape.com | Server fetch | Retired after the Sprint 1 checkpoint |
 
 - **12 Oct 2026:** server requests to Amazon were refused in the live check, so Amazon product pages come through the extension.
 - **4 Nov 2026:** one collection pipeline with two fetchers, the server crawler and the extension. Design: [SDD section 3](design.md#3-collection-pipeline).
+- **11 Nov 2026:** eBay chosen as the second platform; the route is decided before Sprint 2 step 4.
 
 The sections below are the earlier decisions, kept as history.
 

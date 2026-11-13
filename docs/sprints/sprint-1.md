@@ -1,6 +1,6 @@
 # Sprint 1 record
 
-**Riven** · Jira sprint "RIV Sprint 1" · 30 Sep – 21 Oct 2026 (planned end) · Status: still open in Jira on 4 Nov 2026
+**Riven** · Jira sprint "RIV Sprint 1" · 30 Sep – 21 Oct 2026 (planned end) · Status: completed; evaluated 11 Nov 2026
 
 Each sprint gets one file in this folder: plan, what was delivered, review, retrospective. Jira holds live status; this file is the record.
 
@@ -57,7 +57,7 @@ Merged pull requests, grouped by owner (from GitHub).
 | What was shown | The live app at https://riven.sbs, SRS v1.0, SDD, test plan, architecture and the working prototype |
 | Client feedback | Confirmed in writing: the live app demo, all documents shown and the MoSCoW priorities. Per-product check intervals were agreed verbally at the demo; the written confirmation does not mention them |
 | Evidence of the client presentation | Email reply from Sathursan S, 5 Nov 2026, 10:59, to the team's confirmation request: "Confirmed. I am satisfied with the work of your team and the Sprint 1 MVP was good. Please proceed with the suggestions and start working on the next features for the upcoming sprint." The email is kept by Shewon |
-| Evaluation date and feedback | |
+| Evaluation date and feedback | 11 Nov 2026 |
 
 ## 4. Retrospective
 
