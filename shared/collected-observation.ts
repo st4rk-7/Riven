@@ -24,6 +24,12 @@ export const ExtensionOfferSchema = z
 
 export type ExtensionOffer = z.infer<typeof ExtensionOfferSchema>;
 
+// What the extension sends now: the product part of a page; the server reads it and discards it (NFR-12).
+export const CapturedPageSchema = z.object({
+  pageUrl: z.url(),
+  html: z.string().min(1).max(2_000_000),
+});
+
 // What Riven stores and shows for a collected offer.
 export type CollectedObservation = {
   id: string;

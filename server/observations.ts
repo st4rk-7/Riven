@@ -5,10 +5,14 @@ import type { Pool, PoolClient } from "pg";
 
 import {
   AttemptReportSchema,
+  CapturedPageSchema,
   type CollectionAttempt,
+  type ExtensionOffer,
   ExtensionOfferSchema,
 } from "../shared/collected-observation.js";
 import { saveObservation, sourceOf } from "./save-observation.js";
+import { extractOffer, type MatchedRules } from "./sources/extract.js";
+import { siteForHost } from "./sources/sites.js";
 import { crawlRetailerProducts } from "./crawler.js";
 import { discoverProductCompetitors } from "./discovery.js";
 
@@ -37,20 +41,51 @@ export function registerObservationRoutes(app: FastifyInstance, database: Pool) 
     if (!sourceOf(parsed.data.pageUrl)) {
       return reply.code(400).send({ code: "UNSUPPORTED_SOURCE", message: "Only Amazon pages are accepted." });
     }
+    return reply.code(201).send(await saveExtensionOffer(retailerId, parsed.data, null));
+  });
+
+  // Saves an offer from the extension with its ok attempt, in one transaction.
+  async function saveExtensionOffer(retailerId: string, { pageUrl, ...offer }: ExtensionOffer, rules: MatchedRules | null) {
     const connection = await database.connect();
     try {
       await connection.query("BEGIN");
-      const { pageUrl, ...offer } = parsed.data;
-      const observation = await saveObservation(connection, retailerId, offer, sourceOf(pageUrl)!, "extension");
+      const observation = await saveObservation(connection, retailerId, offer, sourceOf(pageUrl)!, "extension", new Date(), rules);
       await recordAttempt(retailerId, { productId: observation.productId, source: observation.source, status: "ok", reason: null }, connection);
       await connection.query("COMMIT");
-      return reply.code(201).send(observation);
+      return observation;
     } catch (error) {
       await connection.query("ROLLBACK");
       throw error;
     } finally {
       connection.release();
     }
+  }
+
+  // The extension sends the product part of a page; the server reads it with the site's rules and keeps only the offer.
+  app.post("/api/v1/pages", { bodyLimit: 3 * 1024 * 1024 }, async (request, reply) => {
+    const retailerId = request.identity!.retailer.id;
+    const parsed = CapturedPageSchema.safeParse(request.body);
+    if (!parsed.success) return reply.code(400).send({ code: "INVALID_PAGE", message: "pageUrl and html are required." });
+    const { pageUrl, html } = parsed.data;
+    const source = sourceOf(pageUrl);
+    const site = siteForHost(new URL(pageUrl).hostname);
+    if (!source || !site) {
+      return reply.code(400).send({ code: "UNSUPPORTED_SOURCE", message: "Only Amazon pages are accepted." });
+    }
+    let offer: ExtensionOffer;
+    let rules: MatchedRules;
+    try {
+      const extracted = extractOffer(html, site);
+      rules = extracted.rules;
+      const checked = ExtensionOfferSchema.safeParse({ pageUrl, ...extracted.offer });
+      if (!checked.success) throw new Error(checked.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; "));
+      offer = checked.data;
+    } catch (error) {
+      const reason = (error as Error).message.slice(0, 300);
+      await recordAttempt(retailerId, { productId: null, source, status: "failed", reason });
+      return reply.code(422).send({ code: "UNREADABLE_PAGE", message: reason });
+    }
+    return reply.code(201).send(await saveExtensionOffer(retailerId, offer, rules));
   });
 
   app.get("/api/v1/observations", async (request) => {

@@ -16,6 +16,12 @@ export type Site = {
   price: PriceRule[];
   availability: Rule[];
   seller: Rule[];
+  // What the extension sends: these sections plus the page's Product JSON-LD, never the header or account area (NFR-12).
+  capture: string[];
+  // Parts inside those sections that can name the viewer or their address; removed before sending.
+  strip: string[];
+  // Text that means the site showed a challenge instead of the product page.
+  blocked: RegExp;
 };
 
 export const AMAZON: Site = {
@@ -28,6 +34,9 @@ export const AMAZON: Site = {
   price: [{ css: "#buybox .priceToPay .a-offscreen, #buybox .apex-pricetopay-value .a-offscreen" }],
   availability: [{ css: "#availability" }],
   seller: [{ css: "#merchantInfoFeature_feature_div .offer-display-feature-text-message" }],
+  capture: ["#centerCol", "#rightCol"],
+  strip: ["#contextualIngressPt", "#glow-ingress-block", "#mir-layout-DELIVERY_BLOCK"],
+  blocked: /validateCaptcha|Type the characters you see|Robot Check/i,
 };
 
 export const SITES: Site[] = [AMAZON];

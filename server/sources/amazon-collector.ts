@@ -10,7 +10,7 @@ export type CollectResult =
 const BLOCK_STATUSES = new Set([403, 429, 503]);
 
 export function isCaptchaPage(html: string): boolean {
-  return /validateCaptcha|Type the characters you see|Robot Check/i.test(html);
+  return AMAZON.blocked.test(html);
 }
 
 // Collects one product page: one request, no retries, stop on any block.
