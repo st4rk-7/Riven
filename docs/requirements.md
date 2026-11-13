@@ -118,7 +118,7 @@ As a retailer, I want competitor offers checked again over time, so that I see c
 - One collection pipeline with two fetchers, the server crawler and the extension, using the same parsing and saving rules. *(Built: one save path; the extension still parses pages itself)*
 - The server crawler checks offers on sites that allow server requests, at a set interval. *(Built: one interval for all products, off by default)*
 - Each product is checked every 6 hours by default and can be set to 6 h, 12 h or 24 h, or paused. *(Planned; per-product intervals approved 4 Nov, 6 h default agreed 12 Nov 2026)*
-- On sites that block servers (Amazon, eBay), the extension collects: it sends the page the retailer is viewing or fetches, and, while Chrome is open, checks that retailer's due offers in the background. The server parses every page. *(Planned; today the extension parses, and Fetch is manual)*
+- On sites that block servers (Amazon, eBay), the extension collects: it sends the page the retailer is viewing or fetches, and, while Chrome is open, checks due shared listings in the background, whichever retailers track them; the retailer is told this at install and can turn it off. The server parses every page. *(Planned; today the extension parses, and Fetch is manual)*
 - The screen says how each platform is updated, for example "Amazon: updated when you view it". *(Planned)*
 
 ### FR-06 History · Must · Built
@@ -172,7 +172,7 @@ As a retailer, I want failures and old data marked clearly, so that I never act 
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| NFR-01 | **Security:** one retailer can never read or change another's data. Tenant identity comes from the verified session, never from the browser. Public listing readings (price, stock, seller) are shared between retailers; which listings a retailer tracks, their decisions and their own prices are never shared. Checked with two accounts. | Built; integration test in `server/auth.integration.test.ts` |
+| NFR-01 | **Security:** one retailer can never read or change another's data. Tenant identity comes from the verified session, never from the browser. Public listing readings (price, stock, seller) are shared between retailers; which listings a retailer tracks, their decisions and their own prices are never shared. Extensions are handed due listing URLs without who tracks them. Checked with two accounts. | Built; integration test in `server/auth.integration.test.ts` |
 | NFR-02 | **Reliability:** a failed collection never stops the dashboard or other collection. No retry after `blocked`; at most 3 tries after network errors; at least 10 seconds between requests to the same site. | Partial |
 | NFR-03 | **Performance:** collection never runs inside a dashboard request. Proposed target: dashboard loads within 3 seconds for 10 concurrent users, measured on synthetic data. | Partial; target not measured |
 | NFR-04 | **Freshness:** every value shows when it was collected; stale values are marked (FR-11). | Partial |
