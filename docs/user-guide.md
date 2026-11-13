@@ -55,30 +55,45 @@ Open an offer to see its **Current price**, **Currency**, **Stock**, **Match**, 
 
 ## 7. Use the Riven extension
 
-Amazon pages reach Riven through the extension, from pages you open yourself.
+Amazon pages reach Riven only through the extension: Riven's server cannot read them itself. The extension sends pages you open, and it also checks Riven's due listings in the background while Chrome is open.
 
 **Install it once:**
 
-1. Get the `extension` folder from the Riven team.
+1. Get the extension:
+   - **Team members:** in your copy of the Riven repository, run `npm ci`, then `npm run build:extension:live`.
+   - **Retailers:** get the `extension` folder from the Riven team.
 2. In Chrome, open `chrome://extensions` and turn on **Developer mode**.
-3. Select **Load unpacked** and choose the `extension` folder.
+3. Select **Load unpacked** and choose the `extension` folder. A page opens explaining what the extension does.
 4. Sign in at https://riven.sbs/app in the same Chrome profile.
+
+**Update it:** team members pull the latest code, run `npm run build:extension:live` again, then select the reload button on the Riven card in `chrome://extensions`.
 
 **Send a page:**
 
 1. Open an Amazon product page.
-2. Select the Riven icon in Chrome's toolbar. It shows **Reading this page…**, then **Sending…**.
-3. The offer appears in Riven with its price, stock and time.
+2. Select the Riven icon in Chrome's toolbar, then **Send this page to Riven**.
+3. The popup shows what Riven saved: price, stock, seller and time. The offer appears in Riven too.
+
+**Background checks:**
+
+- Every 5 minutes while Chrome is open, the extension asks Riven which shared listings are due and checks them in hidden tabs, one at a time, a few seconds apart.
+- One check updates that listing for every retailer tracking it. The extension gets only the listing's address, never who tracks it.
+- To turn them off, select the Riven icon and clear **Check Riven's due listings in the background**.
+
+**What the extension sends:** only the product part of a page (title, price, stock, seller). Never the page header or your account, name or address.
 
 | The extension says | What to do |
 | --- | --- |
 | Sign in to Riven in this Chrome profile first | Sign in at https://riven.sbs/app in this Chrome window, then try again |
 | Riven server not reachable; attempt not recorded | Check your internet connection and try again later |
-| Failed attempt recorded in Riven | The page could not be read; Riven noted it. Try again later or use another product page |
+| No product found on this page | Open a product page itself, not a search or list page |
+| Amazon showed a challenge page | Riven recorded it and pauses checks on that site for 6 hours. Riven never tries to get past a challenge |
+| Not sent: (reason) | The page could not be read; Riven noted it. Try again later or use another product page |
 
 ## 8. How often prices update
 
-- **Amazon:** when you send a page with the extension (marked "Extension"), or when Riven's scheduled check reads it (marked "Scheduled").
+- **Amazon:** when you or the background checks send a page through the extension (marked "Extension"). Each listing is due every 6 hours by default. If no retailer tracking it has Chrome open, it shows as stale after 12 hours.
+- **eBay:** coming in Sprint 2 (RIV-21), the same way as Amazon.
 - **Other sites:** not supported yet.
 
 Check the time shown next to each price to see how recent it is.
