@@ -7,12 +7,13 @@
 | Platform | Route | Status |
 | --- | --- | --- |
 | Amazon | Riven extension sends pages the retailer views; server discovery searches Amazon for candidates | Active, for testing during the project. Amazon's Conditions of Use forbid automated collection; the team accepted this risk on 10 Oct. Production needs a legal route |
-| eBay (second platform, chosen 11 Nov) | Not decided: extension or server crawler | eBay's User Agreement forbids automated collection without permission; the eBay Browse API account was rejected on 3 Oct |
+| eBay (second platform, chosen 11 Nov) | Riven extension in the retailer's Chrome: on request (Fetch) and on schedule in the background while Chrome is open. The server crawler stays as a per-site fallback | Decided 13 Nov (RIV-43). eBay's User Agreement forbids automated collection without permission; the eBay Browse API account was rejected on 3 Oct |
 | books.toscrape.com | Server fetch | Retired after the Sprint 1 checkpoint |
 
 - **12 Oct 2026:** server requests to Amazon were refused in the live check, so Amazon product pages come through the extension.
 - **4 Nov 2026:** one collection pipeline with two fetchers, the server crawler and the extension. Design: [SDD section 3](design.md#3-collection-pipeline).
 - **11 Nov 2026:** eBay chosen as the second platform; the route is decided before Sprint 2 step 4.
+- **13 Nov 2026 (RIV-43):** the server cannot collect from Amazon or eBay itself: in the team's test, a plain server fetch from a cloud server got HTTP 403 on 4 of 4 eBay item pages, and an open-source tracker's users report the same. So the extension is the collector. Whoever has it installed and Chrome open runs the checks: every few minutes the extension asks Riven which shared listings are due, whichever retailers track them, opens each in a hidden tab one at a time, a few seconds apart, sends the page to Riven and closes the tab, the same path as the Fetch button. With shared listings (RIV-44) one reading refreshes the listing for every retailer tracking it. Any signed-in extension checks any due listing: it receives only listing URLs, never which retailer tracks them. Retailers are told this when they install the extension and can turn background checks off. Offers go stale after 12 h only when no retailer has Chrome open. Also considered: a paid residential proxy service (paid, needs client agreement), a home worker (depends on one machine), and re-applying for the eBay Browse API (approval time unknown). The eBay site rule reads JSON-LD first, then CSS selectors, and records block pages (403, eBay error or challenge page) as `blocked`: never retried, never solved; the extension pauses checks for that site. Item key: the 12-digit item ID plus any `var` value. Prices are stored in the seller's original currency, not the converted estimate.
 
 The sections below are the earlier decisions, kept as history.
 

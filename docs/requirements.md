@@ -70,7 +70,7 @@ A web app in current desktop and mobile browsers, a Chrome extension, and a serv
 ### 2.5 Assumptions and dependencies
 
 - **Amazon:** Amazon's Conditions of Use forbid automated collection. The team decided on 10 Oct 2026 to collect from Amazon for testing only during the academic project, as a risk it accepts, not a permitted use. Server requests to Amazon were refused in the 12 Oct live check, so Amazon pages come through the extension. Production use needs a legal route. Details: [source access decision](source-access-decision.md).
-- **Second platform: eBay** (chosen 11 Nov 2026). eBay's User Agreement forbids automated collection without permission, and the eBay Browse API account was rejected on 3 Oct 2026, so the collection route is still open (section 7).
+- **Second platform: eBay** (chosen 11 Nov 2026). eBay's User Agreement forbids automated collection without permission, and the eBay Browse API account was rejected on 3 Oct 2026, so the Riven extension collects them in the retailer's own Chrome: when the retailer clicks Fetch, and on schedule in the background while Chrome is open (decided 13 Nov 2026; [source access decision](source-access-decision.md)).
 
 ## 3. Functional requirements
 
@@ -118,7 +118,7 @@ As a retailer, I want competitor offers checked again over time, so that I see c
 - One collection pipeline with two fetchers, the server crawler and the extension, using the same parsing and saving rules. *(Built: one save path; the extension still parses pages itself)*
 - The server crawler checks offers on sites that allow server requests, at a set interval. *(Built: one interval for all products, off by default)*
 - Each product is checked every 6 hours by default and can be set to 6 h, 12 h or 24 h, or paused. *(Planned; per-product intervals approved 4 Nov, 6 h default agreed 12 Nov 2026)*
-- The extension sends the page the retailer is viewing on a site that blocks servers, and the server parses it. *(Planned; today the extension parses)*
+- On sites that block servers (Amazon, eBay), the extension collects: it sends the page the retailer is viewing or fetches, and, while Chrome is open, checks due shared listings in the background, whichever retailers track them; the retailer is told this at install and can turn it off. The server parses every page. *(Planned; today the extension parses, and Fetch is manual)*
 - The screen says how each platform is updated, for example "Amazon: updated when you view it". *(Planned)*
 
 ### FR-06 History · Must · Built
@@ -172,7 +172,7 @@ As a retailer, I want failures and old data marked clearly, so that I never act 
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| NFR-01 | **Security:** one retailer can never read or change another's data. Tenant identity comes from the verified session, never from the browser. Checked with two accounts. | Built; integration test in `server/auth.integration.test.ts` |
+| NFR-01 | **Security:** one retailer can never read or change another's data. Tenant identity comes from the verified session, never from the browser. Public listing readings (price, stock, seller) are shared between retailers; which listings a retailer tracks, their decisions and their own prices are never shared. Extensions are handed due listing URLs without who tracks them. Checked with two accounts. | Built; integration test in `server/auth.integration.test.ts` |
 | NFR-02 | **Reliability:** a failed collection never stops the dashboard or other collection. No retry after `blocked`; at most 3 tries after network errors; at least 10 seconds between requests to the same site. | Partial |
 | NFR-03 | **Performance:** collection never runs inside a dashboard request. Proposed target: dashboard loads within 3 seconds for 10 concurrent users, measured on synthetic data. | Partial; target not measured |
 | NFR-04 | **Freshness:** every value shows when it was collected; stale values are marked (FR-11). | Partial |
@@ -183,7 +183,7 @@ As a retailer, I want failures and old data marked clearly, so that I never act 
 | NFR-09 | **Capacity:** bounded queries and collection concurrency for an agreed pilot workload, measured on synthetic data. External sites are never load-tested. | Planned |
 | NFR-10 | **Extensibility:** adding a platform means adding its site rules and tests, with no change to accounts, matching or dashboard code. | Planned |
 | NFR-11 | **Diagnosability:** each failed attempt records a safe reason. A page that could not be parsed is kept as a test fixture, with personal data removed. | Partial |
-| NFR-12 | **Privacy:** pages sent by the extension are parsed and then discarded. Only offer fields are stored. Personal data on a page (name, address) is never stored. | Planned |
+| NFR-12 | **Privacy:** the extension sends only the product part of a page: its JSON-LD blocks, the product section chosen by the site rule, and the page URL. The header and account area are never sent. The server parses what it receives and then discards it; only offer fields are stored. Personal data on a page (name, address) is never sent or stored. | Planned |
 
 ## 5. Acceptance and evidence
 
@@ -198,12 +198,9 @@ Each delivered feature is checked against its FR acceptance criteria and relevan
 
 ## 7. Open decisions
 
-Settled on 12 Nov 2026 (team proposal of 11 Nov, agreed by the client): default check interval 6 h (FR-05), alert conditions and channel (FR-08), tier limits and prices (FR-09), stale threshold 12 h (FR-11), eBay as second platform (FR-03).
+Settled on 12 Nov 2026 (team proposal of 11 Nov, agreed by the client): default check interval 6 h (FR-05), alert conditions and channel (FR-08), tier limits and prices (FR-09), stale threshold 12 h (FR-11), eBay as second platform (FR-03). eBay route, 13 Nov: collected by the extension in the retailer's browser, on request and on schedule (FR-05). Extension capture, 13 Nov: the extension sends only the product part of a page, never the whole page (NFR-12).
 
-| Decision | Needed for | Decides |
-| --- | --- | --- |
-| How eBay pages are collected: extension or server crawler | FR-03, FR-05 | Team, then client; recorded in the [source access decision](source-access-decision.md) |
-| Whether the extension sends the whole page or only the offer fields | FR-05, NFR-12 | Team |
+No decisions are open.
 
 ## 8. Traceability
 
