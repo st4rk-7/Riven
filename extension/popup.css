@@ -11,3 +11,7 @@ dd { margin: 0; font-weight: 500; color: #111827; }
 button { height: 34px; border: 0; border-radius: 8px; background: #111827; color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
 button:disabled { opacity: 0.5; cursor: default; }
 .ok { color: #047857; margin: 0; }
+footer { padding: 10px 16px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 12px; }
+footer label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+body.page { width: auto; max-width: 640px; margin: 0 auto; }
+body.page p { margin: 0; }

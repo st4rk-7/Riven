@@ -16,6 +16,9 @@ const SHOP: Site = {
   price: [{ jsonld: "offers.price", currency: "offers.priceCurrency" }, { css: ".price" }],
   availability: [{ jsonld: "offers.availability" }, { css: ".stock" }],
   seller: [{ jsonld: "offers.seller.name" }, { css: ".seller" }],
+  capture: ["main"],
+  strip: [],
+  blocked: /challenge/i,
 };
 
 const page = (jsonLd: unknown, body = "") =>

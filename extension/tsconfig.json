@@ -5,5 +5,5 @@
     "types": ["chrome"],
     "noEmit": true
   },
-  "include": ["src", "../server/sources/amazon.ts"]
+  "include": ["src", "../server/sources/sites.ts"]
 }

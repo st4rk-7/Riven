@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { hashPassword } from "better-auth/crypto";
 import pg from "pg";
@@ -136,6 +137,25 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("real PostgreSQL authentication 
       payload: { ...offer, pageUrl: `https://www.amazon.co.uk/dp/${asin}`, asin, seller: "Book Shop Ltd" } });
     expect(sent.statusCode).toBe(201);
     expect(sent.json()).toMatchObject({ productId: a.product, matchStatus: "confirmed", seller: "Book Shop Ltd", price: "18.01" });
+  });
+
+  test("reads a page sent by the extension with the site rules and keeps only the offer", async () => {
+    const cookie = await login();
+    const html = readFileSync(new URL("./sources/fixtures/amazon-uk-in-stock.html", import.meta.url), "utf8");
+    const sent = await app.inject({ method: "POST", url: "/api/v1/pages", headers: headers(cookie), payload: { pageUrl: offer.pageUrl, html } });
+    expect(sent.statusCode).toBe(201);
+    expect(sent.json()).toMatchObject({ productId: a.product, price: "18.01", currency: "GBP", collectedVia: "extension" });
+    const { rows: [saved] } = await database.query("SELECT parse_rules FROM observations WHERE id = $1", [sent.json().id]);
+    expect(saved.parse_rules).toMatchObject({ productName: "css:#productTitle" });
+
+    const unreadable = await app.inject({ method: "POST", url: "/api/v1/pages", headers: headers(cookie),
+      payload: { pageUrl: offer.pageUrl, html: "<html><body>Nothing here</body></html>" } });
+    expect(unreadable.statusCode).toBe(422);
+    const attempts = (await app.inject({ url: "/api/v1/attempts", headers: headers(cookie) })).json();
+    expect(attempts[0]).toMatchObject({ status: "failed", reason: expect.stringContaining("no product title") });
+    const other = await app.inject({ method: "POST", url: "/api/v1/pages", headers: headers(cookie),
+      payload: { pageUrl: "https://example.com/item", html } });
+    expect(other.json().code).toBe("UNSUPPORTED_SOURCE");
   });
 
   test("rolls back the observation when its success-attempt write fails", async () => {
