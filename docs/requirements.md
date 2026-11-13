@@ -70,7 +70,7 @@ A web app in current desktop and mobile browsers, a Chrome extension, and a serv
 ### 2.5 Assumptions and dependencies
 
 - **Amazon:** Amazon's Conditions of Use forbid automated collection. The team decided on 10 Oct 2026 to collect from Amazon for testing only during the academic project, as a risk it accepts, not a permitted use. Server requests to Amazon were refused in the 12 Oct live check, so Amazon pages come through the extension. Production use needs a legal route. Details: [source access decision](source-access-decision.md).
-- **Second platform: eBay** (chosen 11 Nov 2026). eBay's User Agreement forbids automated collection without permission, and the eBay Browse API account was rejected on 3 Oct 2026, so the collection route is still open (section 7).
+- **Second platform: eBay** (chosen 11 Nov 2026). eBay's User Agreement forbids automated collection without permission, and the eBay Browse API account was rejected on 3 Oct 2026, so eBay pages are fetched by the server crawler through a paid residential proxy service (decided 13 Nov 2026; needs client agreement as a paid service; [source access decision](source-access-decision.md)).
 
 ## 3. Functional requirements
 
@@ -172,7 +172,7 @@ As a retailer, I want failures and old data marked clearly, so that I never act 
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| NFR-01 | **Security:** one retailer can never read or change another's data. Tenant identity comes from the verified session, never from the browser. Checked with two accounts. | Built; integration test in `server/auth.integration.test.ts` |
+| NFR-01 | **Security:** one retailer can never read or change another's data. Tenant identity comes from the verified session, never from the browser. Public listing readings (price, stock, seller) are shared between retailers; which listings a retailer tracks, their decisions and their own prices are never shared. Checked with two accounts. | Built; integration test in `server/auth.integration.test.ts` |
 | NFR-02 | **Reliability:** a failed collection never stops the dashboard or other collection. No retry after `blocked`; at most 3 tries after network errors; at least 10 seconds between requests to the same site. | Partial |
 | NFR-03 | **Performance:** collection never runs inside a dashboard request. Proposed target: dashboard loads within 3 seconds for 10 concurrent users, measured on synthetic data. | Partial; target not measured |
 | NFR-04 | **Freshness:** every value shows when it was collected; stale values are marked (FR-11). | Partial |
@@ -198,11 +198,10 @@ Each delivered feature is checked against its FR acceptance criteria and relevan
 
 ## 7. Open decisions
 
-Settled on 12 Nov 2026 (team proposal of 11 Nov, agreed by the client): default check interval 6 h (FR-05), alert conditions and channel (FR-08), tier limits and prices (FR-09), stale threshold 12 h (FR-11), eBay as second platform (FR-03).
+Settled on 12 Nov 2026 (team proposal of 11 Nov, agreed by the client): default check interval 6 h (FR-05), alert conditions and channel (FR-08), tier limits and prices (FR-09), stale threshold 12 h (FR-11), eBay as second platform (FR-03). eBay route, 13 Nov: server crawler through a residential proxy service (FR-05).
 
 | Decision | Needed for | Decides |
 | --- | --- | --- |
-| How eBay pages are collected: extension or server crawler | FR-03, FR-05 | Team, then client; recorded in the [source access decision](source-access-decision.md) |
 | Whether the extension sends the whole page or only the offer fields | FR-05, NFR-12 | Team |
 
 ## 8. Traceability
