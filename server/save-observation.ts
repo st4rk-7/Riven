@@ -4,6 +4,7 @@ import type { PoolClient } from "pg";
 
 import type { CollectedObservation, ExtensionOffer } from "../shared/collected-observation.js";
 import { linkOffer, type RetailerProduct } from "./matching.js";
+import type { MatchedRules } from "./sources/extract.js";
 
 // The one save path for competitor offers, used by the extension (Channel A) and the
 // scheduled crawler (Channel B), so a listing behaves the same whichever channel updates it.
@@ -65,6 +66,8 @@ export async function saveObservation(
   source: string,
   collectedVia: CollectedObservation["collectedVia"],
   now = new Date(),
+  // Which site rule read each field; null when the page was parsed outside the server.
+  parseRules: MatchedRules | null = null,
 ): Promise<CollectedObservation> {
   const { rows: products } = await connection.query<LinkableProduct>(
     "SELECT id, name, brand, asin FROM products WHERE retailer_id = $1 ORDER BY id", [retailerId]);
@@ -77,10 +80,10 @@ export async function saveObservation(
     [retailerId, source, observation.asin]);
   if (tracked) Object.assign(observation, tracked);
   await connection.query(`INSERT INTO observations
-    (id, retailer_id, product_id, asin, product_name, price, currency, availability, seller, source, observed_at, match_status, collected_via)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+    (id, retailer_id, product_id, asin, product_name, price, currency, availability, seller, source, observed_at, match_status, collected_via, parse_rules)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
   [observation.id, retailerId, observation.productId, observation.asin, observation.productName,
     observation.price, observation.currency, observation.availability, observation.seller,
-    observation.source, observation.observedAt, observation.matchStatus, observation.collectedVia]);
+    observation.source, observation.observedAt, observation.matchStatus, observation.collectedVia, parseRules]);
   return observation;
 }

@@ -4,7 +4,7 @@ import { parseProductEdit, resolveNewProduct } from "./products.js";
 import type { CollectResult } from "./sources/amazon-collector.js";
 
 const observedAt = "2026-10-24T00:00:00Z";
-const page: CollectResult = { status: "ok", observedAt, offer: {
+const page: CollectResult = { status: "ok", observedAt, rules: { itemId: null, productName: null, price: null, availability: null, seller: null }, offer: {
   asin: "B0TEST1234", productName: "Logitech M185 Wireless Mouse", price: "9.99", currency: "GBP", availability: "in_stock", seller: null } };
 
 describe("resolveNewProduct", () => {

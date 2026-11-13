@@ -84,6 +84,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("scheduled crawler (Channel B)",
     expect(obs[0].collected_via).toBe("crawler");
     expect(obs[0].match_status).toBe("confirmed");
     expect(obs[0].price).toBe("18.01");
+    expect(obs[0].parse_rules).toMatchObject({ productName: "css:#productTitle", price: expect.stringMatching(/^css:#buybox /) });
 
     // Check attempt in DB
     const { rows: attempts } = await database.query(

@@ -1,72 +1,11 @@
-import * as cheerio from "cheerio";
+import { extractOffer, type Offer } from "./extract.js";
+import { AMAZON } from "./sites.js";
 
-export type AmazonOffer = {
-  asin: string;
-  productName: string;
-  price: string | null;
-  currency: string | null;
-  availability: "in_stock" | "out_of_stock" | "unknown";
-  seller: string | null;
-};
+export { parseAvailability, parsePrice } from "./extract.js";
 
-// Longest symbols first so "S$" is not read as "$".
-const CURRENCY_SYMBOLS: [string, string][] = [
-  ["S$", "SGD"],
-  ["US$", "USD"],
-  ["£", "GBP"],
-  ["€", "EUR"],
-  ["$", "USD"],
-];
+export type AmazonOffer = Offer;
 
-export function parsePrice(text: string): { price: string | null; currency: string | null } {
-  const trimmed = text.replace(/\s+/g, "").trim();
-  // Amazon shows other countries' visitors a converted price led by an ISO code, e.g. "LKR143,394.48".
-  const currency = CURRENCY_SYMBOLS.find(([s]) => trimmed.startsWith(s))?.[1] ?? /^([A-Z]{3})\d/.exec(trimmed)?.[1] ?? null;
-  const amount = /^\D*(\d{1,3}(?:,\d{3})*|\d+)\.(\d{2})$/.exec(trimmed);
-  if (!currency || !amount) {
-    return { price: null, currency };
-  }
-  return { price: `${amount[1].replace(/,/g, "")}.${amount[2]}`, currency };
-}
-
-export function parseAvailability(text: string): AmazonOffer["availability"] {
-  const t = text.toLowerCase();
-  if (t.startsWith("in stock") || /only \d+ left in stock/.test(t)) return "in_stock";
-  if (t.includes("currently unavailable") || t.includes("out of stock")) return "out_of_stock";
-  return "unknown";
-}
-
+// Amazon's rules live in sites.ts; this reads a page with them through the shared extractor.
 export function parseAmazonProductPage(html: string): AmazonOffer {
-  const $ = cheerio.load(html);
-  $("script, style").remove();
-
-  const productName = $("#productTitle").first().text().replace(/\s+/g, " ").trim();
-  if (!productName) {
-    throw new Error("Not an Amazon product page: no product title found.");
-  }
-
-  const asin = String($("input[name=ASIN]").first().val() ?? "").trim();
-
-  // Only the buy box price counts; other prices on the page belong to other products.
-  // Amazon marks it with either class depending on the page layout.
-  const priceText =
-    $("#buybox")
-      .find(".priceToPay .a-offscreen, .apex-pricetopay-value .a-offscreen")
-      .toArray()
-      .map((el) => $(el).text().trim())
-      .find((text) => text.length > 0) ?? "";
-  const { price, currency } = parsePrice(priceText);
-
-  const availabilityText = $("#availability").first().text().replace(/\s+/g, " ").trim();
-  const seller =
-    $("#merchantInfoFeature_feature_div .offer-display-feature-text-message").first().text().trim() || null;
-
-  return {
-    asin,
-    productName,
-    price,
-    currency,
-    availability: price === null ? "unknown" : parseAvailability(availabilityText),
-    seller,
-  };
+  return extractOffer(html, AMAZON).offer;
 }

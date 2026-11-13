@@ -54,7 +54,7 @@ export async function crawlListing(
     await connection.query("BEGIN");
     if (result.status === "ok") {
       await saveObservation(connection, target.retailerId, { ...result.offer, asin: result.offer.asin || target.asin },
-        target.source, "crawler", new Date(result.observedAt));
+        target.source, "crawler", new Date(result.observedAt), result.rules);
     }
     await connection.query(
       `INSERT INTO attempts (id, retailer_id, product_id, source, status, reason, attempted_at)

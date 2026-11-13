@@ -1,18 +1,12 @@
-import { type AmazonOffer, parseAmazonProductPage } from "./amazon.js";
+import type { AmazonOffer } from "./amazon.js";
+import { extractOffer, type MatchedRules } from "./extract.js";
+import { AMAZON } from "./sites.js";
 
 export type CollectResult =
-  | { status: "ok"; offer: AmazonOffer; observedAt: string }
+  | { status: "ok"; offer: AmazonOffer; rules: MatchedRules; observedAt: string }
   | { status: "blocked"; reason: string; observedAt: string }
   | { status: "failed"; reason: string; observedAt: string };
 
-const DEFAULT_ALLOWED_HOSTS = [
-  "www.amazon.co.uk",
-  "amazon.co.uk",
-  "www.amazon.sg",
-  "amazon.sg",
-  "www.amazon.com",
-  "amazon.com",
-];
 const BLOCK_STATUSES = new Set([403, 429, 503]);
 
 export function isCaptchaPage(html: string): boolean {
@@ -23,7 +17,7 @@ export function isCaptchaPage(html: string): boolean {
 // Plain fetch: crawlee's browser-imitating headers made Amazon answer with a non-HTML body.
 export async function collectAmazonOffer(
   url: string,
-  { allowedHosts = DEFAULT_ALLOWED_HOSTS, timeoutSecs = 15 } = {},
+  { allowedHosts = AMAZON.hosts, timeoutSecs = 15 } = {},
 ): Promise<CollectResult> {
   const observedAt = new Date().toISOString();
   let target = new URL(url);
@@ -57,10 +51,10 @@ export async function collectAmazonOffer(
         return { status: "blocked", reason: `Blocked (non-HTML response: ${type})`, observedAt };
       }
       try {
-        const offer = parseAmazonProductPage(html);
+        const { offer, rules } = extractOffer(html, AMAZON);
         // Amazon leaves the buy box out for unrecognised visitors; such a page is not an observation.
         if (offer.price === null) return { status: "failed", reason: "Page showed no price", observedAt };
-        return { status: "ok", offer, observedAt };
+        return { status: "ok", offer, rules, observedAt };
       } catch (error) {
         return { status: "failed", reason: (error as Error).message, observedAt };
       }
