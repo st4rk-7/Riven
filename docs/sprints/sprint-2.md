@@ -18,7 +18,7 @@ Same headings as [Sprint 1](sprint-1.md): plan, what was delivered, review, retr
 | Stale threshold | 12 h with no successful check (two missed 6 h checks; client, 12 Nov 2026; was 48 h) |
 | Alerts (Sprint 4) | Competitor price below mine; price change of 5% or more; stock change. In-app first, then email. One alert per event |
 | Tiers (Sprint 5, mock billing) | Free: 10 products, 6 h minimum · Pro: $19/month, 100 products, 6 h · Business: $49/month, 500 products, 3 h |
-| Second platform | eBay, collected through the extension; server crawler as a per-site fallback (13 Nov, RIV-43) |
+| Second platform | eBay, collected by the extension in the retailer's Chrome, on request and on schedule in the background; server crawler as a per-site fallback (13 Nov, RIV-43) |
 | Shared listings | Public listing readings are stored once and shared by every retailer tracking that listing; what each retailer tracks and decides stays private (13 Nov) |
 
 ### Sub-tasks, in build order
@@ -28,8 +28,8 @@ Owners work in parallel, 9 points each; Jira holds live status. Order that matte
 | # | Sub-task | Done when | Requirements | Owner |
 | --- | --- | --- | --- | --- |
 | 1 | Site rules registry and shared extractor (`server/sources/sites.ts`); Amazon moved into it | Amazon parses through the registry; existing Amazon tests pass unchanged; each observation records which rule matched | FR-03, FR-05, NFR-10 | Shewon, RIV-36 |
-| 2 | Extension sends the page HTML; the server parses it and discards the page | Extension and crawler produce the same observation from the same page; no raw page is stored | FR-05, NFR-12 | Shewon, RIV-37 |
-| 3 | Per-product check schedule: `check_every_hours` and `next_check_at` on products; background workers claim due products from PostgreSQL (`FOR UPDATE SKIP LOCKED`, small jitter) instead of one fixed interval | A product set to 6 h is checked about every 6 h; a paused product is not checked; two workers never check the same product at once | FR-05 | Hirukshanan, RIV-38 |
+| 2 | Extension sends the page HTML; the server parses it and discards the page. While Chrome is open, the extension also asks Riven for its retailer's due offers and checks them in hidden tabs, one at a time | Extension and crawler produce the same observation from the same page; no raw page is stored; due offers are checked with Chrome open and no clicks; a `blocked` page pauses checks for that site | FR-05, NFR-12 | Shewon, RIV-37 |
+| 3 | Per-product check schedule: `check_every_hours` and `next_check_at` on products; background workers claim due products from PostgreSQL (`FOR UPDATE SKIP LOCKED`, small jitter) instead of one fixed interval; due checks for sites that block servers are handed to the extension through an API route | A product set to 6 h is checked about every 6 h; a paused product is not checked; two workers never check the same product at once; the extension receives only its own retailer's due offers | FR-05 | Hirukshanan, RIV-38 |
 | 4 | eBay added as a site: generic item ID instead of the Amazon-only `asin` column, eBay rules, fixtures; shipping cost, condition (new or used) and seller stored per offer | An eBay item page parses to price, currency, stock, seller, shipping and condition; Amazon still works | FR-03, FR-05 | Ilmam, RIV-21 |
 | 5 | Freshness: "last checked" time, "check failing" after repeated failures, stale after 12 h with no successful check; failed or stale values never feed charts or alerts | Test in the test plan passes | FR-11, NFR-04 | Dilsan, RIV-39 |
 | 6 | Skip an observation identical to the previous one within 6 h; the attempt is still stored | Test shows one observation and two attempts | FR-06 | Dilsan, RIV-40 |
@@ -38,7 +38,7 @@ Owners work in parallel, 9 points each; Jira holds live status. Order that matte
 | 9 | Shared listings: public readings stored once per listing (source + item ID) and shown to every retailer tracking it | One reading appears for every retailer tracking the listing; a retailer never sees who else tracks it; two-account test passes; history migrated | FR-05, FR-06, NFR-01 | Hirukshanan, RIV-44 |
 | — | eBay route decision | Recorded in the source access decision | — | Shewon, RIV-43 |
 
-**eBay route (decided 13 Nov, RIV-43):** eBay pages come through the extension, as with Amazon; the server crawler stays as a per-site fallback. Details in the [source access decision](../source-access-decision.md).
+**Collection route (decided 13 Nov, RIV-43):** the server cannot collect from Amazon or eBay, so the extension is the collector. While Chrome is open it asks Riven for its retailer's due offers and checks them in hidden tabs, one at a time; the server crawler stays as a per-site fallback. Details in the [source access decision](../source-access-decision.md).
 
 ## 2. Delivered
 

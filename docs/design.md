@@ -84,7 +84,7 @@ Extension: sends page HTML  ──┘   (one parser, one attempts table, one sav
 
 1. **Site rules instead of one parser per site.** Each platform is described as data: an ordered list of rules per field (JSON-LD first, then CSS selectors, then a text pattern). One shared extractor reads any page with any site's rules and records which rule matched (NFR-10).
 2. **The extension sends the page, not the parsed offer.** All parsing moves to the server, so both fetchers behave the same. The server parses the page, then discards it; raw pages are never stored (NFR-12).
-3. **Check interval per product.** A default schedule, which each product can override or pause (FR-05). Runs as background jobs outside web requests.
+3. **Check interval per product.** A default schedule, which each product can override or pause (FR-05). Runs as background jobs outside web requests. Due checks for sites that allow server requests go to the server workers; due checks for sites that block servers (Amazon, eBay) go to the extension, which runs them in the retailer's Chrome while it is open.
 4. **Fetch escalation.** Plain HTTP first; a headless browser only for pages that need JavaScript.
 5. **Validation guards.** Suspect prices are recorded as failed attempts (NFR-05); unchanged values within 6 hours are not stored again (FR-06); a large price gap blocks automatic confirmation (FR-04).
 6. **Failed pages become fixtures.** A page that could not be parsed is saved, with personal data removed, as a test fixture (NFR-11).
@@ -180,7 +180,7 @@ Format: date · decision · why · trade-off.
 | 11 Nov 2026 | Scheduled checks are claimed from PostgreSQL by a few background workers (`FOR UPDATE SKIP LOCKED`), not by one fixed interval | Per-product intervals without adding a queue service | Workers and retries are Riven's own code |
 | 11 Nov 2026 | Offers use a generic item ID instead of the Amazon-only `asin` | eBay item IDs do not fit the ASIN format | One migration across observations and products |
 | 11 Nov 2026 | Team set the open values: 6 h default interval and 12 h stale threshold (client changed them from 24 h and 48 h on 12 Nov), alert conditions, tiers; eBay as second platform ([Sprint 2 record](sprints/sprint-2.md)) | Unblocks Sprint 2 | eBay collection method still open |
-| 13 Nov 2026 | eBay pages come through the extension; the server crawler stays as a per-site fallback (RIV-43) | A plain server fetch got HTTP 403 on every eBay item page tested | eBay offers update only when the retailer views them |
+| 13 Nov 2026 | The extension is the collector for sites that block servers: on request, and on schedule in the background while Chrome is open; the server crawler stays as a per-site fallback (RIV-43) | A plain server fetch got HTTP 403 on every eBay item page tested; Amazon refused server requests on 12 Oct | Checks run only while a tracking retailer has Chrome open; checks use the retailer's own connection, so the pace stays slow |
 | 13 Nov 2026 | Public listing readings are stored once per listing and shared by every retailer tracking it; tracking, decisions and own prices stay per retailer (RIV-44) | One retailer's reading keeps the listing fresh for all, which matters for extension-only sites like eBay | One more table and migration; reads must never reveal who else tracks a listing |
 
 A decision is revisited when a test, the client or a site's behaviour shows it no longer works.

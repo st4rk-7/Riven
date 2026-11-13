@@ -70,7 +70,7 @@ A web app in current desktop and mobile browsers, a Chrome extension, and a serv
 ### 2.5 Assumptions and dependencies
 
 - **Amazon:** Amazon's Conditions of Use forbid automated collection. The team decided on 10 Oct 2026 to collect from Amazon for testing only during the academic project, as a risk it accepts, not a permitted use. Server requests to Amazon were refused in the 12 Oct live check, so Amazon pages come through the extension. Production use needs a legal route. Details: [source access decision](source-access-decision.md).
-- **Second platform: eBay** (chosen 11 Nov 2026). eBay's User Agreement forbids automated collection without permission, and the eBay Browse API account was rejected on 3 Oct 2026, so eBay pages are fetched by the server crawler through a paid residential proxy service (decided 13 Nov 2026; needs client agreement as a paid service; [source access decision](source-access-decision.md)).
+- **Second platform: eBay** (chosen 11 Nov 2026). eBay's User Agreement forbids automated collection without permission, and the eBay Browse API account was rejected on 3 Oct 2026, so the Riven extension collects them in the retailer's own Chrome: when the retailer clicks Fetch, and on schedule in the background while Chrome is open (decided 13 Nov 2026; [source access decision](source-access-decision.md)).
 
 ## 3. Functional requirements
 
@@ -118,7 +118,7 @@ As a retailer, I want competitor offers checked again over time, so that I see c
 - One collection pipeline with two fetchers, the server crawler and the extension, using the same parsing and saving rules. *(Built: one save path; the extension still parses pages itself)*
 - The server crawler checks offers on sites that allow server requests, at a set interval. *(Built: one interval for all products, off by default)*
 - Each product is checked every 6 hours by default and can be set to 6 h, 12 h or 24 h, or paused. *(Planned; per-product intervals approved 4 Nov, 6 h default agreed 12 Nov 2026)*
-- The extension sends the page the retailer is viewing on a site that blocks servers, and the server parses it. *(Planned; today the extension parses)*
+- On sites that block servers (Amazon, eBay), the extension collects: it sends the page the retailer is viewing or fetches, and, while Chrome is open, checks that retailer's due offers in the background. The server parses every page. *(Planned; today the extension parses, and Fetch is manual)*
 - The screen says how each platform is updated, for example "Amazon: updated when you view it". *(Planned)*
 
 ### FR-06 History · Must · Built
@@ -198,7 +198,7 @@ Each delivered feature is checked against its FR acceptance criteria and relevan
 
 ## 7. Open decisions
 
-Settled on 12 Nov 2026 (team proposal of 11 Nov, agreed by the client): default check interval 6 h (FR-05), alert conditions and channel (FR-08), tier limits and prices (FR-09), stale threshold 12 h (FR-11), eBay as second platform (FR-03). eBay route, 13 Nov: server crawler through a residential proxy service (FR-05).
+Settled on 12 Nov 2026 (team proposal of 11 Nov, agreed by the client): default check interval 6 h (FR-05), alert conditions and channel (FR-08), tier limits and prices (FR-09), stale threshold 12 h (FR-11), eBay as second platform (FR-03). eBay route, 13 Nov: collected by the extension in the retailer's browser, on request and on schedule (FR-05).
 
 | Decision | Needed for | Decides |
 | --- | --- | --- |
