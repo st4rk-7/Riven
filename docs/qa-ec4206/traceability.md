@@ -19,30 +19,30 @@ IDs are stable once shared. If a case is removed, mark it Retired rather than re
 
 ## Seed requirement-to-test mapping
 
-All cases below are planned reservations. Detailed preconditions, steps, data, and expected results belong in `black-box.md` or the manual-case files. Status is intentionally Not designed or Not run.
+All cases below are drafted in `black-box.md` and `manual-cases.md` but have not been executed. Status is intentionally Drafted - Not run.
 
 | Scope | Requirement | Planned manual ID | Planned behavior | Priority | Role B | Role C | Role D | Status | Evidence |
 |---|---|---|---|---|---|---|---|---|---|
-| `SCP-AUTH` | `FR-01` | `TC-AUTH-001` | Valid synthetic retailer signs in and receives only its identity/workspace. | P0 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-AUTH` | `FR-01` | `TC-AUTH-002` | Invalid or malformed credentials are rejected with safe feedback. | P0 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-AUTH` | `FR-01`, `NFR-01` | `TC-AUTH-003` | Signed-out access to protected retailer data is rejected. | P0 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-AUTH` | `NFR-01` | `TC-AUTH-004` | Alpha cannot read or change Beta's products/observations using misleading IDs. | P0 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-AUTH` | `FR-01` | `TC-AUTH-005` | Sign-out revokes the session and subsequent protected access fails. | P0 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-AUTH` | `FR-01` | `TC-AUTH-006` | Repeated failed sign-in attempts reach the implemented rate limit without counting a success as failure. | P1 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-PROD` | `FR-02` | `TC-PROD-001` | Valid manual name with optional brand creates a retailer-owned product. | P0 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-PROD` | `FR-02` | `TC-PROD-002` | Valid supported product URL follows the URL input path without accepting unsafe/unsupported input. | P1 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-PROD` | `FR-02` | `TC-PROD-003` | Blank/invalid product input is rejected with observable feedback. | P0 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-PROD` | `FR-02` | `TC-PROD-004` | Implemented product-name and brand boundaries are enforced. | P1 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-PROD` | `FR-03` | `TC-PROD-005` | Discovery adds no more than five suitable candidate offers. | P0 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-PROD` | `FR-03` | `TC-PROD-006` | Repeated discovery does not add a duplicate listing. | P0 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-PROD` | `FR-02`, `NFR-01` | `TC-PROD-007` | A retailer cannot update/delete another retailer's product. | P0 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-OFFER` | `FR-04` | `TC-OFFER-001` | Same implemented identifier produces `confirmed`. | P0 | Candidate | Candidate | Pending | Not designed | - |
-| `SCP-OFFER` | `FR-04` | `TC-OFFER-002` | Different identifier or conflicting model/pack size produces `mismatch`. | P0 | Candidate | Candidate | Pending | Not designed | - |
-| `SCP-OFFER` | `FR-04` | `TC-OFFER-003` | Similar title alone remains `unverified`. | P0 | Candidate | Candidate | Pending | Not designed | - |
-| `SCP-OFFER` | `FR-04`, `NFR-01` | `TC-OFFER-004` | Retailer confirms/rejects only its own observation and the decision persists. | P0 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-OFFER` | `FR-06` | `TC-OFFER-005` | Failed/blocked attempt does not delete or overwrite earlier valid history. | P0 | Pending | Candidate | Candidate | Not designed | - |
-| `SCP-OFFER` | `FR-06`, `FR-07` | `TC-OFFER-006` | History shows source, currency, collection time, and earlier observations. | P1 | Pending | Candidate | Pending | Not designed | - |
-| `SCP-OFFER` | `FR-11`, `NFR-05` | `TC-OFFER-007` | Missing price remains unknown/null rather than becoming zero; unknown stock remains distinct. | P0 | Candidate | Candidate | Candidate | Not designed | - |
+| `SCP-AUTH` | `FR-01` | `TC-AUTH-001` | Valid synthetic retailer signs in and receives only its identity/workspace. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-AUTH` | `FR-01` | `TC-AUTH-002` | Invalid or malformed credentials are rejected with safe feedback. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-AUTH` | `FR-01`, `NFR-01` | `TC-AUTH-003` | Signed-out access to protected retailer data is rejected. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-AUTH` | `NFR-01` | `TC-AUTH-004` | Alpha cannot read or change Beta's products/observations using misleading IDs. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-AUTH` | `FR-01` | `TC-AUTH-005` | Sign-out revokes the session and subsequent protected access fails. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-AUTH` | `FR-01` | `TC-AUTH-006` | Six consecutive failed sign-in attempts exercise the implemented five-request boundary. | P1 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-PROD` | `FR-02` | `TC-PROD-001` | Valid manual name with optional brand creates a retailer-owned product. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-PROD` | `FR-02` | `TC-PROD-002` | Valid supported product URL follows the URL input path without accepting unsafe/unsupported input. | P1 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-PROD` | `FR-02` | `TC-PROD-003` | Blank/invalid product input is rejected with observable feedback. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-PROD` | `FR-02` | `TC-PROD-004` | Implemented product-name and brand boundaries are enforced. | P1 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-PROD` | `FR-03` | `TC-PROD-005` | Discovery adds no more than five suitable candidate offers. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-PROD` | `FR-03` | `TC-PROD-006` | Repeated discovery does not add a duplicate listing. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-PROD` | `FR-02`, `NFR-01` | `TC-PROD-007` | A retailer cannot update/delete another retailer's product. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-OFFER` | `FR-04` | `TC-OFFER-001` | Same implemented identifier produces `confirmed`. | P0 | Candidate | Candidate | Pending | Drafted - Not run | - |
+| `SCP-OFFER` | `FR-04` | `TC-OFFER-002` | Different identifier or conflicting model/pack size produces `mismatch`. | P0 | Candidate | Candidate | Pending | Drafted - Not run | - |
+| `SCP-OFFER` | `FR-04` | `TC-OFFER-003` | Similar title alone remains `unverified`. | P0 | Candidate | Candidate | Pending | Drafted - Not run | - |
+| `SCP-OFFER` | `FR-04`, `NFR-01` | `TC-OFFER-004` | Retailer confirms/rejects only its own observation and the decision persists. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-OFFER` | `FR-06` | `TC-OFFER-005` | Failed/blocked attempt does not delete or overwrite earlier valid history. | P0 | Pending | Candidate | Candidate | Drafted - Not run | - |
+| `SCP-OFFER` | `FR-06`, `FR-07` | `TC-OFFER-006` | History shows source, currency, collection time, and earlier observations. | P1 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-OFFER` | `FR-11`, `NFR-05` | `TC-OFFER-007` | Missing price remains unknown/null rather than becoming zero; unknown stock remains distinct. | P0 | Candidate | Candidate | Candidate | Drafted - Not run | - |
 
 ## Planned-only gap rows
 
