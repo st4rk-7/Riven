@@ -1,8 +1,8 @@
 # EC4206 Traceability Matrix
 
-Status: Seed matrix - cases reserved, not executed
+Status: Seed matrix with one partial manual execution record
 Owner: Ilmam (Role A)
-Date: 17 November 2026 (Asia/Colombo)
+Updated: 19 November 2026 (Asia/Colombo)
 Planning baseline: `29af23787b9de37d65f3ed00d30297e4f67185b3`
 
 ## ID convention
@@ -19,11 +19,11 @@ IDs are stable once shared. If a case is removed, mark it Retired rather than re
 
 ## Seed requirement-to-test mapping
 
-All cases below are drafted in `black-box.md` and `manual-cases.md` but have not been executed. Status is intentionally Drafted - Not run.
+All cases below are drafted in `black-box.md` and `manual-cases.md`. `TC-AUTH-001` has partial UI evidence but no final verdict; every other case remains Drafted - Not run.
 
 | Scope | Requirement | Planned manual ID | Planned behavior | Priority | Role B | Role C | Role D | Status | Evidence |
 |---|---|---|---|---|---|---|---|---|---|
-| `SCP-AUTH` | `FR-01` | `TC-AUTH-001` | Valid synthetic retailer signs in and receives only its identity/workspace. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-AUTH` | `FR-01` | `TC-AUTH-001` | Valid synthetic retailer signs in and receives only its identity/workspace. | P0 | Pending | Candidate | Pending | Executed - Partial; verdict pending | `evidence/auth-ui-2026-11-19.md` |
 | `SCP-AUTH` | `FR-01` | `TC-AUTH-002` | Invalid or malformed credentials are rejected with safe feedback. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
 | `SCP-AUTH` | `FR-01`, `NFR-01` | `TC-AUTH-003` | Signed-out access to protected retailer data is rejected. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
 | `SCP-AUTH` | `NFR-01` | `TC-AUTH-004` | Alpha cannot read or change Beta's products/observations using misleading IDs. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |

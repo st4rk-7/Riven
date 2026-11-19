@@ -24,7 +24,20 @@ Planning baseline: `29af23787b9de37d65f3ed00d30297e4f67185b3`
 - Steps: open local `/app`; enter Alpha credentials; submit; request `/api/v1/auth/me` or open the product list.
 - Expected: sign-in succeeds; response/session identifies Alpha and Alpha's retailer only; an HttpOnly session is established; protected Alpha data can load; no password or retailer-selection field is exposed.
 - Cleanup: sign out and verify the private session value is not captured in evidence.
-- Status: Not run.
+- Status: Executed - partial evidence; final verdict pending.
+
+Execution record (attempt 1):
+
+- Tester: Ilmam, with Codex observing the already authenticated UI.
+- Date/time (Asia/Colombo): 19 November 2026, 21:26.
+- Branch and full commit: `qa/ec4206-role-a` at `1cf49f607cea7cac409033dbef3b2409b219bad6`.
+- Environment and versions: isolated local Riven instance at `http://127.0.0.1:5173/app`; ChatGPT in-app browser (engine/version not exposed by the inspection interface).
+- Preconditions/data actually used: Ilmam entered the private synthetic credentials; no credential, cookie, or password value was captured.
+- Actual result: authenticated Products view was visible with a `Sign out` control. The protected list loaded `Synthetic Wired Mouse`, showing one offer, unavailable lowest confirmed price, and one review-needed item. No password or retailer-selection field was visible on the authenticated page.
+- Status: Partial evidence only. The observable successful-login and protected-data portion passed, but Alpha identity/tenant response and the HttpOnly cookie attribute were not independently inspected, so the complete case is not yet marked Passed.
+- Evidence: `evidence/auth-ui-2026-11-19.md`.
+- Defect/retest: no defect raised from this observation; complete the identity/session-attribute checks before assigning a final verdict.
+- Cleanup/residual data: session intentionally left signed in for the next authorized test; synthetic seed data unchanged.
 
 ### TC-AUTH-002 - Invalid and malformed credentials
 
