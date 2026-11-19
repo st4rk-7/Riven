@@ -63,7 +63,7 @@ Resources: the existing Riven repository and documentation, Git/GitHub, Node 24,
 - Automated tests use saved fixtures or controlled local test doubles and never contact live marketplaces.
 - Record Windows/browser versions, full tested commit, Node/npm/Docker versions, database state, seed/reset procedure, and any skipped dependency before execution.
 
-Current readiness on 19 November: locked dependencies are installed; typecheck passed; the normal Vitest suite passed on an approved out-of-sandbox rerun with 76 tests passed and 23 database-dependent tests skipped. Private `.env`, healthy PostgreSQL 18, all migrations/checks, and synthetic Alpha/Beta data are now prepared. The default parallel integration command exhausted worker memory, but the same four files passed serially: 4 files and 26 tests. The API/web processes and every manual `TC-*` case remain Not run. Evidence: `evidence/baseline-2026-11-19.md` and `evidence/database-integration-2026-11-19.md`.
+Current readiness on 19 November: locked dependencies are installed; typecheck passed; the normal Vitest suite passed on an approved out-of-sandbox rerun with 76 tests passed and 23 database-dependent tests skipped. Private `.env`, healthy PostgreSQL 18, all migrations/checks, and synthetic Alpha/Beta data are prepared. The default parallel integration command exhausted worker memory, but the same four files passed serially: 4 files and 26 tests. The memory event terminated PostgreSQL once; after restart, the final local smoke check returned landing 200, app 200, synthetic demo 200, and signed-out auth 401. Every manual `TC-*` case remains Not run. Evidence: the three records under `evidence/` dated 19 November.
 
 ## 7. Schedule and milestones
 

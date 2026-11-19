@@ -119,13 +119,13 @@ Interpretation:
 - The database integration assertions passed on the tested commit when run within available memory.
 - The repository's default parallel integration command is not reliable in this execution environment because its workers exceeded memory.
 - This is a reproducibility limitation to report, not a reason to alter test logic or claim the default command passed.
+- The parallel memory event also terminated the local PostgreSQL container with exit code 255. PostgreSQL was restarted, returned healthy, and the signed-out auth endpoint returned its expected HTTP 401 afterward. See `smoke-2026-11-19.md`.
 
 ## Remaining work
 
-1. Start the local API and web application.
-2. Record browser/version and run a small smoke check.
-3. Execute selected manual `TC-*` cases with actual evidence.
-4. Link relevant automated integration evidence to traceability without relabeling it as manual execution.
+1. Record browser/version and perform manual sign-in/sign-out.
+2. Execute selected manual `TC-*` cases with actual evidence.
+3. Link relevant automated integration evidence to traceability without relabeling it as manual execution.
 
 ## AI assistance disclosure
 
