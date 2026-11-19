@@ -78,7 +78,20 @@ Execution record (attempt 1):
 - Steps: confirm one protected request succeeds; sign out; repeat the same protected request; refresh the app.
 - Expected: sign-out returns HTTP 204; the prior session is revoked/cleared; subsequent protected access returns HTTP 401 and the UI returns to sign-in without retailer data.
 - Cleanup: none.
-- Status: Not run.
+- Status: Passed - observable revocation outcome; sign-out transport status not captured.
+
+Execution record:
+
+- Tester: Ilmam, with Codex observing the post-action UI and protected endpoint.
+- Date/time (Asia/Colombo): 19 November 2026, 21:29.
+- Branch and full commit: `qa/ec4206-role-a` at `976292d89ee8579f8bf3a362a2082c063fed8ba9`.
+- Environment and versions: isolated local Riven instance; ChatGPT in-app browser (engine/version not exposed by the inspection interface).
+- Preconditions/data actually used: the authenticated session and protected product list recorded in `evidence/auth-ui-2026-11-19.md`; Ilmam selected Sign out.
+- Actual result: `/app` returned to the sign-in form, the authenticated navigation and product data were absent, and `/api/v1/auth/me` in the same browser context returned `UNAUTHENTICATED` with `Please sign in.`
+- Status: Passed for the observable revocation behavior. The exact HTTP status of the sign-out request itself was not captured, so this record does not claim direct evidence of the expected 204 transport response.
+- Evidence: `evidence/sign-out-2026-11-19.md`.
+- Defect/retest: no defect observed; capture the sign-out network response in a future automated/API run if the 204 contract needs separate evidence.
+- Cleanup/residual data: browser remained signed out; synthetic seed data unchanged.
 
 ### TC-AUTH-006 - Sign-in rate-limit boundary
 

@@ -1,6 +1,6 @@
 # EC4206 Traceability Matrix
 
-Status: Seed matrix with one partial manual execution record
+Status: Seed matrix with one partial and one passed manual execution record
 Owner: Ilmam (Role A)
 Updated: 19 November 2026 (Asia/Colombo)
 Planning baseline: `29af23787b9de37d65f3ed00d30297e4f67185b3`
@@ -19,7 +19,7 @@ IDs are stable once shared. If a case is removed, mark it Retired rather than re
 
 ## Seed requirement-to-test mapping
 
-All cases below are drafted in `black-box.md` and `manual-cases.md`. `TC-AUTH-001` has partial UI evidence but no final verdict; every other case remains Drafted - Not run.
+All cases below are drafted in `black-box.md` and `manual-cases.md`. `TC-AUTH-001` has partial UI evidence and no final verdict; `TC-AUTH-005` passed its observable revocation outcome; every other case remains Drafted - Not run.
 
 | Scope | Requirement | Planned manual ID | Planned behavior | Priority | Role B | Role C | Role D | Status | Evidence |
 |---|---|---|---|---|---|---|---|---|---|
@@ -27,7 +27,7 @@ All cases below are drafted in `black-box.md` and `manual-cases.md`. `TC-AUTH-00
 | `SCP-AUTH` | `FR-01` | `TC-AUTH-002` | Invalid or malformed credentials are rejected with safe feedback. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
 | `SCP-AUTH` | `FR-01`, `NFR-01` | `TC-AUTH-003` | Signed-out access to protected retailer data is rejected. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
 | `SCP-AUTH` | `NFR-01` | `TC-AUTH-004` | Alpha cannot read or change Beta's products/observations using misleading IDs. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
-| `SCP-AUTH` | `FR-01` | `TC-AUTH-005` | Sign-out revokes the session and subsequent protected access fails. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
+| `SCP-AUTH` | `FR-01` | `TC-AUTH-005` | Sign-out revokes the session and subsequent protected access fails. | P0 | Pending | Candidate | Pending | Passed - observable outcome; 204 not captured | `evidence/sign-out-2026-11-19.md` |
 | `SCP-AUTH` | `FR-01` | `TC-AUTH-006` | Six consecutive failed sign-in attempts exercise the implemented five-request boundary. | P1 | Pending | Candidate | Pending | Drafted - Not run | - |
 | `SCP-PROD` | `FR-02` | `TC-PROD-001` | Valid manual name with optional brand creates a retailer-owned product. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
 | `SCP-PROD` | `FR-02` | `TC-PROD-002` | Valid supported product URL follows the URL input path without accepting unsafe/unsupported input. | P1 | Pending | Candidate | Pending | Drafted - Not run | - |
