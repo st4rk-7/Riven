@@ -14,7 +14,7 @@ Updated: 20 November 2026 (Asia/Colombo)
 
 - Branch: `qa/ec4206-role-a`
 - Base: `29af23787b9de37d65f3ed00d30297e4f67185b3`
-- Local commits: planning baseline, A3 design, environment/database/smoke evidence, and initial auth evidence created; push/PR pending at this checkpoint
+- Pull request: [#41](https://github.com/st4rk-7/Riven/pull/41) is open from `qa/ec4206-role-a` into `main`; it initially contained 9 commits and 14 changed files
 - Test execution: `TC-AUTH-001` has partial evidence; `TC-AUTH-002`, `003`, `005`, and `006` passed; all other cases remain Not run
 - Remote freshness: fetched 20 November; `origin/main` remained `29af23787b9de37d65f3ed00d30297e4f67185b3`
 - Jira: omitted for this EC4206 workstream at Ilmam's direction
@@ -25,7 +25,7 @@ Updated: 20 November 2026 (Asia/Colombo)
 - Real Role A check evidence exists for authentication success/partial, invalid inputs, signed-out rejection, logout revocation, and rate limiting.
 - No product defect was observed in the executed set; no defect ID was invented.
 - Branch verification: typecheck passed; default `npm test` timed out one fixture at 5 seconds; focused and full 15-second-timeout reruns passed. See `evidence/branch-check-2026-11-20.md`.
-- First PR remains pending until the 20 November evidence reconciliation commit is pushed.
+- First PR opened: [#41](https://github.com/st4rk-7/Riven/pull/41), `docs(qa): add EC4206 Role A strategy and evidence`.
 - Cross-role dependencies are explicit: Sanjeew should return white-box/coverage references, Hirukshanan automation/run mappings, and Dilsan should review whether the default-timeout instability warrants a defect ID and return quality references when available.
 
 ## 17 November handoff package
