@@ -3,7 +3,7 @@
 Status: Draft for Ilmam and group review
 Owner: Ilmam (Role A)
 Prepared: 15 November 2026 (Asia/Colombo)
-Last updated: 17 November 2026 (Asia/Colombo)
+Last updated: 20 November 2026 (Asia/Colombo)
 Repository baseline: `29af23787b9de37d65f3ed00d30297e4f67185b3`
 Branch: `qa/ec4206-role-a`
 
@@ -132,7 +132,7 @@ Important data meanings: money is a decimal string plus currency; missing price 
 
 Environment execution is not yet complete: `node_modules` and `.env` are absent, and Docker Compose correctly refuses to start without the required private values.
 
-Remote freshness note: the baseline matched GitHub `main` on 15 November. A new remote check on 17 November could not resolve `github.com`, so no claim is made that remote `main` remained unchanged after 15 November. Recheck before execution or integration.
+Remote freshness note: the baseline matched GitHub `main` on 15 November. A 17 November check failed because `github.com` could not be resolved. A successful `git fetch origin --prune` on 20 November confirmed that `origin/main` still pointed to `29af23787b9de37d65f3ed00d30297e4f67185b3` before the 20 November execution evidence was reconciled.
 
 ## 7. Initial risks
 

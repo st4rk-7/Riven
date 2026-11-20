@@ -1,8 +1,8 @@
 # EC4206 Black-Box Test Design
 
-Status: Draft - designed, not executed
+Status: Designed; authentication-derived cases partially executed
 Owner: Ilmam (Role A)
-Date: 18 November 2026 (Asia/Colombo)
+Updated: 20 November 2026 (Asia/Colombo)
 Planning baseline: `29af23787b9de37d65f3ed00d30297e4f67185b3`
 
 ## 1. Purpose and method
@@ -16,7 +16,7 @@ The techniques used are:
 - a decision table for offer matching;
 - derived manual cases linked to `manual-cases.md` and `traceability.md`.
 
-All cases are Not run. Fixtures and controlled test doubles do not prove live marketplace behavior.
+Execution status is maintained in `manual-cases.md` and `traceability.md`. As of 20 November, the invalid-credential, signed-out-access, logout-revocation, and sign-in-rate-limit cases have passed; valid sign-in has partial evidence; the remaining cases are Not run. Fixtures and controlled test doubles do not prove live marketplace behavior.
 
 ## 2. Equivalence partitioning
 

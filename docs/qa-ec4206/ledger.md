@@ -1,23 +1,31 @@
 # EC4206 Role A Ledger
 
 Owner: Ilmam
-Updated: 19 November 2026 (Asia/Colombo)
+Updated: 20 November 2026 (Asia/Colombo)
 
 | Task | Status | Artifacts | Real evidence / dependency | Next step |
 |---|---|---|---|---|
-| A1 Scope and system map | Draft ready for review | `strategy.md`, `traceability.md` | Local baseline `29af237`; remote matched on 15 Nov but 17 Nov recheck failed due DNS; group approval not observed | Ilmam reviews; send scope/ID handoff; recheck remote before freezing. |
-| A2 Plan and STLC | Draft ready for review | `test-plan-supplement.md`, `stlc.md` | Approved product plan preserved; environment not ready | Ilmam reviews; confirm environment operator/evidence location; freeze wording. |
-| A3 Black-box design | Drafted, not run | `black-box.md`, `manual-cases.md`, updated `traceability.md` | Product name/URL/own-price partitions; name/brand/discovery/rate-limit boundaries; matching decision table; 20 detailed cases | Ilmam reviews and explains techniques; obtain scope/case feedback; prepare isolated environment before execution. |
-| A4 Execute and reconcile | Manual execution in progress; one passed outcome | Five evidence records dated 19 Nov; `TC-AUTH-001` partial record; `TC-AUTH-005` passed observable outcome; remaining planned manual results and final matrix | Dependencies/typecheck ready; normal suite passed 76 with 23 skipped; DB checks passed; synthetic seed created; serial integration rerun passed 26/26 after default parallel command exhausted memory and stopped PostgreSQL; database recovered; final HTTP smoke results 200/200/200/401. Authenticated UI showed protected seeded product data. After sign-out, the UI returned to sign-in and the same browser context received `UNAUTHENTICATED`; the sign-out request's exact 204 response was not captured. | Complete `TC-AUTH-001` identity/session checks, then continue signed-out and invalid-credential cases; capture browser engine/version if available; never contact live marketplaces. |
+| A1 Scope and system map | Draft ready for group review | `strategy.md`, `traceability.md` | Baseline `29af237`; remote freshness rechecked on 20 Nov and `origin/main` still matched; group approval not observed | Ilmam reviews and sends the scope/ID handoff. |
+| A2 Plan and STLC | Structurally complete; review pending | `test-plan-supplement.md`, `stlc.md` | Approved product plan preserved; local environment responsibility and evidence location established | Ilmam reviews and freezes wording only after group feedback. |
+| A3 Black-box design | Complete for planned scope; execution partial | `black-box.md`, `manual-cases.md`, updated `traceability.md` | Product name/URL/own-price partitions; name/brand/discovery/rate-limit boundaries; matching decision table; 20 detailed cases | Ilmam explains techniques and shares stable cases with B/C; record their actual references only when received. |
+| A4 Execute and reconcile | Manual execution in progress; four passed outcomes | Six evidence records dated 19-20 Nov; `TC-AUTH-001` partial; `TC-AUTH-002`, `003`, `005`, `006` passed; remaining cases and final matrix pending | Dependencies/typecheck ready; normal suite 76 passed/23 skipped; database checks passed; serial integration 26/26; environment restarted on 20 Nov. Signed-out reads/write, invalid credential classes, logout revocation outcome, and five-request limiter boundary behaved as expected. No defect observed. | Complete `TC-AUTH-001`/`004`, then selected product/offer cases; obtain B/C/D references; never contact live marketplaces. |
 
 ## Repository state
 
 - Branch: `qa/ec4206-role-a`
 - Base: `29af23787b9de37d65f3ed00d30297e4f67185b3`
-- Local commits: planning baseline, A3 design, environment/database evidence, and smoke evidence created; push/PR not performed
-- Test execution: `TC-AUTH-001` has partial UI evidence and no final verdict; `TC-AUTH-005` passed its observable revocation outcome with the sign-out 204 not captured; all other cases remain Not run
+- Local commits: planning baseline, A3 design, environment/database/smoke evidence, and initial auth evidence created; push/PR pending at this checkpoint
+- Test execution: `TC-AUTH-001` has partial evidence; `TC-AUTH-002`, `003`, `005`, and `006` passed; all other cases remain Not run
+- Remote freshness: fetched 20 November; `origin/main` remained `29af23787b9de37d65f3ed00d30297e4f67185b3`
 - Jira: omitted for this EC4206 workstream at Ilmam's direction
 - B/C/D branch or baseline status: not observed; do not claim active
+
+## 20 November milestone
+
+- Real Role A check evidence exists for authentication success/partial, invalid inputs, signed-out rejection, logout revocation, and rate limiting.
+- No product defect was observed in the executed set; no defect ID was invented.
+- First PR remains pending until the 20 November evidence reconciliation commit is pushed.
+- Cross-role dependencies are explicit: Sanjeew should return white-box/coverage references, Hirukshanan automation/run mappings, and Dilsan defect/quality references when available.
 
 ## 17 November handoff package
 

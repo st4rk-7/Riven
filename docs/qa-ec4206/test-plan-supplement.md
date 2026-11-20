@@ -2,7 +2,8 @@
 
 Status: Draft for Ilmam and group review
 Owner: Ilmam (Role A)
-Date: 17 November 2026 (Asia/Colombo)
+Prepared: 17 November 2026 (Asia/Colombo)
+Updated: 20 November 2026 (Asia/Colombo)
 Planning baseline: `29af23787b9de37d65f3ed00d30297e4f67185b3`
 
 ## 1. Relationship to the approved plan
@@ -63,7 +64,7 @@ Resources: the existing Riven repository and documentation, Git/GitHub, Node 24,
 - Automated tests use saved fixtures or controlled local test doubles and never contact live marketplaces.
 - Record Windows/browser versions, full tested commit, Node/npm/Docker versions, database state, seed/reset procedure, and any skipped dependency before execution.
 
-Current readiness on 19 November: locked dependencies are installed; typecheck passed; the normal Vitest suite passed on an approved out-of-sandbox rerun with 76 tests passed and 23 database-dependent tests skipped. Private `.env`, healthy PostgreSQL 18, all migrations/checks, and synthetic Alpha/Beta data are prepared. The default parallel integration command exhausted worker memory, but the same four files passed serially: 4 files and 26 tests. The memory event terminated PostgreSQL once; after restart, the final local smoke check returned landing 200, app 200, synthetic demo 200, and signed-out auth 401. Every manual `TC-*` case remains Not run. Evidence: the three records under `evidence/` dated 19 November.
+Current readiness on 20 November: locked dependencies are installed; typecheck passed; the normal Vitest suite passed on an approved out-of-sandbox rerun with 76 tests passed and 23 database-dependent tests skipped. Private `.env`, PostgreSQL 18, all migrations/checks, and synthetic Alpha/Beta data are prepared. The default parallel integration command exhausted worker memory, but the same four files passed serially: 4 files and 26 tests. The memory event terminated PostgreSQL once; after restart, the final local smoke check returned landing 200, app 200, synthetic demo 200, and signed-out auth 401. On 20 November Docker/PostgreSQL and the local API/UI were restarted successfully; `TC-AUTH-002`, `003`, `005`, and `006` have passed, while `TC-AUTH-001` has partial evidence and no final verdict. Evidence is stored under `evidence/` and linked from `traceability.md`.
 
 ## 7. Schedule and milestones
 
@@ -140,4 +141,4 @@ Every executed result must include:
 
 ## 13. Review status
 
-This supplement is structurally complete as a planning draft. It is not group-approved, no execution has occurred, and no B/C/D result has been received. Ilmam must review the language and circulate the scope/ID handoff before this document can be frozen.
+This supplement is structurally complete and execution has started. It is not group-approved, no B/C/D result has been received, and the final tested integration commit is not frozen. Ilmam must review the language and circulate the scope/ID handoff before this document can be frozen.

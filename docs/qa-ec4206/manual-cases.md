@@ -1,8 +1,8 @@
 # EC4206 Manual Test Cases
 
-Status: Draft - designed, not executed
+Status: Designed; authentication execution in progress
 Owner: Ilmam (Role A)
-Date: 18 November 2026 (Asia/Colombo)
+Updated: 20 November 2026 (Asia/Colombo)
 Planning baseline: `29af23787b9de37d65f3ed00d30297e4f67185b3`
 
 ## Common execution rules
@@ -48,7 +48,20 @@ Execution record (attempt 1):
 - Steps: submit each data set separately and record status/code/message.
 - Expected: malformed input returns HTTP 400 `INVALID_REQUEST`; unknown email and wrong password return HTTP 401 `INVALID_CREDENTIALS` with the same safe message; no session or retailer data is returned.
 - Cleanup: none beyond removing sensitive values from evidence.
-- Status: Not run.
+- Status: Passed.
+
+Execution record:
+
+- Tester: Ilmam, assisted by Codex for local API execution and evidence capture.
+- Date/time (Asia/Colombo): 20 November 2026, approximately 18:15.
+- Branch and full commit: `qa/ec4206-role-a` at `433fa510810c8922915a8c674e58c85d8327714b`.
+- Environment and versions: isolated local API/PostgreSQL; Node `v24.20.0`, npm `11.19.0`, Docker client/server `29.8.2`, PostgreSQL `18.6-alpine`.
+- Preconditions/data actually used: synthetic malformed email, omitted password, 129-character synthetic password, unknown `example.test` email, and known synthetic Alpha email with an intentionally wrong password. No private password was used or recorded.
+- Actual result: malformed email, missing password, and length 129 returned 400 `INVALID_REQUEST`; unknown email and known-email/wrong-password both returned 401 `INVALID_CREDENTIALS` with the identical safe message; none set a cookie.
+- Status: Passed.
+- Evidence: `evidence/auth-api-2026-11-20.md`.
+- Defect/retest: no defect observed.
+- Cleanup/residual data: no session or database record was created.
 
 ### TC-AUTH-003 - Signed-out protected access
 
@@ -58,7 +71,20 @@ Execution record (attempt 1):
 - Steps: request protected product and observation routes; attempt a protected write with the permitted local origin.
 - Expected: every protected request returns HTTP 401 `UNAUTHENTICATED`; no retailer data changes.
 - Cleanup: confirm no test records were created.
-- Status: Not run.
+- Status: Passed.
+
+Execution record:
+
+- Tester: Ilmam, assisted by Codex for local API execution and evidence capture.
+- Date/time (Asia/Colombo): 20 November 2026, approximately 18:15.
+- Branch and full commit: `qa/ec4206-role-a` at `433fa510810c8922915a8c674e58c85d8327714b`.
+- Environment and versions: same isolated environment as `TC-AUTH-002`.
+- Preconditions/data actually used: no session cookie; GET products, observations, and attempts; POST product named `EC4206 Signed-out Write Probe` with the permitted local origin.
+- Actual result: all four requests returned 401 `UNAUTHENTICATED` with `Please sign in.` A read-only database check found zero products with the probe name.
+- Status: Passed.
+- Evidence: `evidence/auth-api-2026-11-20.md`.
+- Defect/retest: no defect observed.
+- Cleanup/residual data: database count remained zero; no cleanup required.
 
 ### TC-AUTH-004 - Cross-retailer isolation
 
@@ -101,7 +127,20 @@ Execution record:
 - Steps: within 60 seconds submit six wrong-password requests from the same effective client while varying any browser-supplied forwarding header.
 - Expected: attempts 1-5 receive invalid-credential responses; attempt 6 returns HTTP 429 `RATE_LIMITED` with retry guidance; spoofed forwarding values do not create new limiter identities.
 - Cleanup: wait for/reset only the authorized test limiter state before later authentication work.
-- Status: Not run.
+- Status: Passed.
+
+Execution record:
+
+- Tester: Ilmam, assisted by Codex for local API execution and evidence capture.
+- Date/time (Asia/Colombo): 20 November 2026, approximately 18:16.
+- Branch and full commit: `qa/ec4206-role-a` at `433fa510810c8922915a8c674e58c85d8327714b`.
+- Environment and versions: same isolated environment; local API process restarted immediately before the case to clear its process-local limiter.
+- Preconditions/data actually used: six requests within one minute using the synthetic Alpha email and an intentionally wrong password; `X-Riven-IP` varied from `198.51.100.1` through `.6`.
+- Actual result: attempts 1-5 returned 401 `INVALID_CREDENTIALS`; attempt 6 returned 429 `RATE_LIMITED` with `Retry-After: 60`; no response set a cookie. Spoofed header values did not create separate limiter identities.
+- Status: Passed.
+- Evidence: `evidence/auth-api-2026-11-20.md`.
+- Defect/retest: no defect observed.
+- Cleanup/residual data: limiter is process-local and will expire/reset; run later valid sign-in cases only after a fresh window or process restart.
 
 ## Product creation and discovery
 
