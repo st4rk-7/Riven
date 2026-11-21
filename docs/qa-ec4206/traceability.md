@@ -2,7 +2,7 @@
 
 Status: Execution matrix with one partial and four passed authentication records
 Owner: Ilmam (Role A)
-Updated: 20 November 2026 (Asia/Colombo)
+Updated: 21 November 2026 (Asia/Colombo)
 Planning baseline: `29af23787b9de37d65f3ed00d30297e4f67185b3`
 
 ## ID convention
@@ -36,13 +36,19 @@ All cases below are drafted in `black-box.md` and `manual-cases.md`. `TC-AUTH-00
 | `SCP-PROD` | `FR-03` | `TC-PROD-005` | Discovery adds no more than five suitable candidate offers. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
 | `SCP-PROD` | `FR-03` | `TC-PROD-006` | Repeated discovery does not add a duplicate listing. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
 | `SCP-PROD` | `FR-02`, `NFR-01` | `TC-PROD-007` | A retailer cannot update/delete another retailer's product. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
-| `SCP-OFFER` | `FR-04` | `TC-OFFER-001` | Same implemented identifier produces `confirmed`. | P0 | Candidate | Candidate | Pending | Drafted - Not run | - |
-| `SCP-OFFER` | `FR-04` | `TC-OFFER-002` | Different identifier or conflicting model/pack size produces `mismatch`. | P0 | Candidate | Candidate | Pending | Drafted - Not run | - |
-| `SCP-OFFER` | `FR-04` | `TC-OFFER-003` | Similar title alone remains `unverified`. | P0 | Candidate | Candidate | Pending | Drafted - Not run | - |
+| `SCP-OFFER` | `FR-04` | `TC-OFFER-001` | Same implemented identifier produces `confirmed`. | P0 | `WB-001`; BDD scenario 1 | Candidate | Pending | Drafted - Not run | Role B PR [#43](https://github.com/st4rk-7/Riven/pull/43) |
+| `SCP-OFFER` | `FR-04` | `TC-OFFER-002` | Different identifier or conflicting model/pack size produces `mismatch`. | P0 | `WB-002`, `003`, `004`, `006`, `010`; BDD scenario outline 2 (different-model and 2-pack examples) | Candidate | Pending | Drafted - Not run | Role B PR [#43](https://github.com/st4rk-7/Riven/pull/43) |
+| `SCP-OFFER` | `FR-04` | `TC-OFFER-003` | Similar title alone remains `unverified`. | P0 | `WB-005`, `007`, `008`, `009`; BDD scenario outline 2 (similar-title example) | Candidate | Pending | Drafted - Not run | Role B PR [#43](https://github.com/st4rk-7/Riven/pull/43) |
 | `SCP-OFFER` | `FR-04`, `NFR-01` | `TC-OFFER-004` | Retailer confirms/rejects only its own observation and the decision persists. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
 | `SCP-OFFER` | `FR-06` | `TC-OFFER-005` | Failed/blocked attempt does not delete or overwrite earlier valid history. | P0 | Pending | Candidate | Candidate | Drafted - Not run | - |
 | `SCP-OFFER` | `FR-06`, `FR-07` | `TC-OFFER-006` | History shows source, currency, collection time, and earlier observations. | P1 | Pending | Candidate | Pending | Drafted - Not run | - |
 | `SCP-OFFER` | `FR-11`, `NFR-05` | `TC-OFFER-007` | Missing price remains unknown/null rather than becoming zero; unknown stock remains distinct. | P0 | Candidate | Candidate | Candidate | Drafted - Not run | - |
+
+## Role B evidence received - 21 November
+
+Role B reported 83 unit tests passed with 23 skipped, four BDD examples passed, and typecheck passed in PR [#43](https://github.com/st4rk-7/Riven/pull/43). Its `server/matching.ts` report records 100% statement and branch coverage for the focused matching unit. The evidence supports the mappings above but does not change the Role A manual execution status: `TC-OFFER-001..003` remain Drafted - Not run.
+
+The second BDD item is one Scenario Outline with three executed examples. Its similar-title example maps to `TC-OFFER-003`; its different-model and 2-pack examples map to `TC-OFFER-002`. Role B's save-path scenario records rejected links as an unlinked `unverified` observation, while the underlying `matchOffer` unit evidence supplies the `mismatch` result required by `TC-OFFER-002`; these layers are not treated as the same observable assertion.
 
 ## Planned-only gap rows
 
