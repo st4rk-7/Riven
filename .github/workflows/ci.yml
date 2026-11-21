@@ -1,6 +1,8 @@
 name: CI
 
 on:
+  push:
+    branches: [main, qa/ec4206-role-c]
   pull_request:
 
 permissions:
@@ -53,3 +55,17 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+      - name: Install Chromium for browser tests
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Role C browser tests
+        run: npm run test:e2e
+
+      - name: Save signed-in screenshot
+        uses: actions/upload-artifact@v7
+        with:
+          name: role-c-browser-evidence
+          path: test-results/**/signed-in.png
+          if-no-files-found: error
+          retention-days: 7
