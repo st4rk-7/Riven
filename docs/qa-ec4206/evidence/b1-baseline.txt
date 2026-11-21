@@ -1,0 +1,23 @@
+2026-11-15T14:14:46+05:30
+29af23787b9de37d65f3ed00d30297e4f67185b3
+v26.13.1
+12.2.2
+npm notice run riven@0.1.0 typecheck
+npm notice run npm run typecheck:web && npm run typecheck:server && npm run typecheck:extension
+npm notice run riven@0.1.0 typecheck:web
+npm notice run tsc -p web/tsconfig.json
+npm notice run riven@0.1.0 typecheck:server
+npm notice run tsc -p server/tsconfig.json
+npm notice run riven@0.1.0 typecheck:extension
+npm notice run tsc -p extension/tsconfig.json
+npm notice run riven@0.1.0 test
+npm notice run vitest run
+
+ RUN  v5.0.3 <workspace>/Riven-qa-b
+
+
+ Test Files  12 passed | 3 skipped (15)
+      Tests  76 passed | 23 skipped (99)
+   Start at  14:15:31
+   Duration  4.28s (import 56%, tests 33%, transform 10%, worker 1%)
+
