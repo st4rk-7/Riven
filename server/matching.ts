@@ -25,13 +25,14 @@ export function modelTokens(text: string): Set<string> {
   return new Set(words(text).filter((w) => /[a-z]/.test(w) && /\d/.test(w) && !UNIT.test(w)));
 }
 
-// "2-pack", "pack of 3", "twin pack" -> 2, 3, 2. A single item is 1.
+// "2-pack", "pack of 3", "twin pack", "x 4" -> 2, 3, 2, 4. A single item is 1.
+// "1920 x 1080" or "70 x 140 cm" is a dimension: an "x" right after a number is not a count.
 export function packSize(text: string): number {
   const t = text.toLowerCase();
   const n =
     /(\d+)\s*-?\s*pack\b/.exec(t)?.[1] ??
     /pack\s+of\s+(\d+)/.exec(t)?.[1] ??
-    /\bx\s?(\d+)\b/.exec(t)?.[1];
+    /(?<!\d\s*)\bx\s?(\d+)\b/.exec(t)?.[1];
   if (n) return Number(n);
   return /\btwin\s*pack\b/.test(t) ? 2 : 1;
 }
@@ -61,8 +62,12 @@ export function matchOffer(product: RetailerProduct, offer: OfferForMatching): M
   }
 
   // 3. A similar title is only a candidate.
-  const name = product.brand ? `${product.brand} ${product.name}` : product.name;
-  return titleSimilarity(name, offer.productName) >= SIMILAR_TITLE ? "unverified" : "mismatch";
+  return titleSimilarity(fullName(product), offer.productName) >= SIMILAR_TITLE ? "unverified" : "mismatch";
+}
+
+// Offer titles usually start with the brand, so the retailer's brand joins the name for title comparison.
+function fullName(product: RetailerProduct): string {
+  return product.brand ? `${product.brand} ${product.name}` : product.name;
 }
 
 // Links an offer to the retailer product it matches best: a confirmed match wins,
@@ -73,7 +78,7 @@ export function linkOffer<P extends RetailerProduct>(
 ): { product: P; status: MatchStatus } | null {
   const confirmed = products.find((p) => matchOffer(p, offer) === "confirmed");
   if (confirmed) return { product: confirmed, status: "confirmed" };
-  const score = (p: P) => titleSimilarity(p.brand ? `${p.brand} ${p.name}` : p.name, offer.productName);
+  const score = (p: P) => titleSimilarity(fullName(p), offer.productName);
   const best = products.filter((p) => matchOffer(p, offer) === "unverified").sort((a, b) => score(b) - score(a))[0];
   return best ? { product: best, status: "unverified" } : null;
 }

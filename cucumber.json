@@ -1,0 +1,8 @@
+{
+  "default": {
+    "paths": ["server/features/**/*.feature"],
+    "import": ["server/features/steps/**/*.ts"],
+    "format": ["progress-bar", "summary"],
+    "strict": true
+  }
+}

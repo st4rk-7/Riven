@@ -1,0 +1,13 @@
+2026-11-21T15:15:42+05:30
+commit: 7a1eb88636930157cd6c8a78692e94380e81e4e0 + packSize fix + fullName() extraction in server/matching.ts
+v26.13.1
+$ npm run typecheck:server && npm test
+
+ RUN  v5.0.3 <workspace>/Riven-qa-b
+
+
+ Test Files  12 passed | 3 skipped (15)
+      Tests  80 passed | 23 skipped (103)
+   Start at  15:15:43
+   Duration  3.01s (import 58%, tests 31%, transform 10%, worker 1%)
+
