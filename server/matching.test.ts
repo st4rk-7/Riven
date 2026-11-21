@@ -32,6 +32,31 @@ describe("matchOffer", () => {
   test("rules out an unrelated title", () => {
     expect(matchOffer(mouse, { productName: "PU Leather Coin Purse with Zipper" })).toBe("mismatch");
   });
+
+  // EC4206 Role B (WB-007): an identifier on one side only decides nothing; the title rules apply.
+  test("falls through to the title rules when only the product has an ASIN", () => {
+    expect(matchOffer({ ...mouse, asin: "B004YAVF8I" }, { productName: "Logitech M185 Wireless Mouse - Swift Grey" })).toBe(
+      "unverified",
+    );
+  });
+
+  // EC4206 Role B (WB-009): the model rule needs a model number on both sides.
+  test("skips the model rule when the product name has no model number", () => {
+    expect(matchOffer({ name: "Wireless Mouse, Grey", brand: "Logitech" }, { productName: "Logitech M185 Wireless Mouse Grey" })).toBe(
+      "unverified",
+    );
+  });
+
+  // EC4206 Role B (WB-010): found by coverage; a title with no usable words is not similar to anything.
+  test("rules out an offer whose title has no words", () => {
+    expect(matchOffer(mouse, { productName: " - " })).toBe("mismatch");
+  });
+
+  // EC4206 Role B (WB-008): a screen resolution is not a pack size (FR-04).
+  test("keeps the same monitor unverified when one title states its resolution", () => {
+    const monitor = { name: "S2421H 24 Inch Monitor 1920 x 1080", brand: "Dell" };
+    expect(matchOffer(monitor, { productName: "Dell S2421H 24 Inch Full HD Monitor" })).toBe("unverified");
+  });
 });
 
 test("finds model numbers", () => {
@@ -43,6 +68,9 @@ test.each([
   ["Logitech M185 Mouse 2-Pack", 2],
   ["Batteries, pack of 4", 4],
   ["Twin Pack Mouse", 2],
+  ["AA Batteries x 4", 4],
+  ["Dell Monitor 1920 x 1080", 1],
+  ["Cotton Towel 70 x 140 cm", 1],
 ])("pack size of %s is %i", (title, size) => {
   expect(packSize(title)).toBe(size);
 });

@@ -1,0 +1,148 @@
+2026-11-21T15:16:34+05:30
+commit: 7a1eb88636930157cd6c8a78692e94380e81e4e0 + Role B working tree
+v26.13.1
+$ npm run test:coverage
+
+ RUN  v5.0.3 <workspace>/Riven-qa-b
+      Coverage enabled with v8
+
+
+ Test Files  12 passed | 3 skipped (15)
+      Tests  82 passed | 23 skipped (105)
+   Start at  15:16:34
+   Duration  7.57s (tests 56%, import 37%, transform 5%, worker 2%)
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   32.12 |    41.68 |   38.46 |   31.94 |                   
+ extension/src     |   12.92 |    11.25 |   18.18 |   11.47 |                   
+  background.ts    |       0 |        0 |       0 |       0 | 9-109             
+  capture.ts       |      95 |       75 |     100 |     100 | 8-13,18           
+  popup.ts         |       0 |        0 |       0 |       0 | 4-70              
+  send.ts          |       0 |        0 |       0 |       0 | 6-55              
+ server            |   21.11 |    27.24 |   30.48 |   20.74 |                   
+  app.ts           |   37.14 |     25.8 |   42.85 |   39.39 | 35-37,57-77,80    
+  auth.ts          |       0 |        0 |       0 |       0 | 24-125            
+  crawler.ts       |    2.32 |        0 |       0 |    2.77 | 29-72,93-123      
+  discovery.ts     |   25.86 |    32.43 |      40 |   28.57 | 25-35,74-144      
+  index.ts         |       0 |        0 |       0 |       0 | 8-44              
+  matching.ts      |   97.43 |    97.14 |     100 |     100 | 43                
+  observations.ts  |       0 |        0 |       0 |       0 | 25-152            
+  products.ts      |   26.76 |    54.83 |   30.76 |    25.8 | 60-138            
+  ...bservation.ts |   26.66 |    29.41 |      25 |   30.76 | 27-33,72-88       
+ server/data       |    28.2 |       75 |      25 |    28.2 |                   
+  run-seed.ts      |       0 |        0 |       0 |       0 | 6-32              
+  seed.ts          |   36.66 |    83.33 |      50 |   36.66 | 62,76,109-286     
+ server/sources    |   93.49 |    91.52 |     100 |   94.39 |                   
+  ...-collector.ts |      80 |    81.81 |     100 |   81.48 | 41-42,59-64       
+  ...s-toscrape.ts |   95.23 |    93.75 |     100 |   95.23 | 42                
+  extract.ts       |    98.5 |    93.58 |     100 |     100 | 41,50,66-69,100   
+ shared            |      75 |        0 |       0 |      75 |                   
+  ...bservation.ts |      75 |        0 |       0 |      75 | 20                
+-------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 32.12% ( 239/744 )
+Branches     : 41.68% ( 208/499 )
+Functions    : 38.46% ( 55/143 )
+Lines        : 31.94% ( 207/648 )
+================================================================================
+
+$ npx vitest run server/matching.test.ts --coverage --coverage.include=server/matching.ts --coverage.reportsDirectory=coverage/matching
+
+ RUN  v5.0.3 <workspace>/Riven-qa-b
+      Coverage enabled with v8
+
+
+ Test Files  1 passed (1)
+      Tests  20 passed (20)
+   Start at  15:16:42
+   Duration  138ms (transform 39%, worker 25%, import 23%, tests 13%)
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------|---------|----------|---------|---------|-------------------
+File         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------|---------|----------|---------|---------|-------------------
+All files    |   97.43 |    97.14 |     100 |     100 |                   
+ matching.ts |   97.43 |    97.14 |     100 |     100 | 43                
+-------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 97.43% ( 38/39 )
+Branches     : 97.14% ( 34/35 )
+Functions    : 100% ( 15/15 )
+Lines        : 100% ( 29/29 )
+================================================================================
+
+=== after adding WB-010 (2026-11-21T15:16:55+05:30) ===
+$ npx vitest run server/matching.test.ts --coverage --coverage.include=server/matching.ts --coverage.reportsDirectory=coverage/matching
+
+ RUN  v5.0.3 <workspace>/Riven-qa-b
+      Coverage enabled with v8
+
+
+ Test Files  1 passed (1)
+      Tests  21 passed (21)
+   Start at  15:16:56
+   Duration  204ms (worker 41%, transform 32%, import 18%, tests 9%)
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+No files with missing coverage.
+1 file fully covered.
+
+=============================== Coverage summary ===============================
+Statements   : 100% ( 39/39 )
+Branches     : 100% ( 35/35 )
+Functions    : 100% ( 15/15 )
+Lines        : 100% ( 29/29 )
+================================================================================
+
+$ npm run test:coverage (final)
+
+ RUN  v5.0.3 <workspace>/Riven-qa-b
+      Coverage enabled with v8
+
+
+ Test Files  12 passed | 3 skipped (15)
+      Tests  83 passed | 23 skipped (106)
+   Start at  15:16:56
+   Duration  7.45s (tests 55%, import 37%, transform 7%, worker 2%)
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   32.25 |    41.88 |   38.46 |   31.94 |                   
+ extension/src     |   12.92 |    11.25 |   18.18 |   11.47 |                   
+  background.ts    |       0 |        0 |       0 |       0 | 9-109             
+  capture.ts       |      95 |       75 |     100 |     100 | 8-13,18           
+  popup.ts         |       0 |        0 |       0 |       0 | 4-70              
+  send.ts          |       0 |        0 |       0 |       0 | 6-55              
+ server            |   21.34 |    27.59 |   30.48 |   20.74 |                   
+  app.ts           |   37.14 |     25.8 |   42.85 |   39.39 | 35-37,57-77,80    
+  auth.ts          |       0 |        0 |       0 |       0 | 24-125            
+  crawler.ts       |    2.32 |        0 |       0 |    2.77 | 29-72,93-123      
+  discovery.ts     |   25.86 |    32.43 |      40 |   28.57 | 25-35,74-144      
+  index.ts         |       0 |        0 |       0 |       0 | 8-44              
+  observations.ts  |       0 |        0 |       0 |       0 | 25-152            
+  products.ts      |   26.76 |    54.83 |   30.76 |    25.8 | 60-138            
+  ...bservation.ts |   26.66 |    29.41 |      25 |   30.76 | 27-33,72-88       
+ server/data       |    28.2 |       75 |      25 |    28.2 |                   
+  run-seed.ts      |       0 |        0 |       0 |       0 | 6-32              
+  seed.ts          |   36.66 |    83.33 |      50 |   36.66 | 62,76,109-286     
+ server/sources    |   93.49 |    91.52 |     100 |   94.39 |                   
+  ...-collector.ts |      80 |    81.81 |     100 |   81.48 | 41-42,59-64       
+  ...s-toscrape.ts |   95.23 |    93.75 |     100 |   95.23 | 42                
+  extract.ts       |    98.5 |    93.58 |     100 |     100 | 41,50,66-69,100   
+ shared            |      75 |        0 |       0 |      75 |                   
+  ...bservation.ts |      75 |        0 |       0 |      75 | 20                
+-------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 32.25% ( 240/744 )
+Branches     : 41.88% ( 209/499 )
+Functions    : 38.46% ( 55/143 )
+Lines        : 31.94% ( 207/648 )
+================================================================================
