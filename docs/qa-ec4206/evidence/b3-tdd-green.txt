@@ -1,0 +1,13 @@
+2026-11-21T15:15:24+05:30
+commit: 7a1eb88636930157cd6c8a78692e94380e81e4e0 + packSize fix in server/matching.ts
+v26.13.1
+$ npx vitest run server/matching.test.ts
+
+ RUN  v5.0.3 <workspace>/Riven-qa-b
+
+
+ Test Files  1 passed (1)
+      Tests  18 passed (18)
+   Start at  15:15:25
+   Duration  149ms (transform 55%, import 26%, tests 13%, worker 6%)
+
