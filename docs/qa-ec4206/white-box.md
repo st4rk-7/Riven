@@ -14,7 +14,7 @@ Base: `7a1eb88` (current `main`). It differs from the planning baseline `29af237
 | B3 Unit tests, TDD, coverage | Done; owner review pending | Section 3, `server/matching.ts`, `server/matching.test.ts`, `vitest.config.ts` | `evidence/b3-tdd-red.txt`, `b3-tdd-green.txt`, `b3-tdd-refactor.txt`, `b3-coverage.txt` |
 | B4 BDD scenarios | Done; team agreement on Cucumber.js pending | Section 4, `server/features/`, `cucumber.json` | `evidence/b4-bdd-run.txt` |
 
-Pushed commit, pull request and CI run: not yet observed.
+Pushed commit: `bd2cc9c` on `origin/qa/ec4206-b` (verified with `git ls-remote`, 21 Nov). Pull request: [#43](https://github.com/st4rk-7/Riven/pull/43). CI result: see the PR checks.
 
 ## 1. B1 Baseline and function selection
 
