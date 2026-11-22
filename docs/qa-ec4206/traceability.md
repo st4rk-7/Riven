@@ -54,7 +54,7 @@ The second BDD item is one Scenario Outline with three executed examples. Its si
 
 Role A reran the integrated `main` state after Role B merged: typecheck passed, the unit suite passed 83 with 23 skipped when local fixture-server access was allowed, BDD passed 4 scenarios/17 steps, and focused `server/matching.ts` coverage remained 100% statements and branches. See `evidence/integration-2026-11-22.md` for commands, environment qualifications, CI job links, and metrics.
 
-Role C PR [#45](https://github.com/st4rk-7/Riven/pull/45) has two successful CI runs, but it is still open and Role A requested narrower/partial labels for `AT-003` and `AT-004`. The mappings above therefore remain pending supporting evidence. No Role D branch, PR, or real EC4206 defect ID was observed; Role D cells remain Pending, including the fixed pack-size dimension bug and the 22 dependency-audit findings.
+Role C PR [#45](https://github.com/st4rk-7/Riven/pull/45) at `dfa7c1d` has successful push and pull-request CI runs. It now explicitly marks `AT-003` and the `TC-AUTH-003` portion of `AT-004` as partial; Role A re-reviewed and accepted that correction. The mappings above remain pending supporting evidence until PR #45 merges. No Role D branch, PR, or real EC4206 defect ID was observed; Role D cells remain Pending, including the fixed pack-size dimension bug and the 22 dependency-audit findings.
 
 ## Planned-only gap rows
 
