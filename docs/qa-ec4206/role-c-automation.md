@@ -8,8 +8,8 @@ These tests drive the real Riven UI in Chromium. Fastify serves the built web ap
 | --- | --- | --- | --- |
 | AT-001 | TC-AUTH-001 | FR-01, NFR-01 | Sign-in returns 200 and sets an HttpOnly cookie. The expected product is visible, and refresh preserves the verified retailer and product. |
 | AT-002 | TC-AUTH-002 (wrong password) | FR-01 | Sign-in returns 401, the UI shows the generic validation message, and protected products are still inaccessible. |
-| AT-003 | TC-AUTH-004 (product reads) | NFR-01 | Two browser contexts sign in separately. Each sees only its own product in both the UI and the API response. |
-| AT-004 | TC-AUTH-003, TC-AUTH-005 (product reads and sign-out) | FR-01, NFR-01 | Products return 401 before sign-in, 200 when signed in, and 401 after sign-out returns 204. Refresh shows sign-in and no product. |
+| AT-003 | TC-AUTH-004 (partial - product reads only)  | NFR-01 | Two browser contexts sign in separately. Each sees only its own product in both the UI and the API response. |
+| AT-004 | TC-AUTH-003 (partial - product reads only), TC-AUTH-005 (sign-out) | FR-01, NFR-01 | Products return 401 before sign-in, 200 when signed in, and 401 after sign-out returns 204. Refresh shows sign-in and no product. |
 
 The browser suite targets Chromium desktop. Other browsers, malformed inputs, protected writes and marketplace requests are outside this suite. Playwright uses a separate browser context for each test. The database fixture generates synthetic accounts and products and deletes its own retailer records during teardown. The launcher only accepts a loopback PostgreSQL URL for a database ending in `_test`. The app runs on port 4310 with scheduled collection turned off.
 
