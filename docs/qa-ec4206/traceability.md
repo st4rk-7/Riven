@@ -2,7 +2,7 @@
 
 Status: Execution matrix with one partial and four passed authentication records
 Owner: Ilmam (Role A)
-Updated: 21 November 2026 (Asia/Colombo)
+Updated: 22 November 2026 (Asia/Colombo)
 Planning baseline: `29af23787b9de37d65f3ed00d30297e4f67185b3`
 
 ## ID convention
@@ -23,11 +23,11 @@ All cases below are drafted in `black-box.md` and `manual-cases.md`. `TC-AUTH-00
 
 | Scope | Requirement | Planned manual ID | Planned behavior | Priority | Role B | Role C | Role D | Status | Evidence |
 |---|---|---|---|---|---|---|---|---|---|
-| `SCP-AUTH` | `FR-01` | `TC-AUTH-001` | Valid synthetic retailer signs in and receives only its identity/workspace. | P0 | Pending | Candidate | Pending | Executed - Partial; verdict pending | `evidence/auth-ui-2026-11-19.md` |
-| `SCP-AUTH` | `FR-01` | `TC-AUTH-002` | Invalid or malformed credentials are rejected with safe feedback. | P0 | Pending | Candidate | Pending | Passed | `evidence/auth-api-2026-11-20.md` |
-| `SCP-AUTH` | `FR-01`, `NFR-01` | `TC-AUTH-003` | Signed-out access to protected retailer data is rejected. | P0 | Pending | Candidate | Pending | Passed | `evidence/auth-api-2026-11-20.md` |
-| `SCP-AUTH` | `NFR-01` | `TC-AUTH-004` | Alpha cannot read or change Beta's products/observations using misleading IDs. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
-| `SCP-AUTH` | `FR-01` | `TC-AUTH-005` | Sign-out revokes the session and subsequent protected access fails. | P0 | Pending | Candidate | Pending | Passed - observable outcome; 204 not captured | `evidence/sign-out-2026-11-19.md` |
+| `SCP-AUTH` | `FR-01` | `TC-AUTH-001` | Valid synthetic retailer signs in and receives only its identity/workspace. | P0 | Pending | `AT-001` (PR #45 pending) | Pending | Executed - Partial; verdict pending | `evidence/auth-ui-2026-11-19.md`; `evidence/integration-2026-11-22.md` |
+| `SCP-AUTH` | `FR-01` | `TC-AUTH-002` | Invalid or malformed credentials are rejected with safe feedback. | P0 | Pending | `AT-002` wrong-password subset (PR #45 pending) | Pending | Passed | `evidence/auth-api-2026-11-20.md`; `evidence/integration-2026-11-22.md` |
+| `SCP-AUTH` | `FR-01`, `NFR-01` | `TC-AUTH-003` | Signed-out access to protected retailer data is rejected. | P0 | Pending | `AT-004` product-read subset (PR #45 pending) | Pending | Passed | `evidence/auth-api-2026-11-20.md`; `evidence/integration-2026-11-22.md` |
+| `SCP-AUTH` | `NFR-01` | `TC-AUTH-004` | Alpha cannot read or change Beta's products/observations using misleading IDs. | P0 | Pending | `AT-003` product-read subset (PR #45 pending) | Pending | Drafted - Not run | `evidence/integration-2026-11-22.md` |
+| `SCP-AUTH` | `FR-01` | `TC-AUTH-005` | Sign-out revokes the session and subsequent protected access fails. | P0 | Pending | `AT-004` (PR #45 pending) | Pending | Passed - observable outcome; 204 not captured manually | `evidence/sign-out-2026-11-19.md`; `evidence/integration-2026-11-22.md` |
 | `SCP-AUTH` | `FR-01` | `TC-AUTH-006` | Six consecutive failed sign-in attempts exercise the implemented five-request boundary. | P1 | Pending | Candidate | Pending | Passed | `evidence/auth-api-2026-11-20.md` |
 | `SCP-PROD` | `FR-02` | `TC-PROD-001` | Valid manual name with optional brand creates a retailer-owned product. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
 | `SCP-PROD` | `FR-02` | `TC-PROD-002` | Valid supported product URL follows the URL input path without accepting unsafe/unsupported input. | P1 | Pending | Candidate | Pending | Drafted - Not run | - |
@@ -49,6 +49,12 @@ All cases below are drafted in `black-box.md` and `manual-cases.md`. `TC-AUTH-00
 Role B reported 83 unit tests passed with 23 skipped, four BDD examples passed, and typecheck passed in PR [#43](https://github.com/st4rk-7/Riven/pull/43). Its `server/matching.ts` report records 100% statement and branch coverage for the focused matching unit. The evidence supports the mappings above but does not change the Role A manual execution status: `TC-OFFER-001..003` remain Drafted - Not run.
 
 The second BDD item is one Scenario Outline with three executed examples. Its similar-title example maps to `TC-OFFER-003`; its different-model and 2-pack examples map to `TC-OFFER-002`. Role B's save-path scenario records rejected links as an unlinked `unverified` observation, while the underlying `matchOffer` unit evidence supplies the `mismatch` result required by `TC-OFFER-002`; these layers are not treated as the same observable assertion.
+
+## 22 November cross-role integration
+
+Role A reran the integrated `main` state after Role B merged: typecheck passed, the unit suite passed 83 with 23 skipped when local fixture-server access was allowed, BDD passed 4 scenarios/17 steps, and focused `server/matching.ts` coverage remained 100% statements and branches. See `evidence/integration-2026-11-22.md` for commands, environment qualifications, CI job links, and metrics.
+
+Role C PR [#45](https://github.com/st4rk-7/Riven/pull/45) has two successful CI runs, but it is still open and Role A requested narrower/partial labels for `AT-003` and `AT-004`. The mappings above therefore remain pending supporting evidence. No Role D branch, PR, or real EC4206 defect ID was observed; Role D cells remain Pending, including the fixed pack-size dimension bug and the 22 dependency-audit findings.
 
 ## Planned-only gap rows
 
