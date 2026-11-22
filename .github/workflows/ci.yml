@@ -55,6 +55,19 @@ jobs:
 
       - name: Run tests
         run: npm test
+      - name: Run Cucumber BDD tests
+        run: npm run test:bdd
+
+      - name: Run tests with coverage
+        run: npm run test:coverage -- --maxWorkers=1 --testTimeout=15000
+
+      - name: Upload coverage summary
+        uses: actions/upload-artifact@v7
+        with:
+          name: role-b-coverage-summary
+          path: coverage/coverage-summary.json
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Install Chromium for browser tests
         run: npx playwright install --with-deps chromium
