@@ -29,13 +29,13 @@ Docker Desktop was not running during this rerun, so a new local database check 
 - Role A mapping PR [#44](https://github.com/st4rk-7/Riven/pull/44) merged; CI job [136833976547](https://github.com/st4rk-7/Riven/actions/runs/44900093586/job/136833976547) passed.
 - `WB-001..010` and the two BDD scenario groups remain mapped to `TC-OFFER-001..003` in `traceability.md`.
 
-### Role C - CI passed, PR and mapping review pending
+### Role C - CI passed and partial labels accepted; merge pending
 
-- PR [#45](https://github.com/st4rk-7/Riven/pull/45) is open at commit `2ea3aaa`.
-- Pull-request CI job [136916587546](https://github.com/st4rk-7/Riven/actions/runs/44927459349/job/136916587546) passed.
-- Branch-push CI job [136916599032](https://github.com/st4rk-7/Riven/actions/runs/44927462860/job/136916599032) passed.
+- PR [#45](https://github.com/st4rk-7/Riven/pull/45) is open at commit `dfa7c1da9837358e9fc94251a17c4540a84dc17f`.
+- Branch-push CI job [137185253567](https://github.com/st4rk-7/Riven/actions/runs/45014972891/job/137185253567) passed.
+- Pull-request CI job [137185264754](https://github.com/st4rk-7/Riven/actions/runs/45014976171/job/137185264754) passed.
 - `AT-001` supports `TC-AUTH-001`; `AT-002` covers only the wrong-password subset of `TC-AUTH-002`; `AT-003` covers only product-read isolation within `TC-AUTH-004`; `AT-004` supports `TC-AUTH-005` and only the product-read subset of `TC-AUTH-003`.
-- Role A requested either the missing observation/write/cross-tenant checks or explicit partial labels. Until that correction is accepted and PR #45 merges, these references are pending supporting evidence, not merged coverage.
+- Commit `dfa7c1d` explicitly labels the `AT-003` and `AT-004` mappings as partial. Role A re-reviewed the correction and found no remaining mapping issue. Until PR #45 merges, these references remain pending supporting evidence rather than merged coverage.
 
 ### Role D - evidence not received
 
@@ -46,4 +46,4 @@ Docker Desktop was not running during this rerun, so a new local database check 
 
 ## Conclusion
 
-The 22 November integration and metrics work is complete for the evidence currently available from Roles A and B, and CI evidence is reconciled for Role C. The dependent Role C mapping correction/merge and all Role D defect links remain explicitly open. Manual Role A cases are not converted to Passed merely because supporting automated evidence passed.
+The 22 November integration and metrics work is complete for the evidence currently available from Roles A and B, and CI evidence is reconciled for Role C. The Role C mapping correction is accepted, while PR #45's merge and all Role D defect links remain explicitly open. Manual Role A cases are not converted to Passed merely because supporting automated evidence passed.
