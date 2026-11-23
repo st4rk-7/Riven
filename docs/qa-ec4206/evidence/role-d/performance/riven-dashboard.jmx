@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Riven pre-authenticated local dashboard API workload">
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+    </TestPlan>
+    <hashTree>
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="Loopback HTTP defaults">
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+          <collectionProp name="Arguments.arguments"/>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain">${__P(roleDHost,127.0.0.1)}</stringProp>
+        <stringProp name="HTTPSampler.port">${__P(roleDPort,3100)}</stringProp>
+        <stringProp name="HTTPSampler.protocol">http</stringProp>
+        <stringProp name="HTTPSampler.connect_timeout">5000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">10000</stringProp>
+      </ConfigTestElement>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Ten synthetic dashboard readers">
+        <stringProp name="ThreadGroup.on_sample_error">stopthread</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <boolProp name="LoopController.continue_forever">true</boolProp>
+          <stringProp name="LoopController.loops">-1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${__P(roleDThreads,10)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${__P(roleDRamp,60)}</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.duration">${__P(roleDDuration,360)}</stringProp>
+        <stringProp name="ThreadGroup.delay">0</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="Per-thread session cookies">
+          <collectionProp name="CookieManager.cookies"/>
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+        </CookieManager>
+        <hashTree/>
+        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JSON request headers">
+          <collectionProp name="HeaderManager.headers">
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Content-Type</stringProp>
+              <stringProp name="Header.value">application/json</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">X-Riven-Client</stringProp>
+              <stringProp name="Header.value">riven</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Cookie</stringProp>
+              <stringProp name="Header.value">${__groovy(ctx.getThreadNum() % 2 == 0 ? System.getenv('ROLE_D_COOKIE_ALPHA') : System.getenv('ROLE_D_COOKIE_BETA'),)}</stringProp>
+            </elementProp>
+          </collectionProp>
+        </HeaderManager>
+        <hashTree/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Disabled login-based setup retained for smoke diagnosis" enabled="false"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="SETUP sign in">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;${roleDEmail}&quot;,&quot;password&quot;:${__groovy(groovy.json.JsonOutput.toJson(System.getenv('RIVEN_SEED_PASSWORD')),)}}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">/api/v1/auth/sign-in</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Choose synthetic tenant">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"/>
+              <stringProp name="filename"/>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script"><![CDATA[
+if (ctx.getThreadNum() % 2 == 0) {
+  vars.put('roleDEmail', 'alpha@example.test')
+  vars.put('expectedRetailer', '00000000-0000-4000-8000-000000000101')
+  vars.put('expectedProduct', '00000000-0000-4000-8000-000000000104')
+  vars.put('unexpectedProduct', '00000000-0000-4000-8000-000000000204')
+  vars.put('expectedObservation', '00000000-0000-4000-8000-000000000105')
+  vars.put('unexpectedObservation', '00000000-0000-4000-8000-000000000205')
+} else {
+  vars.put('roleDEmail', 'beta@example.test')
+  vars.put('expectedRetailer', '00000000-0000-4000-8000-000000000201')
+  vars.put('expectedProduct', '00000000-0000-4000-8000-000000000204')
+  vars.put('unexpectedProduct', '00000000-0000-4000-8000-000000000104')
+  vars.put('expectedObservation', '00000000-0000-4000-8000-000000000205')
+  vars.put('unexpectedObservation', '00000000-0000-4000-8000-000000000105')
+}
+              ]]></stringProp>
+            </JSR223PreProcessor>
+            <hashTree/>
+            <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Sign-in status and tenant assertion">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"/>
+              <stringProp name="filename"/>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script"><![CDATA[
+def body = prev.getResponseDataAsString()
+if (prev.getResponseCode() != '200' || !body.contains(vars.get('expectedRetailer'))) {
+  AssertionResult.setFailure(true)
+  AssertionResult.setFailureMessage('Synthetic sign-in failed or returned the wrong account')
+}
+              ]]></stringProp>
+            </JSR223Assertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="SETUP current session">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments"><collectionProp name="Arguments.arguments"/></elementProp>
+            <stringProp name="HTTPSampler.path">/api/v1/auth/me</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Current session assertion">
+              <stringProp name="scriptLanguage">groovy</stringProp><stringProp name="parameters"/><stringProp name="filename"/><stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script"><![CDATA[
+if (prev.getResponseCode() != '200' || !prev.getResponseDataAsString().contains(vars.get('expectedRetailer'))) {
+  AssertionResult.setFailure(true)
+  AssertionResult.setFailureMessage('Session validation failed')
+}
+              ]]></stringProp>
+            </JSR223Assertion>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="DASHBOARD products">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments"><collectionProp name="Arguments.arguments"/></elementProp>
+          <stringProp name="HTTPSampler.path">/api/v1/products</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Choose expected synthetic tenant">
+            <stringProp name="scriptLanguage">groovy</stringProp><stringProp name="parameters"/><stringProp name="filename"/><stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script"><![CDATA[
+if (ctx.getThreadNum() % 2 == 0) {
+  vars.put('expectedProduct', '00000000-0000-4000-8000-000000000104')
+  vars.put('unexpectedProduct', '00000000-0000-4000-8000-000000000204')
+  vars.put('expectedObservation', '00000000-0000-4000-8000-000000000105')
+  vars.put('unexpectedObservation', '00000000-0000-4000-8000-000000000205')
+} else {
+  vars.put('expectedProduct', '00000000-0000-4000-8000-000000000204')
+  vars.put('unexpectedProduct', '00000000-0000-4000-8000-000000000104')
+  vars.put('expectedObservation', '00000000-0000-4000-8000-000000000205')
+  vars.put('unexpectedObservation', '00000000-0000-4000-8000-000000000105')
+}
+            ]]></stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+          <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Products status and tenant assertion">
+            <stringProp name="scriptLanguage">groovy</stringProp><stringProp name="parameters"/><stringProp name="filename"/><stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script"><![CDATA[
+def body = prev.getResponseDataAsString()
+if (prev.getResponseCode() != '200' || !body.contains(vars.get('expectedProduct')) || body.contains(vars.get('unexpectedProduct'))) {
+  AssertionResult.setFailure(true)
+  AssertionResult.setFailureMessage('Products response failed status or tenant-isolation assertion')
+}
+            ]]></stringProp>
+          </JSR223Assertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="DASHBOARD observations">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments"><collectionProp name="Arguments.arguments"/></elementProp>
+          <stringProp name="HTTPSampler.path">/api/v1/observations</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Observations status and tenant assertion">
+            <stringProp name="scriptLanguage">groovy</stringProp><stringProp name="parameters"/><stringProp name="filename"/><stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script"><![CDATA[
+def body = prev.getResponseDataAsString()
+if (prev.getResponseCode() != '200' || !body.contains(vars.get('expectedObservation')) || body.contains(vars.get('unexpectedObservation'))) {
+  AssertionResult.setFailure(true)
+  AssertionResult.setFailureMessage('Observations response failed status or tenant-isolation assertion')
+}
+            ]]></stringProp>
+          </JSR223Assertion>
+          <hashTree/>
+        </hashTree>
+        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="One-second think time">
+          <stringProp name="ConstantTimer.delay">1000</stringProp>
+        </ConstantTimer>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
