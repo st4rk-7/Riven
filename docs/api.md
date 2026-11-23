@@ -190,6 +190,18 @@ Success: 200 with the updated product in the same shape as an item in the
 GET products response. Returns 400 INVALID_PRODUCT for invalid input or
 404 NOT_FOUND if the product is missing or belongs to another retailer.
 
+### PATCH /api/v1/products/:id/schedule
+
+Requires a valid session and a trusted write origin. Only the product owner
+can update its schedule.
+
+Send `{ "checkEveryHours": 12 }` with an interval of `6`, `12`, or `24`.
+Send `{ "checkEveryHours": null }` to pause checks.
+
+Returns `200` with `checkEveryHours` and `nextCheckAt`. Both fields are
+`null` when paused. Errors: `400 INVALID_SCHEDULE`, `401 UNAUTHENTICATED`,
+`403 FORBIDDEN_ORIGIN`, or `404 NOT_FOUND`.
+
 ### POST /api/v1/products/:id/discover
 
 Requires a valid session and a trusted write origin (see Authentication and

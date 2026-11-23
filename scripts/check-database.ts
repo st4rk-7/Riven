@@ -46,6 +46,32 @@ try {
     }
   }
 
+  const { rows: [schedule] } = await client.query(
+    `SELECT check_every_hours,
+            next_check_at = now() + interval '6 hours' AS due_in_six_hours
+     FROM products WHERE id = $1`,
+    [product],
+  );
+  assert.equal(schedule.check_every_hours, 6);
+  assert.equal(schedule.due_in_six_hours, true);
+
+  await rejects(
+    "UPDATE products SET check_every_hours = $1 WHERE id = $2",
+    [3, product],
+    "23514",
+  );
+
+  const { rows: [paused] } = await client.query(
+    `UPDATE products SET check_every_hours = NULL, next_check_at = NULL
+     WHERE id = $1
+     RETURNING check_every_hours, next_check_at`,
+    [product],
+  );
+  assert.deepEqual(paused, {
+    check_every_hours: null,
+    next_check_at: null,
+  });
+
   const observation = `INSERT INTO observations (retailer_id, product_id, asin, product_name, source, price, currency, availability, collected_via)
     VALUES ($1, $2, 'B000000001', 'Test mouse', 'Amazon UK', $3, $4, 'unknown', 'extension')`;
   await client.query(observation, [retailerA, product, "19.99", "GBP"]);

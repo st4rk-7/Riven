@@ -111,6 +111,42 @@ export function registerProductRoutes(app: FastifyInstance, database: Pool) {
     if (!updated) return reply.code(404).send({ code: "NOT_FOUND", message: "Product not found." });
     return updated;
   });
+  app.patch("/api/v1/products/:id/schedule", async (request, reply) => {
+    const parsed = z.object({
+      checkEveryHours: z.union([z.literal(6), z.literal(12), z.literal(24)]).nullable(),
+    }).strict().safeParse(request.body);
+
+    if (!parsed.success) {
+      return reply.code(400).send({
+        code: "INVALID_SCHEDULE",
+        message: "checkEveryHours must be 6, 12, 24, or null.",
+      });
+    }
+
+    const { id } = request.params as { id: string };
+    const retailerId = request.identity!.retailer.id;
+    const { rows: [schedule] } = await database.query(
+      `UPDATE products
+       SET check_every_hours = $1::smallint,
+           next_check_at = CASE
+             WHEN $1::smallint IS NULL THEN NULL
+             ELSE now() + make_interval(hours => $1::integer)
+           END
+       WHERE id = $2 AND retailer_id = $3
+       RETURNING check_every_hours AS "checkEveryHours",
+                 next_check_at AS "nextCheckAt"`,
+      [parsed.data.checkEveryHours, id, retailerId],
+    );
+
+    if (!schedule) {
+      return reply.code(404).send({
+        code: "NOT_FOUND",
+        message: "Product not found.",
+      });
+    }
+
+    return schedule;
+  });
 
   // Removes a product with its offer history and collection attempts.
   app.delete("/api/v1/products/:id", async (request, reply) => {

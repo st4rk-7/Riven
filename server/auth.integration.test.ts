@@ -83,6 +83,35 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("real PostgreSQL authentication 
     expect(response.json().products.map((p: { id: string }) => p.id)).toEqual([a.product]);
     expect((await app.inject({ url: "/api/v1/auth/me", headers: headers(cookie) })).json().retailer.id).toBe(a.retailer);
   });
+  test("lets only the owner schedule or pause a product", async () => {
+  const owner = await login(a);
+  const other = await login(b);
+  const update = (checkEveryHours: number | null, cookie?: string) =>
+      app.inject({
+        method: "PATCH",
+        url: `/api/v1/products/${a.product}/schedule`,
+        headers: headers(cookie),
+        payload: { checkEveryHours },
+      });
+
+    expect((await update(12)).statusCode).toBe(401);
+    expect((await update(12, other)).statusCode).toBe(404);
+    expect((await update(3, owner)).statusCode).toBe(400);
+
+    const scheduled = await update(12, owner);
+    expect(scheduled.statusCode).toBe(200);
+    expect(scheduled.json()).toMatchObject({
+      checkEveryHours: 12,
+      nextCheckAt: expect.any(String),
+    });
+
+    const paused = await update(null, owner);
+    expect(paused.statusCode).toBe(200);
+    expect(paused.json()).toEqual({
+      checkEveryHours: null,
+      nextCheckAt: null,
+    });
+  });
   test("persists observations, scopes matching and records supported-source sends", async () => {
     const cookie = await login();
     const other = await login(b);
