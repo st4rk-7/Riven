@@ -1,0 +1,14 @@
+Run: role-d-build-extension
+Start: 2026-11-22T14:19:31.502167+05:30 (Asia/Calcutta UTC+05:30)
+Baseline: 17307a5baaa43527ea993af9a2d36ae548372b5e
+Branch: qa/ec4206-role-d
+Command: npm.cmd run build:extension
+Expected: exit 0; unit coverage excludes database integration
+
+> riven@0.1.0 build:extension
+> node scripts/build-extension.mjs
+
+Extension built for http://127.0.0.1:3000/api/v1
+
+Exit code: 0
+End: 2026-11-22T14:19:32.091098+05:30

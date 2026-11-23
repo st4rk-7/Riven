@@ -1,0 +1,37 @@
+Run: role-d-matching-retest
+Date: 2026-11-22T14:21:04.422322+05:30 Asia/Calcutta
+Baseline: 17307a5baaa43527ea993af9a2d36ae548372b5e
+Command: node node_modules/vitest/vitest.mjs run server/matching.test.ts --reporter=verbose
+Expected: all 21 matching tests pass
+
+ RUN  v5.0.3 C:/Users/ASUS/Documents/University/learning/5th mine/software project/riven/Riven
+
+ ✓ server/matching.test.ts > matchOffer > confirms the same ASIN 1ms
+ ✓ server/matching.test.ts > matchOffer > rules out a different ASIN 0ms
+ ✓ server/matching.test.ts > matchOffer > rules out a different model number 0ms
+ ✓ server/matching.test.ts > matchOffer > rules out a different pack size 0ms
+ ✓ server/matching.test.ts > matchOffer > keeps a similar title as unverified, never confirmed 0ms
+ ✓ server/matching.test.ts > matchOffer > rules out an unrelated title 0ms
+ ✓ server/matching.test.ts > matchOffer > falls through to the title rules when only the product has an ASIN 0ms
+ ✓ server/matching.test.ts > matchOffer > skips the model rule when the product name has no model number 0ms
+ ✓ server/matching.test.ts > matchOffer > rules out an offer whose title has no words 0ms
+ ✓ server/matching.test.ts > matchOffer > keeps the same monitor unverified when one title states its resolution 0ms
+ ✓ server/matching.test.ts > finds model numbers 0ms
+ ✓ server/matching.test.ts > pack size of Logitech M185 Mouse is 1 0ms
+ ✓ server/matching.test.ts > pack size of Logitech M185 Mouse 2-Pack is 2 0ms
+ ✓ server/matching.test.ts > pack size of Batteries, pack of 4 is 4 0ms
+ ✓ server/matching.test.ts > pack size of Twin Pack Mouse is 2 0ms
+ ✓ server/matching.test.ts > pack size of AA Batteries x 4 is 4 0ms
+ ✓ server/matching.test.ts > pack size of Dell Monitor 1920 x 1080 is 1 0ms
+ ✓ server/matching.test.ts > pack size of Cotton Towel 70 x 140 cm is 1 0ms
+ ✓ server/matching.test.ts > linkOffer > prefers a confirmed ASIN over any title 0ms
+ ✓ server/matching.test.ts > linkOffer > picks the most similar unverified product 0ms
+ ✓ server/matching.test.ts > linkOffer > links nothing when every product is ruled out 0ms
+
+ Test Files  1 passed (1)
+      Tests  21 passed (21)
+   Start at  14:21:04
+   Duration  228ms (transform 57%, import 24%, worker 10%, tests 9%, environment 1%)
+
+
+Exit code: 0

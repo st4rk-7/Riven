@@ -1,0 +1,40 @@
+Run: role-d-build-web
+Start: 2026-11-22T14:18:06.058614+05:30 (Asia/Calcutta)
+Baseline: 17307a5baaa43527ea993af9a2d36ae548372b5e
+Branch: qa/ec4206-role-d
+Command: npm.cmd run build:web
+Environment: Windows, Node 24.16.0, npm 11.13.0; TEST_DATABASE_URL and RIVEN_SEED_PASSWORD removed from child environment
+Expected: command succeeds; database-dependent tests skip in unit run
+
+> riven@0.1.0 build:web
+> npm run typecheck:web && vite build
+
+
+> riven@0.1.0 typecheck:web
+> tsc -p web/tsconfig.json
+
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 2632 modules transformed.
+rendering chunks...
+computing gzip size...
+web/dist/index.html                                0.77 kB │ gzip:   0.45 kB
+web/dist/assets/CalSans-SemiBold-uYvlD9JW.woff2   40.93 kB
+web/dist/assets/main-pM1Y7Wu_.css                  6.23 kB │ gzip:   1.99 kB
+web/dist/assets/jsx-runtime-D1vf3NGZ.css          92.57 kB │ gzip:  16.65 kB
+web/dist/assets/index-Pyu7HoCE.js                  2.62 kB │ gzip:   1.27 kB
+web/dist/assets/main-D834Lx0Q.js                   3.21 kB │ gzip:   1.29 kB
+web/dist/assets/main-SUPXfHP1.js                  53.00 kB │ gzip:  14.80 kB
+web/dist/assets/jsx-runtime-Dsp9xp-Z.js          219.49 kB │ gzip:  68.55 kB
+web/dist/assets/Detail-nZZFd1EK.js               355.66 kB │ gzip: 103.24 kB
+web/dist/assets/riven-main-DFoxKDI4.js           729.43 kB │ gzip: 195.68 kB
+
+✓ built in 1.11s
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+Exit code: 0
+End: 2026-11-22T14:18:09.285529+05:30
