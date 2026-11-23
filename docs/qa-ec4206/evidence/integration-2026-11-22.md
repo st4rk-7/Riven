@@ -38,13 +38,14 @@ Docker Desktop was not running during this rerun, so a new local database check 
 - `AT-001` supports `TC-AUTH-001`; `AT-002` covers only the wrong-password subset of `TC-AUTH-002`; `AT-003` covers only product-read isolation within `TC-AUTH-004`; `AT-004` supports `TC-AUTH-005` and only the product-read subset of `TC-AUTH-003`.
 - Commit `dfa7c1d` explicitly labels the `AT-003` and `AT-004` mappings as partial. Role A re-reviewed and accepted the correction. Final main push CI [run 45018780656](https://github.com/st4rk-7/Riven/actions/runs/45018780656) passed and retained `role-c-browser-evidence` and `role-b-coverage-summary` artifacts.
 
-### Role D - evidence not received
+### Role D - summary received; full PR pending
 
-- No Role D branch or PR was observed among the remote EC4206 branches on 22 November.
-- GitHub issues #1-#4 are existing product issues and are not EC4206 defect records.
-- No real defect ID exists yet for Role B's fixed `packSize` dimension bug, the default-timeout instability, or the 22 dependency-audit findings. No `DEF-*` identifier is invented.
-- Dilsan must return actual issue/defect links, severity/disposition, scan interpretation, and recommendations before Role A can close the Role D columns.
+- Dilsan linked the `packSize` dimension defect/fix to PR [#43](https://github.com/st4rk-7/Riven/pull/43), proposed Medium severity and reported 21 matching tests passing on commit `17307a5`; there is no separate defect issue.
+- The five-second timeout is a non-reproduced test-reliability observation with no defect ID.
+- The 22 audit findings require dependency/exposure review and are not 22 confirmed exploitable defects. SonarQube was not run.
+- Dilsan reported a local JMeter read test of 3,269 requests, 0 errors and 17 ms p95; it does not measure complete browser loading.
+- The full Role D GitHub PR and evidence files remain pending. No `DEF-*` identifier is invented, and GitHub issues #1-#4 are not repurposed.
 
 ## Conclusion
 
-The integration and metrics work is complete for evidence received from Roles A, B and C. Role C's mapping correction and merge are complete; all Role D defect links remain explicitly open. Manual Role A cases are not converted to Passed merely because supporting automated evidence passed.
+The integration and metrics work is complete for evidence received from Roles A, B and C. Role D's summary is recorded with its stated limits, while the full Role D evidence PR remains open. Manual Role A cases are not converted to Passed merely because supporting automated evidence passed.

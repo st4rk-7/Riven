@@ -2,7 +2,7 @@
 
 Owner: Ilmam (Role A)
 Prepared: 23 November 2026 (Asia/Colombo)
-Status: Role A package prepared; Role D evidence and the lecturer's exact cutoff remain external dependencies
+Status: Role A package prepared; Role D summary received with full PR pending; lecturer's exact cutoff remains an external dependency
 
 ## 1. Frozen tested state
 
@@ -55,11 +55,15 @@ Automated supporting evidence does not change a manual case's verdict. No live m
 - `AT-001..004` are implemented. `AT-003` is explicitly partial for `TC-AUTH-004`; the `TC-AUTH-003` portion of `AT-004` is explicitly partial. Role A accepted those labels.
 - Final main CI passed and retained the browser screenshot and coverage-summary artifacts named in section 1.
 
-### Role D - not received
+### Role D - summary received; full PR pending
 
-- No Role D EC4206 branch, PR, or defect issue was observed by the 23 November freeze.
-- No real defect ID was received for the fixed pack-size dimension bug, the earlier Windows timeout instability, or dependency-audit findings.
-- Existing GitHub issues #1-#4 are unrelated product issues and are not reused as EC4206 defect records.
+- Dilsan linked the matching defect/fix to Role B PR [#43](https://github.com/st4rk-7/Riven/pull/43) and proposed Medium severity because the old pack-size rule could hide a valid competitor offer. No separate defect issue exists.
+- Dilsan reported that the fix passed 21 matching tests on commit `17307a5`.
+- The earlier five-second timeout is classified as a test-reliability observation, not a defect, because it did not recur in Dilsan's default run. No defect ID is assigned.
+- The 22 npm audit findings require dependency and exposure review; they are not treated as 22 confirmed exploitable Riven defects.
+- SonarQube was not run, so no Sonar findings are claimed.
+- Dilsan reported a local JMeter read test of 3,269 requests, 0 errors and 17 ms p95. It measures local API reads only, not complete browser loading.
+- The full Role D GitHub PR and its underlying evidence files are still pending. Existing GitHub issues #1-#4 remain unrelated and are not reused.
 
 ## 5. Metrics, defects and risks
 
@@ -71,7 +75,9 @@ Automated supporting evidence does not change a manual case's verdict. No live m
 | Role C browser checks | `AT-001..004` passed in Role C evidence and final CI completed successfully. |
 | Dependency audit | 22 findings on 23 November: 1 low, 17 moderate, 2 high, 2 critical. No automatic fix applied. |
 | Fixed matching defect | Dimension text could be misread as pack size; fixed through Role B TDD, but no Role D issue ID was supplied. |
-| Earlier timeout instability | Recorded in Role A evidence; final main CI passed. No defect ID or Role D disposition was supplied. |
+| Earlier timeout instability | Recorded in Role A evidence; final main CI passed. Role D classifies it as a non-reproduced test-reliability observation with no defect ID. |
+| Local read-load metric | Dilsan reported 3,269 JMeter requests, 0 errors and 17 ms p95; local API reads only, not full browser loading. Full evidence PR pending. |
+| SonarQube | Not run; no Sonar findings claimed. |
 
 ## 6. Reproducibility
 
@@ -102,13 +108,14 @@ npm run test:e2e
 - [x] Final `main` commit and successful CI run frozen.
 - [x] CI artifact names and run link recorded.
 - [x] Traceability and evidence limitations reconciled.
-- [ ] Role D defect IDs, severity/disposition, scan interpretation and recommendations received.
+- [x] Role D preliminary severity/disposition and audit/Sonar/JMeter limitations received.
+- [ ] Role D full evidence PR link and evidence files received and reviewed.
 - [ ] Lecturer's exact 24 November cutoff confirmed.
 - [ ] Final files uploaded with buffer before the confirmed cutoff.
 
 ## 8. Final handoff
 
-Role A is ready for submission review. Do not convert Pending Role D cells into completed evidence, and do not report the 15 unrun manual cases as passed. If Role D evidence arrives before submission, add only the real links/dispositions, rerun any affected checks, update `traceability.md`, and move the freeze only if product/test code changes.
+Role A is ready for submission review. Do not report the 15 unrun manual cases as passed. Role D's summary is recorded, but its full evidence PR must be linked and reviewed before that dependency is closed. Move the freeze only if product/test code changes.
 
 ## 9. AI assistance
 

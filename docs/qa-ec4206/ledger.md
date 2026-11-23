@@ -8,7 +8,7 @@ Updated: 23 November 2026 (Asia/Colombo)
 | A1 Scope and system map | Complete for Role A | `strategy.md`, `traceability.md` | Stable scope/IDs and built/planned distinction merged; group approval is not claimed | Preserve IDs through submission. |
 | A2 Plan and STLC | Complete for Role A | `test-plan-supplement.md`, `stlc.md` | Approved product-plan history preserved; final package links existing FR/NFR IDs | Submit as the EC4206 supplement. |
 | A3 Black-box design | Complete | `black-box.md`, `manual-cases.md`, `traceability.md` | Partitions, boundaries, decision table and 20 detailed cases merged | Keep 15 unrun cases marked Not run. |
-| A4 Execute and reconcile | Complete for received evidence; Role D pending | Evidence through 23 Nov; 4 Passed, 1 Partial, 15 Not run; B and C mapped/merged; D evidence absent | Frozen main `57b8451` has successful CI; artifacts retained; audit still reports 22 findings | Obtain real D links if available before upload; otherwise submit the limitation honestly. |
+| A4 Execute and reconcile | Complete for received evidence; Role D PR pending | Evidence through 23 Nov; 4 Passed, 1 Partial, 15 Not run; B and C mapped/merged; D summary received | Frozen main `57b8451` has successful CI; artifacts retained; D proposed Medium for the PR #43 matching fix, classified timeout as an observation, and qualified audit/JMeter/Sonar limits | Obtain and review D's full evidence PR before closing the dependency. |
 
 ## Repository state
 
@@ -18,7 +18,7 @@ Updated: 23 November 2026 (Asia/Colombo)
 - Test execution: `TC-AUTH-001` has partial evidence; `TC-AUTH-002`, `003`, `005`, and `006` passed; all other cases remain Not run
 - Remote freshness: fetched 23 November; `origin/main` was `57b84517d2cb7eab1fb08867affca5ca354fc492`
 - Jira: omitted for this EC4206 workstream at Ilmam's direction
-- Cross-role status: B merged in PR #43; C merged in PR #45 with accepted partial labels; no Role D EC4206 branch/PR/defect issue observed
+- Cross-role status: B merged in PR #43; C merged in PR #45 with accepted partial labels; D summary received, no separate defect issue, full Role D PR pending
 
 ## 23 November freeze and submission preparation
 
@@ -28,7 +28,7 @@ Updated: 23 November 2026 (Asia/Colombo)
 - Final manual totals: 4 Passed, 1 Partial, 15 Not run.
 - Final audit count remains 22: 1 low, 17 moderate, 2 high, 2 critical; no automatic fix applied.
 - Final review, reproducibility commands, risks and upload checklist: `final-review.md`.
-- Open submission dependencies: Role D evidence and the lecturer's exact cutoff time.
+- Open submission dependencies: Role D's full evidence PR and the lecturer's exact cutoff time.
 
 ## 22 November milestone
 
