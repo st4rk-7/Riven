@@ -1,0 +1,110 @@
+{
+  "observedDate": "2026-11-22",
+  "timezone": "Asia/Calcutta UTC+05:30",
+  "headSha": "6fb684942bd335a5a71cb9505baa6aa8a59a95a2",
+  "method": "GitHub fetch_commit_workflow_runs followed by fetch_workflow_run_jobs",
+  "url": "https://github.com/st4rk-7/Riven/actions/runs/44891561292",
+  "workflow_runs": [
+    {
+      "id": 44891561292,
+      "name": "CI",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 41,
+      "jobs_url": "https://api.github.com/repos/st4rk-7/Riven/actions/runs/44891561292/jobs",
+      "logs_url": "https://api.github.com/repos/st4rk-7/Riven/actions/runs/44891561292/logs",
+      "workflow_id": 387445233
+    }
+  ],
+  "jobs": [
+    {
+      "id": 136808279841,
+      "name": "Install, typecheck, and test",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 44891561292,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Check out repository",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Set up Node.js",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Show runtime versions",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Install dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Typecheck",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Check database migrations and constraints",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Post Set up Node.js",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Post Check out repository",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19
+        }
+      ]
+    }
+  ],
+  "limitations": "Historical Role B PR-head CI, not a new Role D run or CI on uncommitted documentation. Merge-baseline PR-triggered wrapper query returned no runs."
+}

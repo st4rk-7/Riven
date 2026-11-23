@@ -1,0 +1,435 @@
+{
+  "runTime": "2026-11-22T15:00:45.734270+05:30",
+  "timezone": "Asia/Calcutta UTC+05:30",
+  "baseline": "17307a5baaa43527ea993af9a2d36ae548372b5e",
+  "command": "npm.cmd audit --json",
+  "exitCode": 1,
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 1,
+      "moderate": 17,
+      "high": 2,
+      "critical": 2,
+      "total": 22
+    },
+    "dependencies": {
+      "prod": 551,
+      "dev": 122,
+      "optional": 98,
+      "peer": 1,
+      "peerOptional": 0,
+      "total": 750
+    }
+  },
+  "vulnerabilities": {
+    "@crawlee/basic": {
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@crawlee/core"
+      ],
+      "range": "3.2.3-beta.0 - 4.0.0-rc.0",
+      "fixAvailable": {
+        "name": "crawlee",
+        "version": "3.2.2",
+        "isSemVerMajor": true
+      }
+    },
+    "@crawlee/browser": {
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@crawlee/basic",
+        "@crawlee/browser-pool"
+      ],
+      "range": "3.2.3-beta.0 - 4.0.0-rc.0",
+      "fixAvailable": {
+        "name": "crawlee",
+        "version": "3.2.2",
+        "isSemVerMajor": true
+      }
+    },
+    "@crawlee/browser-pool": {
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@crawlee/core"
+      ],
+      "range": "3.5.3-beta.0 - 4.0.0-rc.0",
+      "fixAvailable": {
+        "name": "crawlee",
+        "version": "3.2.2",
+        "isSemVerMajor": true
+      }
+    },
+    "@crawlee/cheerio": {
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@crawlee/http"
+      ],
+      "range": "3.17.1-beta.0 - 4.0.0-rc.0",
+      "fixAvailable": true
+    },
+    "@crawlee/core": {
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "minimatch"
+      ],
+      "range": "3.2.3-beta.0 - 4.0.0-rc.0",
+      "fixAvailable": {
+        "name": "crawlee",
+        "version": "3.2.2",
+        "isSemVerMajor": true
+      }
+    },
+    "@crawlee/http": {
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@crawlee/basic",
+        "@crawlee/core"
+      ],
+      "range": "3.2.3-beta.0 - 4.0.0-rc.0",
+      "fixAvailable": {
+        "name": "crawlee",
+        "version": "3.2.2",
+        "isSemVerMajor": true
+      }
+    },
+    "@crawlee/jsdom": {
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@crawlee/http"
+      ],
+      "range": ">=3.17.1-beta.0",
+      "fixAvailable": true
+    },
+    "@crawlee/linkedom": {
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@crawlee/http"
+      ],
+      "range": ">=3.17.1-beta.0",
+      "fixAvailable": true
+    },
+    "@crawlee/playwright": {
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@crawlee/browser",
+        "@crawlee/browser-pool",
+        "@crawlee/core"
+      ],
+      "range": "3.2.3-beta.0 - 4.0.0-rc.0",
+      "fixAvailable": {
+        "name": "crawlee",
+        "version": "3.2.2",
+        "isSemVerMajor": true
+      }
+    },
+    "@crawlee/puppeteer": {
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@crawlee/browser",
+        "@crawlee/browser-pool"
+      ],
+      "range": "3.2.3-beta.0 - 4.0.0-rc.0",
+      "fixAvailable": true
+    },
+    "@fastify/static": {
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "glob"
+      ],
+      "range": "7.0.0 - 10.1.8",
+      "fixAvailable": true
+    },
+    "@tailwindcss/typography": {
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "postcss-selector-parser"
+      ],
+      "range": "<=0.0.0-insiders.fda8ce5 || >=0.5.5",
+      "fixAvailable": {
+        "name": "@tailwindcss/typography",
+        "version": "0.5.4",
+        "isSemVerMajor": true
+      }
+    },
+    "concurrently": {
+      "severity": "critical",
+      "isDirect": true,
+      "via": [
+        "shell-quote"
+      ],
+      "range": "9.2.3 - 9.2.4 || 10.0.0 - 10.0.5",
+      "fixAvailable": true
+    },
+    "crawlee": {
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@crawlee/basic",
+        "@crawlee/browser",
+        "@crawlee/browser-pool",
+        "@crawlee/cheerio",
+        "@crawlee/core",
+        "@crawlee/http",
+        "@crawlee/jsdom",
+        "@crawlee/linkedom",
+        "@crawlee/playwright",
+        "@crawlee/puppeteer"
+      ],
+      "range": "3.2.3-beta.0 - 4.0.0-rc.0",
+      "fixAvailable": {
+        "name": "crawlee",
+        "version": "3.2.2",
+        "isSemVerMajor": true
+      }
+    },
+    "fast-uri": {
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "name": "fast-uri",
+          "title": "fast-uri vulnerable to URI scheme spoofing via percent-encoded scheme decoding",
+          "url": "https://github.com/advisories/GHSA-w74x-v6f9-j3xg",
+          "range": ">=4.0.0 <4.2.3"
+        },
+        {
+          "name": "fast-uri",
+          "title": "fast-uri vulnerable to URI scheme spoofing via percent-encoded scheme decoding",
+          "url": "https://github.com/advisories/GHSA-w74x-v6f9-j3xg",
+          "range": ">=3.0.0 <3.1.9"
+        },
+        {
+          "name": "fast-uri",
+          "title": "fast-uri vulnerable to improper path equivalence in relative reference normalization",
+          "url": "https://github.com/advisories/GHSA-xhq7-xmqj-769h",
+          "range": ">=4.0.0 <4.2.3"
+        },
+        {
+          "name": "fast-uri",
+          "title": "fast-uri vulnerable to improper path equivalence in relative reference normalization",
+          "url": "https://github.com/advisories/GHSA-xhq7-xmqj-769h",
+          "range": ">=3.0.0 <3.1.9"
+        },
+        {
+          "name": "fast-uri",
+          "title": "fast-uri vulnerable to host confusion via unchecked WHATWG host canonicalization",
+          "url": "https://github.com/advisories/GHSA-wjr9-j795-jxcr",
+          "range": ">=4.0.1 <4.2.3"
+        },
+        {
+          "name": "fast-uri",
+          "title": "fast-uri vulnerable to host confusion via unchecked WHATWG host canonicalization",
+          "url": "https://github.com/advisories/GHSA-wjr9-j795-jxcr",
+          "range": ">=3.1.3 <3.1.9"
+        },
+        {
+          "name": "fast-uri",
+          "title": "fast-uri vulnerable to scheme injection via an unescaped first-segment colon in suffix references",
+          "url": "https://github.com/advisories/GHSA-333x-w4r6-6crp",
+          "range": ">=4.0.0 <4.2.3"
+        },
+        {
+          "name": "fast-uri",
+          "title": "fast-uri vulnerable to scheme injection via an unescaped first-segment colon in suffix references",
+          "url": "https://github.com/advisories/GHSA-333x-w4r6-6crp",
+          "range": ">=3.0.0 <3.1.9"
+        }
+      ],
+      "range": "3.0.0 - 3.1.8 || 4.0.0 - 4.2.2",
+      "fixAvailable": true
+    },
+    "fastify": {
+      "severity": "low",
+      "isDirect": true,
+      "via": [
+        {
+          "name": "fastify",
+          "title": "fastify is vulnerable to header validation bypass via case-sensitive propertyNames",
+          "url": "https://github.com/advisories/GHSA-389g-gv7q-r4x8",
+          "range": ">=5.12.2 <5.12.6"
+        }
+      ],
+      "range": "5.12.2 - 5.12.5",
+      "fixAvailable": true
+    },
+    "glob": {
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "name": "glob",
+          "title": "Glob: AbortSignal cancellation bypass allows post-timeout filesystem traversal",
+          "url": "https://github.com/advisories/GHSA-3g3m-2fjr-6pw4",
+          "range": ">=9.0.0 <=14.0.1"
+        },
+        "minimatch"
+      ],
+      "range": "9.0.0 - 14.0.1",
+      "fixAvailable": true
+    },
+    "minimatch": {
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "name": "minimatch",
+          "title": "minimatch has potential denial of service via globparts amplification",
+          "url": "https://github.com/advisories/GHSA-g3hv-75wg-m249",
+          "range": ">=7.0.0 <11.0.1"
+        }
+      ],
+      "range": "7.0.0 - 11.0.0",
+      "fixAvailable": {
+        "name": "crawlee",
+        "version": "3.2.2",
+        "isSemVerMajor": true
+      }
+    },
+    "postcss-selector-parser": {
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "name": "postcss-selector-parser",
+          "title": "PostCSS: Quadratic complexity in flat selector parsing allows CPU exhaustion",
+          "url": "https://github.com/advisories/GHSA-rj75-hqrm-r3gf",
+          "range": "<6.1.5"
+        }
+      ],
+      "range": "<6.1.5",
+      "fixAvailable": {
+        "name": "@tailwindcss/typography",
+        "version": "0.5.4",
+        "isSemVerMajor": true
+      }
+    },
+    "shell-quote": {
+      "severity": "critical",
+      "isDirect": false,
+      "via": [
+        {
+          "name": "shell-quote",
+          "title": "shell-quote: `quote()` command injection via a line terminator in a token after a `{ comment }` token",
+          "url": "https://github.com/advisories/GHSA-pqg4-j6r4-53mv",
+          "range": ">=1.8.4 <1.11.0"
+        }
+      ],
+      "range": "1.8.4 - 1.10.0",
+      "fixAvailable": true
+    },
+    "undici": {
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "name": "undici",
+          "title": "undici vulnerable to Denial of Service via unbounded memory in the EventSource parser",
+          "url": "https://github.com/advisories/GHSA-4qv8-2p9j-2685",
+          "range": ">=7.0.0 <7.30.1"
+        },
+        {
+          "name": "undici",
+          "title": "undici vulnerable to Subresource Integrity bypass via non-lowercase algorithm tokens",
+          "url": "https://github.com/advisories/GHSA-f72v-6w45-q472",
+          "range": ">=7.15.0 <7.30.1"
+        },
+        {
+          "name": "undici",
+          "title": "undici vulnerable to Denial of Service via unhandled error on excessive content-encodings",
+          "url": "https://github.com/advisories/GHSA-xjj6-f33q-929c",
+          "range": ">=7.18.0 <7.30.1"
+        },
+        {
+          "name": "undici",
+          "title": "undici vulnerable to cache poisoning and cross-user disclosure via cross-origin redirects",
+          "url": "https://github.com/advisories/GHSA-4w7w-5xrc-9h26",
+          "range": ">=7.0.0 <7.30.1"
+        },
+        {
+          "name": "undici",
+          "title": "undici vulnerable to TLS certificate validation bypass via dropped tls options in Agent",
+          "url": "https://github.com/advisories/GHSA-2m5v-pch6-74hx",
+          "range": ">=7.0.0 <7.30.1"
+        },
+        {
+          "name": "undici",
+          "title": "undici vulnerable to Denial of Service via TLS 1.2 certificate-changing renegotiation",
+          "url": "https://github.com/advisories/GHSA-qrxm-fqhp-jwvm",
+          "range": ">=7.0.0 <7.30.1"
+        },
+        {
+          "name": "undici",
+          "title": "undici WebSocket client vulnerable to Denial of Service via unbounded automatic PONG buffering",
+          "url": "https://github.com/advisories/GHSA-9fm3-97px-rjf6",
+          "range": ">=7.0.0 <7.30.1"
+        },
+        {
+          "name": "undici",
+          "title": "undici vulnerable to Denial of Service via unhandled exception in the decompress interceptor",
+          "url": "https://github.com/advisories/GHSA-55wc-3pg8-jfw6",
+          "range": ">=7.15.0 <7.30.1"
+        }
+      ],
+      "range": "7.0.0 - 7.30.0",
+      "fixAvailable": true
+    },
+    "vite": {
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        {
+          "name": "vite",
+          "title": "launch-editor: escapeCmdArgs() omits % escaping on Windows",
+          "url": "https://github.com/advisories/GHSA-698v-4r3x-3vcv",
+          "range": ">=8.3.0 <=8.3.2"
+        },
+        {
+          "name": "vite",
+          "title": "launch-editor: Editor CLI flag misinterpretation causing arbitrary command execution for some editors",
+          "url": "https://github.com/advisories/GHSA-r825-w8mm-5pxw",
+          "range": ">=8.3.0 <=8.3.2"
+        },
+        {
+          "name": "vite",
+          "title": "launch-editor: `fs.existsSync()` existence check can be bypassed on Windows",
+          "url": "https://github.com/advisories/GHSA-587h-7wmj-h5pm",
+          "range": ">=8.3.0 <=8.3.2"
+        },
+        {
+          "name": "vite",
+          "title": "Vite: Cross origin script execution through Vite custom middleware",
+          "url": "https://github.com/advisories/GHSA-9jrq-w75r-8gcw",
+          "range": ">=8.3.0 <=8.3.2"
+        },
+        {
+          "name": "vite",
+          "title": "Vite: Files outside `server.fs.allow` could be served when project paths match system paths on non-Windows machine",
+          "url": "https://github.com/advisories/GHSA-rq7h-c2jc-7f22",
+          "range": ">=8.3.0 <=8.3.2"
+        },
+        {
+          "name": "vite",
+          "title": "Vite: First 4 bytes of files outside of `server.fs` setting is exposed by `?vite-wasm-instance`",
+          "url": "https://github.com/advisories/GHSA-vfpm-58rq-9qcg",
+          "range": ">=8.3.0 <=8.3.2"
+        }
+      ],
+      "range": "8.3.0 - 8.3.2",
+      "fixAvailable": true
+    }
+  },
+  "error": null
+}

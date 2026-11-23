@@ -1,0 +1,69 @@
+{
+  "observedDate": "2026-11-22",
+  "timezone": "Asia/Calcutta UTC+05:30",
+  "method": "Atlassian getjiraissue with changelog; project JQL search; GitHub fetch_commit(main), search_branches",
+  "jira": {
+    "projectIssuesReturned": 43,
+    "projectPageComplete": true,
+    "umbrellaRoleDTicket": "not found; RIV-14 Quality & release is not confirmed as Role D",
+    "defect": {
+      "key": "RIV-45",
+      "url": "https://st4rk.atlassian.net/browse/RIV-45",
+      "summary": "packSize() incorrectly interprets product dimensions as package quantities",
+      "status": "Done",
+      "created": "2026-11-21T21:20:22.797+0530",
+      "resolutionDate": "2026-11-22T03:38:51.648+0530",
+      "labels": [
+        "ec4206",
+        "r1-packsize",
+        "role-d"
+      ],
+      "history": [
+        {
+          "time": "2026-11-22T03:38:51.664+0530",
+          "items": [
+            {
+              "field": "status",
+              "from": "To Do",
+              "to": "Done"
+            }
+          ]
+        },
+        {
+          "time": "2026-11-21T21:22:33.052+0530",
+          "items": [
+            {
+              "field": "labels",
+              "from": "r1-packsize role-d",
+              "to": "ec4206 r1-packsize role-d"
+            }
+          ]
+        }
+      ],
+      "elapsedHours": 6.308014166666666
+    }
+  },
+  "github": {
+    "main": "17307a5baaa43527ea993af9a2d36ae548372b5e",
+    "mainUrl": "https://github.com/st4rk-7/Riven/commit/17307a5baaa43527ea993af9a2d36ae548372b5e",
+    "roleDBranchSearch": "no matching remote branch returned",
+    "baselineWorkflowRuns": "none returned by PR-triggered-run wrapper; no CI pass inferred",
+    "followupObservedAt": "2026-11-22T16:51:57.2756747+05:30",
+    "currentMain": "d55e16ce1c8ceede09f3d6f008dcd3787f486af8",
+    "roleAPR46": {
+      "url": "https://github.com/st4rk-7/Riven/pull/46",
+      "state": "merged",
+      "head": "789e56831f76cf523a0a02ab63b7cee003728184",
+      "check": "success",
+      "limitation": "merged integration record still says Role D links were not received"
+    },
+    "roleCPR45": {
+      "url": "https://github.com/st4rk-7/Riven/pull/45",
+      "state": "open",
+      "head": "dfa7c1da9837358e9fc94251a17c4540a84dc17f",
+      "visibleChecks": "two successful checks",
+      "mapping": "AT-003 and AT-004 explicitly partial according to the latest PR comment",
+      "remaining": "review and merge pending"
+    }
+  }
+}

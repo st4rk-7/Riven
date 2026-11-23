@@ -1,0 +1,40 @@
+Run: role-d-db-check
+Start: 2026-11-22T14:19:19.747251+05:30 (Asia/Calcutta UTC+05:30)
+Baseline: 17307a5baaa43527ea993af9a2d36ae548372b5e
+Branch: qa/ec4206-role-d
+Command: npm.cmd run db:check
+Expected: exit 0; unit coverage excludes database integration
+
+> riven@0.1.0 db:check
+> node --env-file-if-exists=.env --import tsx scripts/check-database.ts
+
+node:os:306
+    throw new ERR_SYSTEM_ERROR(ctx);
+          ^
+
+SystemError [ERR_SYSTEM_ERROR]: A system error occurred: uv_os_get_passwd returned ENOMEM (not enough memory)
+    at Object.userInfo (node:os:306:11)
+    at Object.<anonymous> (C:\Users\ASUS\Documents\University\learning\5th mine\software project\riven\Riven\node_modules\tsx\dist\client-XItNFmsq.cjs:1:198)
+    at Module._compile (node:internal/modules/cjs/loader:1854:14)
+    at Object..js (node:internal/modules/cjs/loader:1985:10)
+    at Module.load (node:internal/modules/cjs/loader:1577:32)
+    at Module._load (node:internal/modules/cjs/loader:1379:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.require (node:internal/modules/cjs/loader:1600:12)
+    at require (node:internal/modules/helpers:153:16)
+    at Object.<anonymous> (C:\Users\ASUS\Documents\University\learning\5th mine\software project\riven\Riven\node_modules\tsx\dist\register-B1c7OH6V.cjs:1:317) {
+  code: 'ERR_SYSTEM_ERROR',
+  info: {
+    errno: -4057,
+    code: 'ENOMEM',
+    message: 'not enough memory',
+    syscall: 'uv_os_get_passwd'
+  },
+  errno: [Getter/Setter],
+  syscall: [Getter/Setter]
+}
+
+Node.js v24.16.0
+
+Exit code: 1
+End: 2026-11-22T14:19:20.192817+05:30

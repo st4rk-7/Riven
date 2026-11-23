@@ -1,0 +1,13 @@
+{
+  "runTime": "2026-11-22T14:58:20.763390+05:30",
+  "timezone": "Asia/Calcutta UTC+05:30",
+  "baseline": "17307a5baaa43527ea993af9a2d36ae548372b5e",
+  "command": "npm.cmd audit --json",
+  "exitCode": 1,
+  "metadata": {},
+  "vulnerabilities": {},
+  "error": {
+    "summary": "",
+    "detail": ""
+  }
+}
