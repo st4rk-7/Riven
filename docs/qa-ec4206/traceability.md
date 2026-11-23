@@ -2,7 +2,7 @@
 
 Status: Execution matrix with one partial and four passed authentication records
 Owner: Ilmam (Role A)
-Updated: 22 November 2026 (Asia/Colombo)
+Updated: 23 November 2026 (Asia/Colombo)
 Planning baseline: `29af23787b9de37d65f3ed00d30297e4f67185b3`
 
 ## ID convention
@@ -23,11 +23,11 @@ All cases below are drafted in `black-box.md` and `manual-cases.md`. `TC-AUTH-00
 
 | Scope | Requirement | Planned manual ID | Planned behavior | Priority | Role B | Role C | Role D | Status | Evidence |
 |---|---|---|---|---|---|---|---|---|---|
-| `SCP-AUTH` | `FR-01` | `TC-AUTH-001` | Valid synthetic retailer signs in and receives only its identity/workspace. | P0 | Pending | `AT-001` (PR #45 pending) | Pending | Executed - Partial; verdict pending | `evidence/auth-ui-2026-11-19.md`; `evidence/integration-2026-11-22.md` |
-| `SCP-AUTH` | `FR-01` | `TC-AUTH-002` | Invalid or malformed credentials are rejected with safe feedback. | P0 | Pending | `AT-002` wrong-password subset (PR #45 pending) | Pending | Passed | `evidence/auth-api-2026-11-20.md`; `evidence/integration-2026-11-22.md` |
-| `SCP-AUTH` | `FR-01`, `NFR-01` | `TC-AUTH-003` | Signed-out access to protected retailer data is rejected. | P0 | Pending | `AT-004` product-read subset (PR #45 pending) | Pending | Passed | `evidence/auth-api-2026-11-20.md`; `evidence/integration-2026-11-22.md` |
-| `SCP-AUTH` | `NFR-01` | `TC-AUTH-004` | Alpha cannot read or change Beta's products/observations using misleading IDs. | P0 | Pending | `AT-003` product-read subset (PR #45 pending) | Pending | Drafted - Not run | `evidence/integration-2026-11-22.md` |
-| `SCP-AUTH` | `FR-01` | `TC-AUTH-005` | Sign-out revokes the session and subsequent protected access fails. | P0 | Pending | `AT-004` (PR #45 pending) | Pending | Passed - observable outcome; 204 not captured manually | `evidence/sign-out-2026-11-19.md`; `evidence/integration-2026-11-22.md` |
+| `SCP-AUTH` | `FR-01` | `TC-AUTH-001` | Valid synthetic retailer signs in and receives only its identity/workspace. | P0 | Pending | `AT-001` (PR #45 merged) | Pending | Executed - Partial; verdict pending | `evidence/auth-ui-2026-11-19.md`; `evidence/integration-2026-11-22.md` |
+| `SCP-AUTH` | `FR-01` | `TC-AUTH-002` | Invalid or malformed credentials are rejected with safe feedback. | P0 | Pending | `AT-002` wrong-password subset (PR #45 merged) | Pending | Passed | `evidence/auth-api-2026-11-20.md`; `evidence/integration-2026-11-22.md` |
+| `SCP-AUTH` | `FR-01`, `NFR-01` | `TC-AUTH-003` | Signed-out access to protected retailer data is rejected. | P0 | Pending | `AT-004` product-read subset (PR #45 merged) | Pending | Passed | `evidence/auth-api-2026-11-20.md`; `evidence/integration-2026-11-22.md` |
+| `SCP-AUTH` | `NFR-01` | `TC-AUTH-004` | Alpha cannot read or change Beta's products/observations using misleading IDs. | P0 | Pending | `AT-003` product-read subset (PR #45 merged) | Pending | Drafted - Not run | `evidence/integration-2026-11-22.md` |
+| `SCP-AUTH` | `FR-01` | `TC-AUTH-005` | Sign-out revokes the session and subsequent protected access fails. | P0 | Pending | `AT-004` (PR #45 merged) | Pending | Passed - observable outcome; 204 not captured manually | `evidence/sign-out-2026-11-19.md`; `evidence/integration-2026-11-22.md` |
 | `SCP-AUTH` | `FR-01` | `TC-AUTH-006` | Six consecutive failed sign-in attempts exercise the implemented five-request boundary. | P1 | Pending | Candidate | Pending | Passed | `evidence/auth-api-2026-11-20.md` |
 | `SCP-PROD` | `FR-02` | `TC-PROD-001` | Valid manual name with optional brand creates a retailer-owned product. | P0 | Pending | Candidate | Pending | Drafted - Not run | - |
 | `SCP-PROD` | `FR-02` | `TC-PROD-002` | Valid supported product URL follows the URL input path without accepting unsafe/unsupported input. | P1 | Pending | Candidate | Pending | Drafted - Not run | - |
@@ -54,7 +54,11 @@ The second BDD item is one Scenario Outline with three executed examples. Its si
 
 Role A reran the integrated `main` state after Role B merged: typecheck passed, the unit suite passed 83 with 23 skipped when local fixture-server access was allowed, BDD passed 4 scenarios/17 steps, and focused `server/matching.ts` coverage remained 100% statements and branches. See `evidence/integration-2026-11-22.md` for commands, environment qualifications, CI job links, and metrics.
 
-Role C PR [#45](https://github.com/st4rk-7/Riven/pull/45) at `dfa7c1d` has successful push and pull-request CI runs. It now explicitly marks `AT-003` and the `TC-AUTH-003` portion of `AT-004` as partial; Role A re-reviewed and accepted that correction. The mappings above remain pending supporting evidence until PR #45 merges. No Role D branch, PR, or real EC4206 defect ID was observed; Role D cells remain Pending, including the fixed pack-size dimension bug and the 22 dependency-audit findings.
+Role C PR [#45](https://github.com/st4rk-7/Riven/pull/45) at `dfa7c1d` merged into `main` at `57b8451`. It explicitly marks `AT-003` and the `TC-AUTH-003` portion of `AT-004` as partial; Role A re-reviewed and accepted that correction. Final main push CI [run 45018780656](https://github.com/st4rk-7/Riven/actions/runs/45018780656) passed. No Role D branch, PR, or real EC4206 defect ID was observed; Role D cells remain Pending, including the fixed pack-size dimension bug and the 22 dependency-audit findings.
+
+## 23 November freeze
+
+The tested product/test commit is `57b84517d2cb7eab1fb08867affca5ca354fc492`. Its main push CI completed successfully and retained the Role B coverage-summary and Role C browser-evidence artifacts. Manual totals remain 4 Passed, 1 Partial and 15 Not run. The final review and submission checklist are in `final-review.md`.
 
 ## Planned-only gap rows
 

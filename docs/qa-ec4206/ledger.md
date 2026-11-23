@@ -1,24 +1,34 @@
 # EC4206 Role A Ledger
 
 Owner: Ilmam
-Updated: 22 November 2026 (Asia/Colombo)
+Updated: 23 November 2026 (Asia/Colombo)
 
 | Task | Status | Artifacts | Real evidence / dependency | Next step |
 |---|---|---|---|---|
-| A1 Scope and system map | Draft ready for group review | `strategy.md`, `traceability.md` | Baseline `29af237`; remote freshness rechecked on 20 Nov and `origin/main` still matched; group approval not observed | Ilmam reviews and sends the scope/ID handoff. |
-| A2 Plan and STLC | Structurally complete; review pending | `test-plan-supplement.md`, `stlc.md` | Approved product plan preserved; local environment responsibility and evidence location established | Ilmam reviews and freezes wording only after group feedback. |
-| A3 Black-box design | Complete for planned scope; execution partial | `black-box.md`, `manual-cases.md`, updated `traceability.md` | Product name/URL/own-price partitions; name/brand/discovery/rate-limit boundaries; matching decision table; 20 detailed cases | Ilmam explains techniques and shares stable cases with B/C; record their actual references only when received. |
-| A4 Execute and reconcile | Cross-role evidence reconciled; dependent slices open | Evidence through 22 Nov; `TC-AUTH-001` partial; `TC-AUTH-002`, `003`, `005`, `006` passed; B mapped and merged; C partial labels accepted and CI passed, merge pending; D evidence absent | Integrated main: typecheck passed; unit 83 passed/23 skipped; BDD 4 scenarios/17 steps; matching coverage 100% statements/branches. Audit: 22 findings. | Obtain C's merged PR and D's real defect/scan links; complete remaining selected manual cases; never contact live marketplaces. |
+| A1 Scope and system map | Complete for Role A | `strategy.md`, `traceability.md` | Stable scope/IDs and built/planned distinction merged; group approval is not claimed | Preserve IDs through submission. |
+| A2 Plan and STLC | Complete for Role A | `test-plan-supplement.md`, `stlc.md` | Approved product-plan history preserved; final package links existing FR/NFR IDs | Submit as the EC4206 supplement. |
+| A3 Black-box design | Complete | `black-box.md`, `manual-cases.md`, `traceability.md` | Partitions, boundaries, decision table and 20 detailed cases merged | Keep 15 unrun cases marked Not run. |
+| A4 Execute and reconcile | Complete for received evidence; Role D pending | Evidence through 23 Nov; 4 Passed, 1 Partial, 15 Not run; B and C mapped/merged; D evidence absent | Frozen main `57b8451` has successful CI; artifacts retained; audit still reports 22 findings | Obtain real D links if available before upload; otherwise submit the limitation honestly. |
 
 ## Repository state
 
-- Branch: `qa/ec4206-role-a-22nov`
-- Integrated base: `17307a5baaa43527ea993af9a2d36ae548372b5e` (`origin/main` after PRs #41, #44 and #43 merged)
-- Role A PR [#41](https://github.com/st4rk-7/Riven/pull/41) and mapping PR [#44](https://github.com/st4rk-7/Riven/pull/44) are merged
+- Final-review branch: `qa/ec4206-role-a-final-review`
+- Frozen tested main: `57b84517d2cb7eab1fb08867affca5ca354fc492`
+- Role A PRs [#41](https://github.com/st4rk-7/Riven/pull/41), [#44](https://github.com/st4rk-7/Riven/pull/44), [#46](https://github.com/st4rk-7/Riven/pull/46) and [#47](https://github.com/st4rk-7/Riven/pull/47) are merged
 - Test execution: `TC-AUTH-001` has partial evidence; `TC-AUTH-002`, `003`, `005`, and `006` passed; all other cases remain Not run
-- Remote freshness: fetched 22 November; `origin/main` was `17307a5baaa43527ea993af9a2d36ae548372b5e`
+- Remote freshness: fetched 23 November; `origin/main` was `57b84517d2cb7eab1fb08867affca5ca354fc492`
 - Jira: omitted for this EC4206 workstream at Ilmam's direction
-- Cross-role status: B merged in PR #43; C PR #45 is open at `dfa7c1d`, both CI runs passed, partial labels were accepted in Role A re-review, and merge remains pending; no Role D EC4206 branch/PR/defect issue observed
+- Cross-role status: B merged in PR #43; C merged in PR #45 with accepted partial labels; no Role D EC4206 branch/PR/defect issue observed
+
+## 23 November freeze and submission preparation
+
+- Tested commit frozen at `57b84517d2cb7eab1fb08867affca5ca354fc492`.
+- Main push CI [run 45018780656, job 137196839763](https://github.com/st4rk-7/Riven/actions/runs/45018780656/job/137196839763) passed.
+- CI retained `role-c-browser-evidence` and `role-b-coverage-summary` artifacts.
+- Final manual totals: 4 Passed, 1 Partial, 15 Not run.
+- Final audit count remains 22: 1 low, 17 moderate, 2 high, 2 critical; no automatic fix applied.
+- Final review, reproducibility commands, risks and upload checklist: `final-review.md`.
+- Open submission dependencies: Role D evidence and the lecturer's exact cutoff time.
 
 ## 22 November milestone
 
