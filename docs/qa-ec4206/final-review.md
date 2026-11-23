@@ -2,7 +2,7 @@
 
 Owner: Ilmam (Role A)
 Prepared: 23 November 2026 (Asia/Colombo)
-Status: Role A package prepared; Role D summary received with full PR pending; lecturer's exact cutoff remains an external dependency
+Status: Role A package prepared; Role D evidence reviewed and merged; lecturer's exact cutoff remains an external dependency
 
 ## 1. Frozen tested state
 
@@ -25,7 +25,7 @@ This commit is the product/test freeze for the report. Later documentation-only 
 | A1 | Scope, roster, component/data-flow map, stable requirement/test IDs and risks | Complete for Role A; built and planned behavior remain separated. |
 | A2 | EC4206 test-plan supplement and STLC map | Complete for Role A; it supplements rather than overwrites the approved plan. |
 | A3 | Equivalence partitions, boundary analysis, matching decision table and 20 runnable manual cases | Complete and traced. |
-| A4 | Selected manual execution, evidence, cross-role reconciliation and final matrix | Complete for evidence received; Role D columns remain Pending. |
+| A4 | Selected manual execution, evidence, cross-role reconciliation and final matrix | Complete for received evidence; unexecuted cases remain explicitly Pending/Not run. |
 
 Primary files: `strategy.md`, `test-plan-supplement.md`, `stlc.md`, `black-box.md`, `manual-cases.md`, `traceability.md`, `ledger.md`, and the records under `evidence/`.
 
@@ -55,15 +55,16 @@ Automated supporting evidence does not change a manual case's verdict. No live m
 - `AT-001..004` are implemented. `AT-003` is explicitly partial for `TC-AUTH-004`; the `TC-AUTH-003` portion of `AT-004` is explicitly partial. Role A accepted those labels.
 - Final main CI passed and retained the browser screenshot and coverage-summary artifacts named in section 1.
 
-### Role D - summary received; full PR pending
+### Role D - reviewed and merged
 
+- Role D PR [#50](https://github.com/st4rk-7/Riven/pull/50) was reviewed on corrected head `21e5ba0`, passed updated CI [run 45169479586](https://github.com/st4rk-7/Riven/actions/runs/45169479586), and merged at `e59fef7`.
 - Dilsan linked the matching defect/fix to Role B PR [#43](https://github.com/st4rk-7/Riven/pull/43) and proposed Medium severity because the old pack-size rule could hide a valid competitor offer. No separate defect issue exists.
 - Dilsan reported that the fix passed 21 matching tests on commit `17307a5`.
 - The earlier five-second timeout is classified as a test-reliability observation, not a defect, because it did not recur in Dilsan's default run. No defect ID is assigned.
 - The 22 npm audit findings require dependency and exposure review; they are not treated as 22 confirmed exploitable Riven defects.
 - SonarQube was not run, so no Sonar findings are claimed.
-- Dilsan reported a local JMeter read test of 3,269 requests, 0 errors and 17 ms p95. It measures local API reads only, not complete browser loading.
-- The full Role D GitHub PR and its underlying evidence files are still pending. Existing GitHub issues #1-#4 remain unrelated and are not reused.
+- The committed Role D evidence records a local JMeter read test of 3,269 requests, 0 errors and 17 ms p95. It measures local API reads only, not complete browser loading.
+- Manual browser security/usability checks and SonarQube remain unexecuted. Existing GitHub issues #1-#4 remain unrelated and are not reused.
 
 ## 5. Metrics, defects and risks
 
@@ -76,7 +77,7 @@ Automated supporting evidence does not change a manual case's verdict. No live m
 | Dependency audit | 22 findings on 23 November: 1 low, 17 moderate, 2 high, 2 critical. No automatic fix applied. |
 | Fixed matching defect | Dimension text could be misread as pack size; fixed through Role B TDD, but no Role D issue ID was supplied. |
 | Earlier timeout instability | Recorded in Role A evidence; final main CI passed. Role D classifies it as a non-reproduced test-reliability observation with no defect ID. |
-| Local read-load metric | Dilsan reported 3,269 JMeter requests, 0 errors and 17 ms p95; local API reads only, not full browser loading. Full evidence PR pending. |
+| Local read-load metric | PR #50 records 3,269 JMeter requests, 0 errors and 17 ms p95; local API reads only, not full browser loading. |
 | SonarQube | Not run; no Sonar findings claimed. |
 
 ## 6. Reproducibility
@@ -108,14 +109,14 @@ npm run test:e2e
 - [x] Final `main` commit and successful CI run frozen.
 - [x] CI artifact names and run link recorded.
 - [x] Traceability and evidence limitations reconciled.
-- [x] Role D preliminary severity/disposition and audit/Sonar/JMeter limitations received.
-- [ ] Role D full evidence PR link and evidence files received and reviewed.
+- [x] Role D severity/disposition and audit/Sonar/JMeter limitations received.
+- [x] Role D PR #50 and its evidence files received, reviewed and merged.
 - [ ] Lecturer's exact 24 November cutoff confirmed.
 - [ ] Final files uploaded with buffer before the confirmed cutoff.
 
 ## 8. Final handoff
 
-Role A is ready for submission review. Do not report the 15 unrun manual cases as passed. Role D's summary is recorded, but its full evidence PR must be linked and reviewed before that dependency is closed. Move the freeze only if product/test code changes.
+Role A is ready for submission review. Do not report the 15 unrun manual cases or Role D's unexecuted browser/security/usability/Sonar checks as passed. PR #50 closes the missing Role D evidence-link dependency without changing the frozen product/test build. Move the freeze only if product/test code changes.
 
 ## 9. AI assistance
 

@@ -54,15 +54,15 @@ The second BDD item is one Scenario Outline with three executed examples. Its si
 
 Role A reran the integrated `main` state after Role B merged: typecheck passed, the unit suite passed 83 with 23 skipped when local fixture-server access was allowed, BDD passed 4 scenarios/17 steps, and focused `server/matching.ts` coverage remained 100% statements and branches. See `evidence/integration-2026-11-22.md` for commands, environment qualifications, CI job links, and metrics.
 
-Role C PR [#45](https://github.com/st4rk-7/Riven/pull/45) at `dfa7c1d` merged into `main` at `57b8451`. It explicitly marks `AT-003` and the `TC-AUTH-003` portion of `AT-004` as partial; Role A re-reviewed and accepted that correction. Final main push CI [run 45018780656](https://github.com/st4rk-7/Riven/actions/runs/45018780656) passed. No Role D branch, PR, or real EC4206 defect ID was observed; Role D cells remain Pending, including the fixed pack-size dimension bug and the 22 dependency-audit findings.
+Role C PR [#45](https://github.com/st4rk-7/Riven/pull/45) at `dfa7c1d` merged into `main` at `57b8451`. It explicitly marks `AT-003` and the `TC-AUTH-003` portion of `AT-004` as partial; Role A re-reviewed and accepted that correction. Final main push CI [run 45018780656](https://github.com/st4rk-7/Riven/actions/runs/45018780656) passed. Role D evidence later arrived in PR [#50](https://github.com/st4rk-7/Riven/pull/50); it does not convert unexecuted manual rows into passes.
 
 ## 23 November freeze
 
 The tested product/test commit is `57b84517d2cb7eab1fb08867affca5ca354fc492`. Its main push CI completed successfully and retained the Role B coverage-summary and Role C browser-evidence artifacts. Manual totals remain 4 Passed, 1 Partial and 15 Not run. The final review and submission checklist are in `final-review.md`.
 
-## Role D handoff - 23 November
+## Role D evidence - 23 November
 
-Dilsan linked the pack-size dimension defect and fix to PR [#43](https://github.com/st4rk-7/Riven/pull/43), proposed Medium severity and reported 21 matching tests passing on commit `17307a5`; no separate defect issue exists. The five-second timeout is a non-reproduced test-reliability observation with no defect ID. The 22 audit findings require dependency/exposure review and are not 22 confirmed exploitable defects. SonarQube was not run. A local JMeter read test reportedly completed 3,269 requests with 0 errors and 17 ms p95, but it covers local API reads rather than complete browser loading. The full Role D evidence PR remains pending, so these are owner-reported handoff facts rather than independently reviewed evidence files.
+Dilsan linked the pack-size dimension defect and fix to PR [#43](https://github.com/st4rk-7/Riven/pull/43), proposed Medium severity and recorded 21 matching tests passing on commit `17307a5`; no separate defect issue exists. The five-second timeout is a non-reproduced test-reliability observation with no defect ID. The 22 audit findings require dependency/exposure review and are not 22 confirmed exploitable defects. SonarQube was not run. The JMeter evidence records 3,269 local API reads with 0 errors and 17 ms p95, not complete browser loading. Role A checked the committed reports and raw metrics, requested path sanitization, and re-reviewed corrected head `21e5ba0`. PR [#50](https://github.com/st4rk-7/Riven/pull/50) then passed updated CI [run 45169479586](https://github.com/st4rk-7/Riven/actions/runs/45169479586) and merged at `e59fef7`. Its manual browser security/usability and SonarQube checks remain explicitly unexecuted.
 
 ## Planned-only gap rows
 
