@@ -9,7 +9,7 @@ Expected: exit 0; unit coverage excludes database integration
 > vitest run --coverage
 
 
- RUN  v5.0.3 C:/Users/ASUS/Documents/University/learning/5th mine/software project/riven/Riven
+ RUN  v5.0.3 <repo-root>
       Coverage enabled with v8
 
 

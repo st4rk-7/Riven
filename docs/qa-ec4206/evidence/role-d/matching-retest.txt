@@ -4,7 +4,7 @@ Baseline: 17307a5baaa43527ea993af9a2d36ae548372b5e
 Command: node node_modules/vitest/vitest.mjs run server/matching.test.ts --reporter=verbose
 Expected: all 21 matching tests pass
 
- RUN  v5.0.3 C:/Users/ASUS/Documents/University/learning/5th mine/software project/riven/Riven
+ RUN  v5.0.3 <repo-root>
 
  ✓ server/matching.test.ts > matchOffer > confirms the same ASIN 1ms
  ✓ server/matching.test.ts > matchOffer > rules out a different ASIN 0ms
