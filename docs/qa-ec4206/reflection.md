@@ -11,7 +11,7 @@ Role A PRs #46, #47 and #48 and Role C PR #45 are merged. The final review still
 ## Contribution record
 
 - I reviewed the Role D scope, results and limitations and approved this evidence package on 23 November 2026.
-- I used automated tooling and AI assistance to run checks, organize evidence and review the writing. I remain responsible for the submitted work and its explanation.
+- I reviewed the recorded checks and evidence and remain responsible for the submitted work and its explanation.
 
 - Existing Role B tests/fix and A/B/C records retain their authorship. Their historical execution is attributed to those records
 

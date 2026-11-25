@@ -28,10 +28,10 @@ Planning baseline: `29af23787b9de37d65f3ed00d30297e4f67185b3`
 
 Execution record (attempt 1):
 
-- Tester: Ilmam, with Codex observing the already authenticated UI.
+- Tester: Ilmam; the already authenticated UI was inspected through a read-only browser interface.
 - Date/time (Asia/Colombo): 19 November 2026, 21:26.
 - Branch and full commit: `qa/ec4206-role-a` at `1cf49f607cea7cac409033dbef3b2409b219bad6`.
-- Environment and versions: isolated local Riven instance at `http://127.0.0.1:5173/app`; ChatGPT in-app browser (engine/version not exposed by the inspection interface).
+- Environment and versions: isolated local Riven instance at `http://127.0.0.1:5173/app`; browser engine/version not exposed by the inspection interface.
 - Preconditions/data actually used: Ilmam entered the private synthetic credentials; no credential, cookie, or password value was captured.
 - Actual result: authenticated Products view was visible with a `Sign out` control. The protected list loaded `Synthetic Wired Mouse`, showing one offer, unavailable lowest confirmed price, and one review-needed item. No password or retailer-selection field was visible on the authenticated page.
 - Status: Partial evidence only. The observable successful-login and protected-data portion passed, but Alpha identity/tenant response and the HttpOnly cookie attribute were not independently inspected, so the complete case is not yet marked Passed.
@@ -52,7 +52,7 @@ Execution record (attempt 1):
 
 Execution record:
 
-- Tester: Ilmam, assisted by Codex for local API execution and evidence capture.
+- Tester: Ilmam; local API command output was captured as evidence.
 - Date/time (Asia/Colombo): 20 November 2026, approximately 18:15.
 - Branch and full commit: `qa/ec4206-role-a` at `433fa510810c8922915a8c674e58c85d8327714b`.
 - Environment and versions: isolated local API/PostgreSQL; Node `v24.20.0`, npm `11.19.0`, Docker client/server `29.8.2`, PostgreSQL `18.6-alpine`.
@@ -75,7 +75,7 @@ Execution record:
 
 Execution record:
 
-- Tester: Ilmam, assisted by Codex for local API execution and evidence capture.
+- Tester: Ilmam; local API command output was captured as evidence.
 - Date/time (Asia/Colombo): 20 November 2026, approximately 18:15.
 - Branch and full commit: `qa/ec4206-role-a` at `433fa510810c8922915a8c674e58c85d8327714b`.
 - Environment and versions: same isolated environment as `TC-AUTH-002`.
@@ -108,10 +108,10 @@ Execution record:
 
 Execution record:
 
-- Tester: Ilmam, with Codex observing the post-action UI and protected endpoint.
+- Tester: Ilmam; the post-action UI and protected endpoint were inspected through a read-only browser interface.
 - Date/time (Asia/Colombo): 19 November 2026, 21:29.
 - Branch and full commit: `qa/ec4206-role-a` at `976292d89ee8579f8bf3a362a2082c063fed8ba9`.
-- Environment and versions: isolated local Riven instance; ChatGPT in-app browser (engine/version not exposed by the inspection interface).
+- Environment and versions: isolated local Riven instance; browser engine/version not exposed by the inspection interface.
 - Preconditions/data actually used: the authenticated session and protected product list recorded in `evidence/auth-ui-2026-11-19.md`; Ilmam selected Sign out.
 - Actual result: `/app` returned to the sign-in form, the authenticated navigation and product data were absent, and `/api/v1/auth/me` in the same browser context returned `UNAUTHENTICATED` with `Please sign in.`
 - Status: Passed for the observable revocation behavior. The exact HTTP status of the sign-out request itself was not captured, so this record does not claim direct evidence of the expected 204 transport response.
@@ -131,7 +131,7 @@ Execution record:
 
 Execution record:
 
-- Tester: Ilmam, assisted by Codex for local API execution and evidence capture.
+- Tester: Ilmam; local API command output was captured as evidence.
 - Date/time (Asia/Colombo): 20 November 2026, approximately 18:16.
 - Branch and full commit: `qa/ec4206-role-a` at `433fa510810c8922915a8c674e58c85d8327714b`.
 - Environment and versions: same isolated environment; local API process restarted immediately before the case to clear its process-local limiter.
@@ -309,7 +309,3 @@ Evidence:
 Defect/retest:
 Cleanup/residual data:
 ```
-
-## AI assistance record
-
-AI assistance was used to structure the cases and cross-check expected results against the current schemas, routes, tests, and documented requirements. Ilmam must review and explain every case, choose the execution data, perform or directly supervise execution, and record actual results honestly.

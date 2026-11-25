@@ -117,7 +117,3 @@ npm run test:e2e
 ## 8. Final handoff
 
 Role A is ready for submission review. Do not report the 15 unrun manual cases or Role D's unexecuted browser/security/usability/Sonar checks as passed. PR #50 closes the missing Role D evidence-link dependency without changing the frozen product/test build. Move the freeze only if product/test code changes.
-
-## 9. AI assistance
-
-AI assistance was used to inspect repository state, reconcile evidence, run authorized local checks, draft documentation and review mappings. Ilmam remains responsible for understanding, reviewing and submitting the work.

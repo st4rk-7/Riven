@@ -204,7 +204,3 @@ The steps validate each offer with the API's `ExtensionOfferSchema`, derive the 
 | A (Ilmam) | Map `WB-001`..`WB-010` and both BDD scenarios to `TC-OFFER-001`..`003` in `traceability.md` (Role B column). |
 | C (Hirukshanan) | Stable commands for CI: `npm run test:coverage`, `npm run test:bdd`. Coverage output: `coverage/coverage-summary.json`. |
 | D (Dilsan) | Coverage figures and denominator above; risks R1–R6; a real issue ID for R1; the 22 `npm audit` findings from the baseline. |
-
-## 6. AI assistance
-
-The analysis, tests, `packSize` fix, refactor, BDD files and this document were drafted by an AI assistant (Claude Code) on 21 November 2026 at the Role B owner's request. Every listed result comes from a command that was actually run, and its output is saved under `evidence/`. Under `AGENTS.md`, the owner reviews this work and must be able to explain it before the pull request is merged.

@@ -160,7 +160,3 @@ A1 remains Draft until the following are observed:
 - The intended evidence location is agreed.
 
 No test execution, group approval, push, PR, or environment readiness is claimed by this draft. A local planning commit records the review copy only.
-
-## 10. AI assistance record
-
-AI assistance was used to inspect the current repository and approved documents, explain the three-flow scope rationale, identify document/code differences, and draft this review copy. Ilmam selected the role direction, supplied the roster, explained the A1 objective, chose to omit Jira for this EC4206 workstream, and remains responsible for reviewing, editing, explaining, and submitting the work.

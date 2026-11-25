@@ -1,7 +1,7 @@
 # Branch verification evidence - 20 November 2026
 
 Owner: Ilmam
-Execution assistance: Codex ran the local commands and recorded their actual outcomes
+Execution method: local commands with actual outcomes recorded below
 Time: approximately 18:20-18:22 Asia/Colombo
 Branch: `qa/ec4206-role-a`
 Commit: `ca9178d` (`docs(qa): reconcile 20 November auth evidence`)

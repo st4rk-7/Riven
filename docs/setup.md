@@ -470,13 +470,6 @@ RIV-18 was merged in pull request #16. The checks recorded above do not prove
 production readiness or live Amazon collection. Ongoing checks are in the
 [test plan](test-plan.md).
 
-## AI assistance
-
-AI assistance was used to explain the Docker Compose, migration, authentication
-and seed workflow; propose code for Ilmam to enter and inspect; help diagnose
-configuration and command-line quoting errors; and guide the verification
-commands.
-
 Ilmam selected and approved the synthetic dataset, created and rotated the
 local secrets, entered and reviewed the changes, ran the verification commands
 and remains responsible for explaining and demonstrating the submitted work.

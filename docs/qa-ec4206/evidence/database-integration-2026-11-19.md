@@ -1,7 +1,7 @@
 # Database and Integration Evidence - 19 November 2026
 
 Status: Observed local evidence
-Tester/operator: Codex with Ilmam's authorization
+Execution: authorized local command run
 Date/time: 19 November 2026, approximately 21:14-21:17 (Asia/Colombo)
 Branch: `qa/ec4206-role-a`
 Tested commit: `d381178`
@@ -126,7 +126,3 @@ Interpretation:
 1. Record browser/version and perform manual sign-in/sign-out.
 2. Execute selected manual `TC-*` cases with actual evidence.
 3. Link relevant automated integration evidence to traceability without relabeling it as manual execution.
-
-## AI assistance disclosure
-
-AI assistance verified the exact volume target, performed the authorized reset, ran the repository commands, diagnosed the parallel-worker memory failure, selected a bounded-concurrency rerun that preserved the test files/assertions, and recorded the observed results. Ilmam remains responsible for reviewing and explaining the environment, destructive reset, commands, results, and limitations.

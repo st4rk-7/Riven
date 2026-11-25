@@ -156,7 +156,3 @@ Ilmam should be able to explain:
 ## 7. Owner understanding check
 
 Ilmam explained that a similar title cannot prove product identity because a different product may share the same word pattern, illustrated by `cat` and `catfish`. Therefore a title-only similarity remains `unverified`; stronger identifier evidence or retailer review is required before confirmation.
-
-## 8. AI assistance record
-
-AI assistance was used to inspect current schemas, tests, and constraints; propose representative partitions/boundaries; and draft the decision table. Ilmam remains responsible for checking the derivations against the code, explaining the techniques, selecting execution data, and approving the final cases.

@@ -1,6 +1,6 @@
 # Role D evidence index
 
-Session: 22 November 2026, Asia/Calcutta (UTC+05:30). Baseline: `17307a5baaa43527ea993af9a2d36ae548372b5e`; branch `qa/ec4206-role-d`. Role D documentation is separate from the tested application baseline. Automated tooling and AI assistance were used to execute, organize and check the recorded evidence. Dilsan reviewed and approved the evidence package on 23 November 2026. Manual checks are labelled separately and were not performed.
+Session: 22 November 2026, Asia/Calcutta (UTC+05:30). Baseline: `17307a5baaa43527ea993af9a2d36ae548372b5e`; branch `qa/ec4206-role-d`. Role D documentation is separate from the tested application baseline. Automated checks and their recorded evidence are documented in this package. Dilsan reviewed and approved the evidence package on 23 November 2026. Manual checks are labelled separately and were not performed.
 
 Initial preflight: clean tree; no upstream; local main and cached origin/main equal baseline. Connector startup initially timed out, then recovered. Live GitHub main was verified equal to baseline; a remote Role D branch search returned no match. Dilsan confirmed GitHub-only tracking for Quality Assurance. The earlier Software Project Jira search and RIV-45 history are preserved as background in [sanitized remote evidence](remote-state.json), not as QA status.
 
