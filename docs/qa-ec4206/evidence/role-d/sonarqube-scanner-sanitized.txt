@@ -1,0 +1,93 @@
+SonarQube scanner transcript for 25 November 2026
+Source: scanner output supplied by Dilsan. Workstation paths were replaced with placeholders and the terminal prompt was omitted.
+
+[INFO]  ScannerEngine: 101 files indexed (done) | time=65ms
+[INFO]  ScannerEngine: Quality profile for css: Sonar way core
+[INFO]  ScannerEngine: Quality profile for json: Sonar way comprehensive
+[INFO]  ScannerEngine: Quality profile for ts: Sonar way core
+[INFO]  ScannerEngine: Quality profile for web: Sonar way core
+[INFO]  ScannerEngine: ------------- Run sensors on module riven
+[INFO]  ScannerEngine: Load metrics repository
+[INFO]  ScannerEngine: Load metrics repository (done) | time=39ms
+[INFO]  ScannerEngine: Reflections took 167 ms to scan 1 urls, producing 30 keys and 313 values
+[INFO]  ScannerEngine: Sensor IaC YAML File Type Classification Sensor [iac]
+[INFO]  ScannerEngine: Sensor IaC YAML File Type Classification Sensor [iac] (done) | time=73ms
+[INFO]  ScannerEngine: Sensor IaC CloudFormation Sensor [iac]
+[INFO]  ScannerEngine: There are no files to be analyzed for the CloudFormation language
+[INFO]  ScannerEngine: Sensor IaC CloudFormation Sensor [iac] (done) | time=0ms
+[INFO]  ScannerEngine: Sensor IaC cfn-lint report Sensor [iac]
+[INFO]  ScannerEngine: Sensor IaC cfn-lint report Sensor [iac] (done) | time=0ms
+[INFO]  ScannerEngine: Sensor IaC hadolint report Sensor [iac]
+[INFO]  ScannerEngine: Sensor IaC hadolint report Sensor [iac] (done) | time=0ms
+[INFO]  ScannerEngine: Sensor IaC Azure Resource Manager Sensor [iac]
+[INFO]  ScannerEngine: There are no files to be analyzed for the Azure Resource Manager language
+[INFO]  ScannerEngine: Sensor IaC Azure Resource Manager Sensor [iac] (done) | time=2ms
+[INFO]  ScannerEngine: Sensor Java Config Sensor [iac]
+[INFO]  ScannerEngine: There are no files to be analyzed for the Java language
+[INFO]  ScannerEngine: Sensor Java Config Sensor [iac] (done) | time=0ms
+[INFO]  ScannerEngine: Sensor IaC Docker Sensor [iac]
+[INFO]  ScannerEngine: There are no files to be analyzed for the Docker language
+[INFO]  ScannerEngine: Sensor IaC Docker Sensor [iac] (done) | time=35ms
+[INFO]  ScannerEngine: Sensor HTML [web]
+[INFO]  ScannerEngine: Sensor HTML [web] (done) | time=15922ms
+[INFO]  ScannerEngine: Sensor TextAndSecretsSensor [text]
+[INFO]  ScannerEngine: Available processors: 16
+[INFO]  ScannerEngine: Using 16 threads for analysis.
+[INFO]  ScannerEngine: The property "sonar.tests" is not set. To improve the analysis accuracy, we categorize a file as a test file if any of the following is true:
+  * The filename starts with "test"
+  * The filename contains "test." or "tests."
+  * Any directory in the file path is named: "doc", "docs", "test", "tests", "mock" or "mocks"
+  * Any directory in the file path has a name ending in "test" or "tests"
+[INFO]  ScannerEngine: Start fetching files for the text and secrets analysis
+[INFO]  ScannerEngine: Using Git CLI to retrieve dirty files
+[INFO]  ScannerEngine: Retrieving language associated files and files included via "sonar.text.inclusions" that are tracked by git
+[INFO]  ScannerEngine: Starting the text and secrets analysis
+[INFO]  ScannerEngine: 93 source files to be analyzed for the text and secrets analysis
+[INFO]  ScannerEngine: 93/93 source files have been analyzed for the text and secrets analysis
+[INFO]  ScannerEngine: Skipped 19 file(s) in the secrets analysis due to automatic test file detection
+[INFO]  ScannerEngine: Sensor TextAndSecretsSensor [text] (done) | time=3361ms
+[INFO]  ScannerEngine: ------------- Run sensors on project
+[INFO]  ScannerEngine: Sensor JavaScript/TypeScript/CSS analysis [javascript]
+[INFO]  ScannerEngine: Detected os: Windows 11 arch: amd64 alpine: false. Platform: WIN_X64
+[INFO]  ScannerEngine: Deploy location <sonar-cache>\js\node-runtime, tagetRuntime: <sonar-cache>\js\node-runtime\node.exe,  version: <sonar-cache>\js\node-runtime\version.txt
+[INFO]  ScannerEngine: Using embedded Node.js runtime.
+[INFO]  ScannerEngine: Using Node.js executable: '<sonar-cache>\js\node-runtime\node.exe'.
+[INFO]  ScannerEngine: Memory configuration: OS (16016 MB), Node.js (4288 MB).
+[INFO]  ScannerEngine: gRPC analyze-project server listening on 127.0.0.1:4989
+[INFO]  ScannerEngine: Plugin version: [14.3.0.46350]
+[INFO]  ScannerEngine: Found 3 tsconfig.json file(s): [<repo-root>/extension/tsconfig.json, <repo-root>/server/tsconfig.json, <repo-root>/web/tsconfig.json]
+[WARN]  ScannerEngine: Failed to parse file [server/sources/fixtures/amazon-uk-in-stock.html] at line 701: Unknown word -->
+[WARN]  ScannerEngine: Failed to parse file [server/sources/fixtures/amazon-uk-centre-price.html] at line 600: Unknown word -->
+[WARN]  ScannerEngine: Failed to parse file [server/sources/fixtures/amazon-sg-no-offer.html] at line 591: Unknown word -->
+[INFO]  ScannerEngine: 89 source files to be analyzed
+[INFO]  ScannerEngine: Creating TypeScript(6.0.3) program with configuration file <repo-root>/extension/tsconfig.json [lib: lib.es2023.d.ts, lib.dom.d.ts]
+[INFO]  ScannerEngine: Analyzing 7 file(s) from tsconfig <repo-root>/extension/tsconfig.json (69 total files in program)
+[INFO]  ScannerEngine: Creating TypeScript(6.0.3) program with configuration file <repo-root>/server/tsconfig.json [lib: lib.es2024.d.ts, lib.dom.d.ts]
+[INFO]  ScannerEngine: Analyzing 31 file(s) from tsconfig <repo-root>/server/tsconfig.json (103 total files in program)
+[INFO]  ScannerEngine: Creating TypeScript(6.0.3) program with configuration file <repo-root>/web/tsconfig.json [lib: lib.es2022.d.ts, lib.dom.d.ts, lib.dom.iterable.d.ts]
+[INFO]  ScannerEngine: Analyzing 38 file(s) from tsconfig <repo-root>/web/tsconfig.json (98 total files in program)
+[INFO]  ScannerEngine: 89/89 source files have been analyzed
+[INFO]  ScannerEngine: Hit the cache for 0 out of 84
+[INFO]  ScannerEngine: Miss the cache for 84 out of 84: ANALYSIS_MODE_INELIGIBLE [84/84]
+[INFO]  ScannerEngine: Sensor JavaScript/TypeScript/CSS analysis [javascript] (done) | time=48410ms
+[INFO]  ScannerEngine: Sensor IaC Project Sensor [iac]
+[INFO]  ScannerEngine: Sensor IaC Project Sensor [iac] (done) | time=87ms
+[INFO]  ScannerEngine: Sensor Zero Coverage Sensor
+[INFO]  ScannerEngine: Sensor Zero Coverage Sensor (done) | time=4343ms
+[INFO]  ScannerEngine: ------------- Gather SCA dependencies on project
+[INFO]  ScannerEngine: Dependency analysis skipped
+[INFO]  ScannerEngine: SCM Publisher SCM provider for this project is: git
+[INFO]  ScannerEngine: SCM Publisher 89 source files to be analyzed
+[INFO]  ScannerEngine: SCM Publisher 89/89 source files have been analyzed (done) | time=5803ms
+[INFO]  ScannerEngine: CPD Executor 13 files had no CPD blocks
+[INFO]  ScannerEngine: CPD Executor Calculating CPD for 76 files
+[INFO]  ScannerEngine: CPD Executor CPD calculation finished (done) | time=448ms
+[INFO]  ScannerEngine: SCM revision ID '57b84517d2cb7eab1fb08867affca5ca354fc492'
+[INFO]  ScannerEngine: Analysis report generated in 588ms, dir size=9.0 MB
+[INFO]  ScannerEngine: Analysis report compressed in 23733ms, zip size=2.3 MB
+[INFO]  ScannerEngine: Analysis report uploaded in 502ms
+[INFO]  ScannerEngine: ANALYSIS SUCCESSFUL, you can find the results at: http://127.0.0.1:9000/dashboard?id=riven-qa
+[INFO]  ScannerEngine: Note that you will be able to access the updated dashboard once the server has processed the submitted analysis report
+[INFO]  ScannerEngine: More about the report processing at http://127.0.0.1:9000/api/ce/task?id=8521ebbc-f30b-4348-b86f-8a8c9c08f886
+[INFO]  ScannerEngine: Analysis total time: 1:55.246 min
+[INFO]  ScannerEngine: SonarScanner Engine completed successfully

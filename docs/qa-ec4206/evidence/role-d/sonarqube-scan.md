@@ -6,7 +6,9 @@ The scanner indexed 101 files and uploaded the analysis report successfully. The
 
 The scanner warned about parsing three saved Amazon HTML fixtures. Dependency analysis was skipped. This run did not import a coverage report, so SonarQube coverage from this run should be read separately from the Vitest coverage results.
 
-I checked the [local dashboard](http://127.0.0.1:9000/dashboard?id=riven-qa) after processing. The 25 November 2026 activity entry shows **Quality Gate: Passed** and **486 issues** for the first analysis. Analysis task ID: `8521ebbc-f30b-4348-b86f-8a8c9c08f886`.
+The [sanitized scanner transcript](sonarqube-scanner-sanitized.txt) records the indexed files, commit, warnings, successful upload, and analysis task ID `8521ebbc-f30b-4348-b86f-8a8c9c08f886`.
+
+I checked the [local dashboard](http://127.0.0.1:9000/dashboard?id=riven-qa) after processing. The [25 November 2026 Activity capture](screenshots/Screenshot%202026-11-25%20120143.png) shows **Quality Gate: Passed** and **486 issues** for the first analysis. The [Overall Code capture](screenshots/Screenshot%202026-11-25%20120131.png) shows the figures below.
 
 | Overall Code metric | Dashboard result |
 | --- | --- |
@@ -22,7 +24,7 @@ SonarQube ran in [Multi-Quality Rule mode](https://docs.sonarsource.com/sonarqub
 
 ## Security finding
 
-SonarQube reported one open **Low** security issue at `server/sources/fixtures/a-light-in-the-attic.html:319`. It flagged an external script tag without `integrity` and `crossorigin` attributes. The references I found at `57b8451` are in `server/app.test.ts` and `server/sources/books-toscrape.test.ts`. The tests read the saved HTML as text, and the parser uses Cheerio to extract product data.
+The [Security issues capture](screenshots/Screenshot%202026-11-25%20120444.png) shows one open **Low** security issue at `server/sources/fixtures/a-light-in-the-attic.html:319`. SonarQube flagged an external script tag without `integrity` and `crossorigin` attributes. The references I found at `57b8451` are in `server/app.test.ts` and `server/sources/books-toscrape.test.ts`. The tests read the saved HTML as text, and the parser uses Cheerio to extract product data.
 
 I recommend treating this as a test-fixture finding pending team review. Keep the saved fixture intact if the parser test needs it. If the team agrees to exclude saved fixtures from future application-code scans, document that scope and keep the original scan results. If the HTML is ever served to a browser, remove the external script or review how it is loaded before serving it.
 

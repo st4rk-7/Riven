@@ -1,7 +1,9 @@
 # Role D quality review
 
 Owner: Dilsan. Prepared on 22 November 2026 and reviewed on 23 November 2026.
-Status: Role D evidence package prepared for team review. The unexecuted checks below remain limitations.
+Status: Baseline evidence merged in PR #50. The [25 November follow-up](#follow-up--25-november-2026) records the later browser checks and SonarQube scan.
+
+The baseline sections below retain the results and open items recorded on 22–23 November 2026.
 
 ## Measured conclusion
 
@@ -89,19 +91,36 @@ All recommendations are PROPOSED. Component responsibilities below come from han
 | High: existing security regression does not establish cross-tenant edit and match-decision route coverage | NFR-01, FR-02/04 | Hirukshanan reviews disposable A/B tests for PATCH product and PATCH observation ownership; assert B unchanged and safe 404, plus A success | Hirukshanan API area; guards private mutations | Small/medium: tests first, no API contract change assumed | Focused route tests that fail if ownership filter is removed, then integration suite |
 | Medium: unit coverage omits database execution/UI; original B evidence used working changes and separate CI SHA | NFR-07 | Agree final A scope, import real integration coverage into approved static-analysis setup, retain exact SHA/report/run links and explicit exclusions | Role B/C evidence coordination with Ilmam CI area; auditable reproducibility | Medium: artifact/config agreement; no dependency or service change until approved | Recalculate statement/branch/function/line measures on agreed SHA; verify actual CI and Sonar report import |
 
-## Closure and handoff
+## Baseline closure and handoff — 22–23 November 2026
 
 - [x] Local preflight, source tracing and permitted automated baseline checks recorded.
 - [x] Plan, template, dictionary, result index, historical RCA and proposed recommendations drafted.
-- [x] Dilsan reviewed the task scope, important limitations and outputs before submission.
-- [ ] Lecturer task list and precise cutoff supplied; no full rubric compliance claim.
-- [x] QA tracking choice confirmed by Dilsan: GitHub only; separate Software Project Jira history is contextual.
-- [ ] A/B/C defect format reviewed and linked from the QA PR.
+- [x] Ireviewed the task scope, important limitations and outputs before submission.
+- [x] QA tracking choice confirmed by myself: GitHub only; separate Software Project Jira history is contextual.
 - [x] JMeter local API workload executed with raw evidence and limitations.
 - [ ] Browser/manual OWASP/usability evidence captured.
 - [ ] Approved Sonar setup/scan or explicit accepted limitation.
 - [ ] A final matrix, B coverage acceptance and C automated mapping/CI reconciled; messages in [handoff drafts](role-d-handoff.md) have NOT been sent.
 - [x] Tested application commit is recorded as `17307a5...`; Dilsan reviewed and approved the Role D evidence package.
-- [x] Dilsan explicitly authorized the Role D commit, push and pull request on 23 November 2026. Merge remains a team review action.
+- [x] I authorized the Role D commit, push and pull request on 23 November 2026. Merge remains a team review action.
 
 The next team step is to review the Role D pull request and add its link to the final integration matrix. Manual browser/security/usability checks and SonarQube remain unexecuted and must not be reported as passes. See [reflection](reflection.md) for the contribution record.
+
+## Follow-up — 25 November 2026
+
+| Area | Follow-up result | Evidence |
+| --- | --- | --- |
+| D2 usability | I ran selected local Brave checks for keyboard sign-in, accessibility, product controls, responsive layout, and contrast. The report gives the result for each case. | [Usability report](evidence/role-d/manual-usability-report.md) |
+| D2 browser timing | The populated Products screen was visible in about 1.4 s with cache enabled and 0.6 s with cache disabled in two local runs. Both observations were within the proposed 3 s target at 320 × 768 CSS px. | [Dashboard timing report](evidence/role-d/performance/browser-timing.md) |
+| D2 security | The SEC-01 signed-out reads, SEC-02 retailer isolation checks, and SEC-07 two-tab sign-out check passed within their reported scope. The SEC-01 protected write, SEC-03 through SEC-06, and SEC-07 server-side revocation check remain outside this follow-up. | [Manual security report](evidence/role-d/manual-security-report.md) |
+| D3 SonarQube | I scanned `57b8451` locally. The dashboard showed a passed Quality Gate and 486 issues overall, including one Low security finding in a saved fixture. The scan did not import coverage. | [Scan report](evidence/role-d/sonarqube-scan.md) and [scanner transcript](evidence/role-d/sonarqube-scanner-sanitized.txt) |
+
+[PR #51](https://github.com/st4rk-7/Riven/pull/51) contains the follow-up evidence. The original application baseline and the Role A manual case verdicts keep their previously recorded scope.
+
+### Follow-up checklist
+
+- [x] Recorded the selected manual usability checks, their results, and links to supporting screenshots.
+- [x] Recorded two local browser timing runs, one with cache enabled and one with cache disabled.
+- [x] Recorded the selected security checks and listed the checks outside this follow-up.
+- [x] Completed the local SonarQube scan on `57b8451` and linked the scanner transcript and dashboard evidence. The scan did not import coverage.
+- [x] Opened PR #51 and linked the follow-up reports from the final review.
