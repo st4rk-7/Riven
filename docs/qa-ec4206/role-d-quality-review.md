@@ -1,7 +1,8 @@
 # Role D quality review
 
 Owner: Dilsan. Prepared on 22 November 2026 and reviewed on 23 November 2026.
-Status: Baseline evidence merged in PR #50. The [25 November follow-up](#follow-up--25-november-2026) records the later browser checks and SonarQube scan.
+Last updated: 25 November 2026.
+Status: I completed the evidence package for the [25 November follow-up](#follow-up--25-november-2026). The baseline evidence is merged in PR #50. PR #51 is open for team review.
 
 The baseline sections below retain the results and open items recorded on 22–23 November 2026.
 
@@ -32,7 +33,7 @@ Independent later work does not turn an unexecuted check into a pass. No GitHub 
 
 ## D1 plan and scope
 
-Primary scope: NFR-01, NFR-03, NFR-05, NFR-06 and NFR-09, with FR-01/04/06/11 and selected reliability, maintainability, extractor/privacy checks. Dilsan reviewed this scope on 23 November 2026. Requirements retain built/partial/planned distinctions; current site rules and product-page capture code are ahead of older SRS/test-plan status text.
+Primary scope: NFR-01, NFR-03, NFR-05, NFR-06 and NFR-09, with FR-01/04/06/11 and selected reliability, maintainability, extractor/privacy checks. I reviewed this scope on 23 November 2026. Requirements retain built/partial/planned distinctions; current site rules and product-page capture code are ahead of older SRS/test-plan status text.
 
 QA record decision: GitHub is the record for this Quality Assurance workstream, following Role A strategy section 8. Jira belongs to the separate Software Project subject. Keep `qa/ec4206-role-d` as the QA branch and use GitHub PRs, evidence files and team review for this work. The matching fix is traceable through PR #43 and the red/green tests; RIV-45 is historical Software Project context only.
 
@@ -98,13 +99,10 @@ All recommendations are PROPOSED. Component responsibilities below come from han
 - [x] I reviewed the task scope, important limitations and outputs before submission.
 - [x] QA tracking choice confirmed by myself: GitHub only; separate Software Project Jira history is contextual.
 - [x] JMeter local API workload executed with raw evidence and limitations.
-- [ ] Browser/manual OWASP/usability evidence captured.
-- [ ] Approved Sonar setup/scan or explicit accepted limitation.
-- [ ] A final matrix, B coverage acceptance and C automated mapping/CI reconciled; messages in [handoff drafts](role-d-handoff.md) have NOT been sent.
 - [x] Tested application commit is recorded as `17307a5...`; Dilsan reviewed and approved the Role D evidence package.
 - [x] I authorized the Role D commit, push and pull request on 23 November 2026. Merge remains a team review action.
 
-The next team step is to review the Role D pull request and add its link to the final integration matrix. Manual browser/security/usability checks and SonarQube remain unexecuted and must not be reported as passes. See [reflection](reflection.md) for the contribution record.
+At the 22–23 November baseline, I had yet to collect the manual browser security and usability evidence or run SonarQube. The final matrix, Role B coverage acceptance, and Role C mapping and CI reconciliation were still team handoff items. The [handoff messages](role-d-handoff.md) were drafts at that point. See [reflection](reflection.md) for the contribution record.
 
 ## Follow-up — 25 November 2026
 
@@ -117,10 +115,12 @@ The next team step is to review the Role D pull request and add its link to the 
 
 [PR #51](https://github.com/st4rk-7/Riven/pull/51) contains the follow-up evidence. The original application baseline and the Role A manual case verdicts keep their previously recorded scope.
 
-### Follow-up checklist
+### Follow-up checklist — 25 November 2026
 
 - [x] Recorded the selected manual usability checks, their results, and links to supporting screenshots.
 - [x] Recorded two local browser timing runs, one with cache enabled and one with cache disabled.
 - [x] Recorded the selected security checks and listed the checks outside this follow-up.
 - [x] Completed the local SonarQube scan on `57b8451` and linked the scanner transcript and dashboard evidence. The scan did not import coverage.
 - [x] Opened PR #51 and linked the follow-up reports from the final review.
+
+My follow-up evidence is complete for review.
