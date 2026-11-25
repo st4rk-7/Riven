@@ -1,0 +1,28 @@
+Role D security API rerun — 25 November 2026
+Tester: tool-assisted rerun against the checked-out Riven code.
+Method: Fastify inject calls using the local PostgreSQL riven_test database. Requests were in-process and did not use a browser or deployed server.
+Expected: signed-out GET requests return HTTP 401 with only the authentication error. Each signed-in fixture account receives exactly its own records, including its unlinked observation.
+Sanitization: credentials, session headers, and raw record IDs omitted. Returned IDs are represented by fixture labels.
+
+Run started UTC: 2026-11-25T09:22:03.217Z
+Tested Git SHA: 9370f7c5a322d5dee9c71c92793df2a819afa17b
+Runtime: Node v24.16.0, Fastify in-process HTTP injection, local PostgreSQL riven_test
+Injection Origin for sign-ins and authenticated reads: http://127.0.0.1:5173
+Setup: two new retailers, each with one product, one linked observation, one unlinked observation, and one attempt.
+SEC-01 GET /api/v1/products [no session] -> 401 {"code":"UNAUTHENTICATED","message":"Please sign in."} [expected; no other response fields]
+SEC-01 GET /api/v1/observations [no session] -> 401 {"code":"UNAUTHENTICATED","message":"Please sign in."} [expected; no other response fields]
+SEC-01 GET /api/v1/attempts [no session] -> 401 {"code":"UNAUTHENTICATED","message":"Please sign in."} [expected; no other response fields]
+SEC-01 GET /api/v1/auth/me [no session] -> 401 {"code":"UNAUTHENTICATED","message":"Please sign in."} [expected; no other response fields]
+SEC-02 POST /api/v1/auth/sign-in [Alpha; credentials omitted] -> 200 [expected retailer identity matched; session omitted]
+SEC-02 GET /api/v1/products [Alpha session] -> 200 returned ["Alpha-product"] [exact expected fixture IDs; no records from the other retailer]
+SEC-02 GET /api/v1/observations [Alpha session] -> 200 returned ["Alpha-linked-observation","Alpha-unlinked-observation"] [exact expected fixture IDs; no records from the other retailer]
+SEC-02 GET /api/v1/attempts [Alpha session] -> 200 returned ["Alpha-attempt"] [exact expected fixture IDs; no records from the other retailer]
+Cleanup POST /api/v1/auth/sign-out [Alpha session] -> 204 [session omitted]
+SEC-02 POST /api/v1/auth/sign-in [Beta; credentials omitted] -> 200 [expected retailer identity matched; session omitted]
+SEC-02 GET /api/v1/products [Beta session] -> 200 returned ["Beta-product"] [exact expected fixture IDs; no records from the other retailer]
+SEC-02 GET /api/v1/observations [Beta session] -> 200 returned ["Beta-linked-observation","Beta-unlinked-observation"] [exact expected fixture IDs; no records from the other retailer]
+SEC-02 GET /api/v1/attempts [Beta session] -> 200 returned ["Beta-attempt"] [exact expected fixture IDs; no records from the other retailer]
+Cleanup POST /api/v1/auth/sign-out [Beta session] -> 204 [session omitted]
+Result: SEC-01 signed-out reads PASS; SEC-02 retailer isolation for the seeded records PASS.
+Cleanup: 2 disposable retailers removed; 0 fixture retailer rows remain.
+Run finished UTC: 2026-11-25T09:22:03.874Z
