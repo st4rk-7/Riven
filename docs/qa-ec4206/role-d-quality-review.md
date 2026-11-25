@@ -95,7 +95,7 @@ All recommendations are PROPOSED. Component responsibilities below come from han
 
 - [x] Local preflight, source tracing and permitted automated baseline checks recorded.
 - [x] Plan, template, dictionary, result index, historical RCA and proposed recommendations drafted.
-- [x] Ireviewed the task scope, important limitations and outputs before submission.
+- [x] I reviewed the task scope, important limitations and outputs before submission.
 - [x] QA tracking choice confirmed by myself: GitHub only; separate Software Project Jira history is contextual.
 - [x] JMeter local API workload executed with raw evidence and limitations.
 - [ ] Browser/manual OWASP/usability evidence captured.
