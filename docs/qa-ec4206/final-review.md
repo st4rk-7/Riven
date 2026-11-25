@@ -2,7 +2,7 @@
 
 Owner: Ilmam (Role A)
 Prepared: 23 November 2026 (Asia/Colombo)
-Status: Role A package prepared; Role D evidence reviewed and merged; lecturer's exact cutoff remains an external dependency
+Status: Role A package prepared. Role D baseline evidence is merged, and PR #51 records the follow-up checks. The lecturer's exact cutoff remains an external dependency.
 
 ## 1. Frozen tested state
 
@@ -55,16 +55,18 @@ Automated supporting evidence does not change a manual case's verdict. No live m
 - `AT-001..004` are implemented. `AT-003` is explicitly partial for `TC-AUTH-004`; the `TC-AUTH-003` portion of `AT-004` is explicitly partial. Role A accepted those labels.
 - Final main CI passed and retained the browser screenshot and coverage-summary artifacts named in section 1.
 
-### Role D - reviewed and merged
+### Role D - baseline and follow-up evidence
 
 - Role D PR [#50](https://github.com/st4rk-7/Riven/pull/50) was reviewed on corrected head `21e5ba0`, passed updated CI [run 45169479586](https://github.com/st4rk-7/Riven/actions/runs/45169479586), and merged at `e59fef7`.
 - Dilsan linked the matching defect/fix to Role B PR [#43](https://github.com/st4rk-7/Riven/pull/43) and proposed Medium severity because the old pack-size rule could hide a valid competitor offer. No separate defect issue exists.
 - Dilsan reported that the fix passed 21 matching tests on commit `17307a5`.
 - The earlier five-second timeout is classified as a test-reliability observation, not a defect, because it did not recur in Dilsan's default run. No defect ID is assigned.
 - The 22 npm audit findings require dependency and exposure review; they are not treated as 22 confirmed exploitable Riven defects.
-- SonarQube was not run, so no Sonar findings are claimed.
-- The committed Role D evidence records a local JMeter read test of 3,269 requests, 0 errors and 17 ms p95. It measures local API reads only, not complete browser loading.
-- Manual browser security/usability checks and SonarQube remain unexecuted. Existing GitHub issues #1-#4 remain unrelated and are not reused.
+- The baseline JMeter test recorded 3,269 local API read requests, 0 errors and 17 ms p95.
+- Follow-up PR [#51](https://github.com/st4rk-7/Riven/pull/51) links the [manual usability report](evidence/role-d/manual-usability-report.md), [dashboard timing report](evidence/role-d/performance/browser-timing.md), [manual security report](evidence/role-d/manual-security-report.md), and [SonarQube scan](evidence/role-d/sonarqube-scan.md).
+- Dilsan ran selected manual usability checks in Brave covering keyboard use, sign-in accessibility, product controls, responsive layout, and contrast samples. The report identifies where the supporting screenshots are retained. These observations are separate from the Role A manual verdicts in section 3.
+- The local security follow-up covered signed-out reads (SEC-01), retailer data isolation (SEC-02), and sign-out across browser tabs (SEC-07). The protected-write part of SEC-01, SEC-03 through SEC-06, and the server-side session revocation part of SEC-07 were outside this follow-up. Existing GitHub issues #1-#4 remain unrelated and are not reused.
+- The local SonarQube scan used the frozen commit `57b8451`. The Quality Gate passed. The scan reported 486 issues overall, including one Low security finding in a saved test fixture. It displayed 0.0% coverage because the run did not import a coverage report.
 
 ## 5. Metrics, defects and risks
 
@@ -78,7 +80,8 @@ Automated supporting evidence does not change a manual case's verdict. No live m
 | Fixed matching defect | Dimension text could be misread as pack size; fixed through Role B TDD, but no Role D issue ID was supplied. |
 | Earlier timeout instability | Recorded in Role A evidence; final main CI passed. Role D classifies it as a non-reproduced test-reliability observation with no defect ID. |
 | Local read-load metric | PR #50 records 3,269 JMeter requests, 0 errors and 17 ms p95; local API reads only, not full browser loading. |
-| SonarQube | Not run; no Sonar findings claimed. |
+| Browser dashboard timing | In two local Brave reloads at 320 × 768 CSS px, the populated Products screen was visible at about 1.4 s with cache enabled and 0.6 s with cache disabled. |
+| SonarQube | Quality Gate passed on `57b8451`. The dashboard showed 486 issues and 40.5% duplication. Coverage import was outside the scan scope. |
 
 ## 6. Reproducibility
 
@@ -111,12 +114,13 @@ npm run test:e2e
 - [x] Traceability and evidence limitations reconciled.
 - [x] Role D severity/disposition and audit/Sonar/JMeter limitations received.
 - [x] Role D PR #50 and its evidence files received, reviewed and merged.
+- [ ] Role D follow-up PR #51 reviewed and merged.
 - [ ] Lecturer's exact 24 November cutoff confirmed.
 - [ ] Final files uploaded with buffer before the confirmed cutoff.
 
 ## 8. Final handoff
 
-Role A is ready for submission review. Do not report the 15 unrun manual cases or Role D's unexecuted browser/security/usability/Sonar checks as passed. PR #50 closes the missing Role D evidence-link dependency without changing the frozen product/test build. Move the freeze only if product/test code changes.
+Role A is ready for submission review. The 15 unrun Role A manual cases keep their Not run verdict. The Role D follow-up reports give the scope and result of each recorded check. The frozen product/test build remains `57b8451`.
 
 ## 9. AI assistance
 

@@ -13,6 +13,8 @@ I tested keyboard use, sign-in accessibility, and the product screens in the loc
 | USA-07 | Layout at different window sizes | At 320 × 768 CSS px, my screenshots show the sign-in form, the Products error screen, and the populated Products list fitting across the viewport. The long product name wraps inside its card. Search and Add product are visible, and I can see the focus outline on Search. At 375 and 768 CSS px, I checked both the sign-in page and the Products list and saw no clipping or sideways scrolling. |
 | USA-08 | Text and control contrast | At 320 × 768 CSS px, Brave DevTools showed **15.11:1** for the 16 px Email label (`oklch(0.269 0 none)`) and **6.55:1** for the 14 px sign-in error text (`oklch(0.505 0.213 27.518)`) against the light sign-in card. The 16 px Sign in button text (`#FFFFFF` on `#095FDF`) measured **5.65:1**. All three readings meet the [WCAG 2.2 AA minimum of 4.5:1 for normal text](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html). |
 
+The screenshots referenced here are retained as attachments in the private conversation where I shared my QA observations. Reviewers can ask me for copies with credentials and private data removed.
+
 My follow-up screenshots for USA-01 show the focus outline on each sign-in control. The DevTools screenshots for USA-02 show the Password and Sign in properties and the error marked with `role="alert"`.
 
 For USA-08, I could see the blue focus ring around Sign in when I reached it with Tab. The stylesheet sets the ring to `#095FDF` against the white card (`#FFFFFF`). The calculated contrast is **5.65:1**, above the [3:1 minimum for focus indicators](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html).
