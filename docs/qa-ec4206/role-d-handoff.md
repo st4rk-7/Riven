@@ -4,7 +4,7 @@ Prepared on 22 November 2026 and owner reviewed on 23 November 2026. The message
 
 ## QA tracking
 
-Dilsan confirmed that Quality Assurance uses GitHub only; Jira belongs to the separate Software Project subject. The local `qa/ec4206-role-d` branch, proposed PR and repository evidence carry this work. PR #43 carries the matching defect and fix evidence. No separate GitHub issue for that defect was found; no issue ID is invented. The Jira RIV-45 link is optional historical context only.
+I confirmed that Quality Assurance uses GitHub only; Jira belongs to the separate Software Project subject. The local `qa/ec4206-role-d` branch, proposed PR and repository evidence carry this work. PR #43 carries the matching defect and fix evidence. No separate GitHub issue for that defect was found; no issue ID is invented. The Jira RIV-45 link is optional historical context only.
 
 ## Proposed PR
 
