@@ -122,6 +122,3 @@ npm run test:e2e
 
 Role A is ready for submission review. The 15 unrun Role A manual cases keep their Not run verdict. The Role D follow-up reports give the scope and result of each recorded check. The frozen product/test build remains `57b8451`.
 
-## 9. AI assistance
-
-AI assistance was used to inspect repository state, reconcile evidence, run authorized local checks, draft documentation and review mappings. Ilmam remains responsible for understanding, reviewing and submitting the work.
